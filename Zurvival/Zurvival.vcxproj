@@ -89,10 +89,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="SpriteManager.cpp" />
     <ClCompile Include="Zurvival.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Const.h" />
+    <ClInclude Include="MainMenu.h" />
     <ClInclude Include="SpriteManager.h" />
     <ClInclude Include="Zurvival.h" />
   </ItemGroup>

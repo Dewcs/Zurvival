@@ -41,3 +41,36 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+Zurvival/Debug/main.nativecodeanalysis.xml
+Zurvival/Debug/main.obj
+Zurvival/Debug/spritemanager.nativecodeanalysis.xml
+Zurvival/Debug/SpriteManager.obj
+Zurvival/Debug/vc120.idb
+Zurvival/Debug/vc120.pdb
+Zurvival/Debug/Zurvival.Build.CppClean.log
+Zurvival/Debug/Zurvival.log
+Zurvival/Debug/zurvival.nativecodeanalysis.xml
+Zurvival/Debug/Zurvival.obj
+Zurvival/Debug/Zurvival.pdb
+Zurvival/Debug/Zurvival.tlog/cl.command.1.tlog
+Zurvival/Debug/Zurvival.tlog/CL.read.1.tlog
+Zurvival/Debug/Zurvival.tlog/CL.write.1.tlog
+Zurvival/Debug/Zurvival.tlog/link-cvtres.read.1.tlog
+Zurvival/Debug/Zurvival.tlog/link-cvtres.write.1.tlog
+Zurvival/Debug/Zurvival.tlog/link-rc.read.1.tlog
+Zurvival/Debug/Zurvival.tlog/link-rc.write.1.tlog
+Zurvival/Debug/Zurvival.tlog/link.5160-cvtres.read.1.tlog
+Zurvival/Debug/Zurvival.tlog/link.5160-cvtres.write.1.tlog
+Zurvival/Debug/Zurvival.tlog/link.5160-rc.read.1.tlog
+*.tlog
+*.dll
+*.obj
+Zurvival/Release/Zurvival.Build.CppClean.log
+*.exe
+Zurvival/Release/Zurvival.log
+*.pdb
+*.sdf
+*.sln
+*.suo
+*.user
