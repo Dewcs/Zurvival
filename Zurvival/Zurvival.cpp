@@ -2,39 +2,59 @@
 
 
 Zurvival::Zurvival() {
+	// init SDL
 	SDL_Init(SDL_INIT_VIDEO);
 	TTF_Init();
 	// get screen resolution
 	SDL_DisplayMode current;
 	for (int i = 0; i < SDL_GetNumVideoDisplays(); ++i){
 		int should_be_zero = SDL_GetCurrentDisplayMode(i, &current);
-
 		if (should_be_zero != 0) SDL_Log("Could not get display mode for video display #%d: %s", i, SDL_GetError());
-
-		else
-			SDL_Log("Display #%d: current display mode is %dx%dpx @ %dhz. \n", i, current.w, current.h, current.refresh_rate);
-
+		else if (i == 0) {
+			width = current.w;
+			height = current.h;
+			fps = current.refresh_rate;
+		}
 	}
-	this->width = width;
-	this->height = height;
+	// create window
 	this->window = SDL_CreateWindow(
-		"Zurvival v0.0.0.0",         //    const char* title
+		"Zurvival v0.0.0.1",         //    const char* title
 		SDL_WINDOWPOS_UNDEFINED,  //    int x: initial x position
 		SDL_WINDOWPOS_UNDEFINED,  //    int y: initial y position
 		this->width,                      //    int w: width, in pixels
 		this->height,                      //    int h: height, in pixels
 		SDL_WINDOW_FULLSCREEN_DESKTOP          //    Uint32 flags: window options, see docs
 	);
+	//SDL_SetWindowIcon(window, surface);
+	// create renderer
+	renderer = SDL_CreateRenderer(window, -1, 0);
+	// init SpriteManager
+	sprMngr = new SpriteManager();
+	load_sprites();
+	// prepare for delta
+	last_time = 0;
+	stop = false;
 }
 
 
 Zurvival::~Zurvival() {
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(window);
+	TTF_Quit();
+	SDL_Quit();
 }
 
 bool Zurvival::running() {
-	return true;
+	return window != NULL && !stop;
 }
 
 void Zurvival::update() {
+	unsigned now = SDL_GetTicks();
+	unsigned delta = now - last_time;
 
+	last_time = now;
+}
+
+void Zurvival::load_sprites() {
+	
 }
