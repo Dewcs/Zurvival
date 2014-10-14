@@ -11,25 +11,36 @@ SpriteManager::~SpriteManager() {
 void SpriteManager::addImage(SDL_Renderer *renderer, const char *fname, const std::string &key, SDL_Rect r) {
 	// check if key exists 
 	if (!keyExists(key)) {
-		SDL_Surface * image = IMG_Load(fname);
-		list[key] = Sprite(SDL_CreateTextureFromSurface(renderer, image),r);
-		SDL_FreeSurface(image);
+		if (fileExists(fname)) {
+			SDL_Surface * image = IMG_Load(fname);
+			list[key] = Sprite(SDL_CreateTextureFromSurface(renderer, image), r);
+			SDL_FreeSurface(image);
+		}
+		else {
+			std::cerr << "File not found " << fname << std::endl;
+		}
 	}
 	else {
+		std::cerr << "Repeated sprite key " << key << std::endl;
 	}
 }
 
 void SpriteManager::addText(SDL_Renderer *renderer, const char *text, const std::string &key, const SDL_Color &color, int ptsize, const char* fontfile, SDL_Rect r) {
 	if (!keyExists(key)) {
-		TTF_Font* font;
-		font = TTF_OpenFont(fontfile, ptsize);
-		SDL_Surface *image = TTF_RenderText_Blended(font, text, color);
-		list[key] = Sprite(SDL_CreateTextureFromSurface(renderer, image), r);
-		SDL_FreeSurface(image);
-		TTF_CloseFont(font);
+		if (fileExists(fontfile)) {
+			TTF_Font* font;
+			font = TTF_OpenFont(fontfile, ptsize);
+			SDL_Surface *image = TTF_RenderText_Blended(font, text, color);
+			list[key] = Sprite(SDL_CreateTextureFromSurface(renderer, image), r);
+			SDL_FreeSurface(image);
+			TTF_CloseFont(font);
+		}
+		else {
+			std::cerr << "File not found " << fontfile << std::endl;
+		}
 	}
 	else {
-		std::cerr << "Repeated sprite key" << key << std::endl;
+		std::cerr << "Repeated sprite key " << key << std::endl;
 	}
 }
 
@@ -46,5 +57,8 @@ bool SpriteManager::keyExists(const std::string &key) {
 }
 
 bool SpriteManager::fileExists(const char *fname) {
-
+	SDL_RWops* file = SDL_RWFromFile(fname, "r+b");
+	bool ret = (file != NULL);
+	SDL_RWclose(file);
+	return ret;
 }

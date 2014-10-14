@@ -4,7 +4,7 @@
 #include <SDL_ttf.h>
 #include <map>
 #include <string>
-#include<iostream>
+#include <iostream>
 
 struct Sprite {
 	SDL_Texture* texture;
@@ -33,7 +33,7 @@ class SpriteManager {
 		SDL_Rect getRect(const std::string &key);
 	private:
 		bool keyExists(const std::string &key);
-		bool fileExists(const char *fname)
+		bool fileExists(const char *fname);
 		
 };
 
