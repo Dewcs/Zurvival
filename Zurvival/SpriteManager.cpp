@@ -6,9 +6,13 @@ SpriteManager::SpriteManager() {
 
 
 SpriteManager::~SpriteManager() {
+	for (std::map<std::string, Sprite>::iterator it = list.begin(); it != list.end(); ++it) {
+		SDL_DestroyTexture(it->second.texture);
+	}
+	list.clear();
 }
 
-void SpriteManager::addImage(SDL_Renderer *renderer, const char *fname, const std::string &key, SDL_Rect r) {
+void SpriteManager::addImage(SDL_Renderer *renderer, const std::string &key, const char *fname, SDL_Rect r) {
 	// check if key exists 
 	if (!keyExists(key)) {
 		if (fileExists(fname)) {
@@ -25,7 +29,7 @@ void SpriteManager::addImage(SDL_Renderer *renderer, const char *fname, const st
 	}
 }
 
-void SpriteManager::addText(SDL_Renderer *renderer, const char *text, const std::string &key, const SDL_Color &color, int ptsize, const char* fontfile, SDL_Rect r) {
+void SpriteManager::addText(SDL_Renderer *renderer, const std::string &key, const char *text, const SDL_Color &color, int ptsize, const char* fontfile, SDL_Rect r) {
 	if (!keyExists(key)) {
 		if (fileExists(fontfile)) {
 			TTF_Font* font;
@@ -53,7 +57,7 @@ SDL_Rect SpriteManager::getRect(const std::string &key) {
 }
 
 bool SpriteManager::keyExists(const std::string &key) {
-	return list.find(key) == list.end();
+	return !list.empty() && list.find(key) == list.end();
 }
 
 bool SpriteManager::fileExists(const char *fname) {

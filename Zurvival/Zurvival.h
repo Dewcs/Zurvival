@@ -1,6 +1,9 @@
 #pragma once
+#include "Const.h"
 #include <SDL.h>
 #include "SpriteManager.h"
+#include "MainMenu.h"
+
 
 class Zurvival {
 	private:
@@ -9,13 +12,18 @@ class Zurvival {
 		SDL_Window *window;
 		SDL_Renderer *renderer;
 		SpriteManager *sprMngr;
+		MainMenu *mainMenu;
 		bool stop;
+		page_t page;
 	public:
 		Zurvival();
 		~Zurvival();
 		bool running();
 		void update();
+		void end();
+		void make(int order, int value);
 	private:
 		void load_sprites();
 };
+
 

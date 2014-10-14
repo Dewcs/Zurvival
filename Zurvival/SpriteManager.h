@@ -27,8 +27,8 @@ class SpriteManager {
 	public:
 		SpriteManager();
 		~SpriteManager();
-		void addImage(SDL_Renderer *renderer, const char *fname, const std::string &key, SDL_Rect r);
-		void addText(SDL_Renderer *renderer, const char *text, const std::string &key, const SDL_Color &color, int ptsize, const char* fontfile, SDL_Rect r);
+		void addImage(SDL_Renderer *renderer, const std::string &key, const char *fname, SDL_Rect r);
+		void addText(SDL_Renderer *renderer, const std::string &key, const char *text, const SDL_Color &color, int ptsize, const char* fontfile, SDL_Rect r);
 		SDL_Texture* getTexture(const std::string &key);
 		SDL_Rect getRect(const std::string &key);
 	private:

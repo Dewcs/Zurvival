@@ -5,6 +5,7 @@ Zurvival::Zurvival() {
 	// init SDL
 	SDL_Init(SDL_INIT_VIDEO);
 	TTF_Init();
+	IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
 	// get screen resolution
 	SDL_DisplayMode current;
 	for (int i = 0; i < SDL_GetNumVideoDisplays(); ++i){
@@ -31,6 +32,11 @@ Zurvival::Zurvival() {
 	// init SpriteManager
 	sprMngr = new SpriteManager();
 	load_sprites();
+	// init pages
+	mainMenu = new MainMenu();
+
+	// set current page
+	page = LOADING;
 	// prepare for delta
 	last_time = 0;
 	stop = false;
@@ -38,8 +44,10 @@ Zurvival::Zurvival() {
 
 
 Zurvival::~Zurvival() {
+	delete sprMngr;
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
+	IMG_Quit();
 	TTF_Quit();
 	SDL_Quit();
 }
@@ -51,10 +59,36 @@ bool Zurvival::running() {
 void Zurvival::update() {
 	unsigned now = SDL_GetTicks();
 	unsigned delta = now - last_time;
-
+	SDL_RenderClear(renderer);
+	int order = 0;
+	int value = 0;
+	switch (page) {
+		case LOADING:
+			page = MAINMENU;
+			break;
+		case MAINMENU:
+			mainMenu->listen(stop,order,value);
+			if (order == 1) {
+				page = (page_t)value;
+			}
+			mainMenu->update(delta);
+			mainMenu->draw(renderer, sprMngr);
+			break;
+		default:
+			break;
+	}
+	SDL_RenderPresent(renderer);
 	last_time = now;
 }
 
 void Zurvival::load_sprites() {
-	
+	sprMngr->addImage(renderer, "bg", "sprites/bg.jpg", {0,0,width,height});
+}
+
+void Zurvival::end() {
+	stop = true;
+}
+
+void Zurvival::make(int order, int value) {
+
 }
