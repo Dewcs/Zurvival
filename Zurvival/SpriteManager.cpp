@@ -49,15 +49,17 @@ void SpriteManager::addText(SDL_Renderer *renderer, const std::string &key, cons
 }
 
 SDL_Texture* SpriteManager::getTexture(const std::string &key) {
+	if (!keyExists(key)) std::cerr << "Unknown sprite key " << key << std::endl;
 	return list[key].texture;
 }
 
 SDL_Rect SpriteManager::getRect(const std::string &key) {
+	if (!keyExists(key)) std::cerr << "Unknown sprite key " << key << std::endl;
 	return list[key].rect;
 }
 
 bool SpriteManager::keyExists(const std::string &key) {
-	return !list.empty() && list.find(key) == list.end();
+	return list.find(key) != list.end();
 }
 
 bool SpriteManager::fileExists(const char *fname) {

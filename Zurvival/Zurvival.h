@@ -20,8 +20,7 @@ class Zurvival {
 		~Zurvival();
 		bool running();
 		void update();
-		void end();
-		void make(int order, int value);
+		void doOrder(order_t order, int value);
 	private:
 		void load_sprites();
 };

@@ -60,7 +60,7 @@ void Zurvival::update() {
 	unsigned now = SDL_GetTicks();
 	unsigned delta = now - last_time;
 	SDL_RenderClear(renderer);
-	int order = 0;
+	order_t order = ORDER_NONE;
 	int value = 0;
 	switch (page) {
 		case LOADING:
@@ -68,9 +68,7 @@ void Zurvival::update() {
 			break;
 		case MAINMENU:
 			mainMenu->listen(stop,order,value);
-			if (order == 1) {
-				page = (page_t)value;
-			}
+			doOrder(order, value);
 			mainMenu->update(delta);
 			mainMenu->draw(renderer, sprMngr);
 			break;
@@ -82,13 +80,17 @@ void Zurvival::update() {
 }
 
 void Zurvival::load_sprites() {
+	// menu sprites
 	sprMngr->addImage(renderer, "bg", "sprites/bg.jpg", {0,0,width,height});
+	sprMngr->addText(renderer, "menu_play", "PLAY", { 255, 0, 0 }, height / 10, "sprites/Gore Font II.ttf", { width * 3 / 8, height * 4 / 10, width / 4, height / 10 });
+	sprMngr->addText(renderer, "menu_deathPit", "DEATH PIT", { 255, 0, 0 }, height / 10, "sprites/Gore Font II.ttf", { width * 3 / 8, height * 6 / 10, width / 4, height / 10 });
+	sprMngr->addText(renderer, "menu_options", "OPTIONS", { 255, 0, 0 }, height / 10, "sprites/Gore Font II.ttf", { width *3 / 8, height *8 / 10, width / 4, height / 10 });
+	sprMngr->addText(renderer, "menu_title", "ZURVIVAL", { 255, 0, 0 }, height / 6, "sprites/Gore Font II.ttf", { width / 20, height / 8, width / 2, height / 6 });
 }
 
-void Zurvival::end() {
-	stop = true;
-}
 
-void Zurvival::make(int order, int value) {
-
+void Zurvival::doOrder(order_t order, int value) {
+	if (order == ORDER_CHANGE_PAGE) {
+		page = (page_t)value;
+	}
 }
