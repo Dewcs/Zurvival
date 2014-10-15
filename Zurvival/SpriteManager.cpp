@@ -58,6 +58,12 @@ SDL_Rect SpriteManager::getRect(const std::string &key) {
 	return list[key].rect;
 }
 
+bool SpriteManager::isInsideRect(const std::string &key,int x, int y) {
+	if (!keyExists(key)) std::cerr << "Unknown sprite key " << key << std::endl;
+	SDL_Rect r = getRect(key);
+	return r.x <= x && x <= r.x + r.w && r.y <= y && y <= r.y + r.h;
+}
+
 bool SpriteManager::keyExists(const std::string &key) {
 	return list.find(key) != list.end();
 }

@@ -31,6 +31,7 @@ class SpriteManager {
 		void addText(SDL_Renderer *renderer, const std::string &key, const char *text, const SDL_Color &color, int ptsize, const char* fontfile, SDL_Rect r);
 		SDL_Texture* getTexture(const std::string &key);
 		SDL_Rect getRect(const std::string &key);
+		bool isInsideRect(const std::string &key, int x, int y);
 	private:
 		bool keyExists(const std::string &key);
 		bool fileExists(const char *fname);
