@@ -1,8 +1,9 @@
 #include "MainMenu.h"
 
 
-MainMenu::MainMenu()
-{
+MainMenu::MainMenu(SDL_Renderer* renderer, SpriteManager* sprMngr) {
+	this->renderer = renderer;
+	this->sprMngr = sprMngr;
 }
 
 
@@ -14,7 +15,7 @@ void MainMenu::update(unsigned delta) {
 	
 }
 
-void MainMenu::draw(SDL_Renderer* renderer, SpriteManager* sprMngr) {
+void MainMenu::draw() {
 	SDL_RenderCopy(renderer, sprMngr->getTexture("bg"), NULL, NULL);
 	SDL_RenderCopy(renderer, sprMngr->getTexture("menu_play"), NULL, &sprMngr->getRect("menu_play"));
 	SDL_RenderCopy(renderer, sprMngr->getTexture("menu_deathPit"), NULL, &sprMngr->getRect("menu_deathPit"));
@@ -39,7 +40,15 @@ void MainMenu::listen(bool &end, order_t &order, int &value) {
 			case SDL_QUIT:
 				end = true;
 				break;
-
+			case SDL_MOUSEBUTTONDOWN:
+				if (event.button.button == SDL_BUTTON_LEFT) {
+					if (sprMngr->isInsideRect("menu_options", event.button.x, event.button.y)) {
+						order = ORDER_CHANGE_PAGE;
+						value = OPTIONS;
+						return;
+					}
+				}
+				break;
 			default:
 				break;
 		}

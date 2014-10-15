@@ -3,6 +3,9 @@
 #include <SDL.h>
 #include "SpriteManager.h"
 #include "MainMenu.h"
+#include "Options.h"
+#include "DeathPit.h"
+#include "Game.h"
 
 
 class Zurvival {
@@ -13,6 +16,9 @@ class Zurvival {
 		SDL_Renderer *renderer;
 		SpriteManager *sprMngr;
 		MainMenu *mainMenu;
+		Options *options;
+		DeathPit *deathPit;
+		Game *game;
 		bool stop;
 		page_t page;
 	public:

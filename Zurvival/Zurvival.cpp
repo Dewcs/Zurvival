@@ -33,8 +33,10 @@ Zurvival::Zurvival() {
 	sprMngr = new SpriteManager();
 	load_sprites();
 	// init pages
-	mainMenu = new MainMenu();
-
+	mainMenu = new MainMenu(renderer,sprMngr);
+	options = new Options(renderer, sprMngr);
+	deathPit = new DeathPit(renderer, sprMngr);
+	game = new Game(renderer, sprMngr);
 	// set current page
 	page = LOADING;
 	// prepare for delta
@@ -70,7 +72,25 @@ void Zurvival::update() {
 			mainMenu->listen(stop,order,value);
 			doOrder(order, value);
 			mainMenu->update(delta);
-			mainMenu->draw(renderer, sprMngr);
+			mainMenu->draw();
+			break;
+		case DEATHPIT:
+			deathPit->listen(stop, order, value);
+			doOrder(order, value);
+			deathPit->update(delta);
+			deathPit->draw();
+			break;
+		case OPTIONS:
+			options->listen(stop, order, value);
+			doOrder(order, value);
+			options->update(delta);
+			options->draw();
+			break;
+		case GAME:
+			game->listen(stop, order, value);
+			doOrder(order, value);
+			game->update(delta);
+			game->draw();
 			break;
 		default:
 			break;
@@ -86,6 +106,7 @@ void Zurvival::load_sprites() {
 	sprMngr->addText(renderer, "menu_deathPit", "DEATH PIT", { 255, 0, 0 }, height / 10, "sprites/Gore Font II.ttf", { width * 3 / 8, height * 6 / 10, width / 4, height / 10 });
 	sprMngr->addText(renderer, "menu_options", "OPTIONS", { 255, 0, 0 }, height / 10, "sprites/Gore Font II.ttf", { width *3 / 8, height *8 / 10, width / 4, height / 10 });
 	sprMngr->addText(renderer, "menu_title", "ZURVIVAL", { 255, 0, 0 }, height / 6, "sprites/Gore Font II.ttf", { width / 20, height / 8, width / 2, height / 6 });
+	sprMngr->addText(renderer, "back", "<- Go Back", { 255, 0, 0 }, height / 8, "sprites/Gore Font II.ttf", { width / 20, height *8 / 10, width / 8, height / 8 });
 }
 
 

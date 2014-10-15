@@ -2,7 +2,10 @@
 
 enum page_t {
 	LOADING,
-	MAINMENU
+	MAINMENU,
+	DEATHPIT,
+	OPTIONS,
+	GAME
 };
 
 enum order_t {
