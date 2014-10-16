@@ -10,6 +10,13 @@ SpriteManager::~SpriteManager() {
 		SDL_DestroyTexture(it->second.texture);
 	}
 	list.clear();
+	for (std::map<std::string, SDL_Texture**>::iterator it = numlist.begin(); it != numlist.end(); ++it) {
+		for (int i = 0; i < 10; ++i) {
+			SDL_DestroyTexture(it->second[i]);
+		}
+		delete[] it->second;
+	}
+	numlist.clear();
 }
 
 void SpriteManager::addImage(SDL_Renderer *renderer, const std::string &key, const char *fname, SDL_Rect r) {
@@ -17,7 +24,7 @@ void SpriteManager::addImage(SDL_Renderer *renderer, const std::string &key, con
 	if (!keyExists(key)) {
 		if (fileExists(fname)) {
 			SDL_Surface * image = IMG_Load(fname);
-			list[key] = Sprite(SDL_CreateTextureFromSurface(renderer, image), r);
+			list[key] = Sprite(SDL_CreateTextureFromSurface(renderer, image), r,image->w,image->h);
 			SDL_FreeSurface(image);
 		}
 		else {
@@ -35,7 +42,7 @@ void SpriteManager::addText(SDL_Renderer *renderer, const std::string &key, cons
 			TTF_Font* font;
 			font = TTF_OpenFont(fontfile, ptsize);
 			SDL_Surface *image = TTF_RenderText_Blended(font, text, color);
-			list[key] = Sprite(SDL_CreateTextureFromSurface(renderer, image), r);
+			list[key] = Sprite(SDL_CreateTextureFromSurface(renderer, image), r, image->w, image->h);
 			SDL_FreeSurface(image);
 			TTF_CloseFont(font);
 		}
@@ -64,13 +71,109 @@ bool SpriteManager::isInsideRect(const std::string &key,int x, int y) {
 	return r.x <= x && x <= r.x + r.w && r.y <= y && y <= r.y + r.h;
 }
 
+void SpriteManager::addNumbers(SDL_Renderer *renderer, const std::string &key, const SDL_Color &color, int ptsize, const char* fontfile) {
+	if (!keyNExists(key)) {
+		if (fileExists(fontfile)) {
+			TTF_Font* font;
+			font = TTF_OpenFont(fontfile, ptsize);
+			SDL_Texture **tmp = new SDL_Texture*[10];
+			for (int i = 0; i < 10; ++i) {
+				std::string s(1, ('0' + i));
+				SDL_Surface *image = TTF_RenderText_Blended(font, s.c_str(), color);
+				tmp[i] = SDL_CreateTextureFromSurface(renderer, image);
+				SDL_FreeSurface(image);
+			}
+			TTF_CloseFont(font);
+			numlist[key] = tmp;
+		}
+		else {
+			std::cerr << "File not found " << fontfile << std::endl;
+		}
+	}
+	else {
+		std::cerr << "Repeated number key " << key << std::endl;
+	}
+}
+/*
+	draws number into renderer using numbers defined in key onto (x,y) with h as height and align (ALIGN_RIGHT,ALIGN_LEFT,ALIGN_CENTER)
+*/
+void SpriteManager::drawNumber(SDL_Renderer *renderer, int number, const std::string &key, int x, int y, int h, align_t align) {
+	switch (align) {
+		case ALIGN_LEFT:
+			if (number < 10) {
+				int wi, he;
+				SDL_QueryTexture(numlist[key][number], NULL, NULL, &wi, &he);
+				int w = (wi*h) / he;
+				SDL_Rect r = { x, y, w, h };
+				SDL_RenderCopy(renderer, numlist[key][number], NULL, &r);
+			}
+			else {
+				int tnumber = 0;
+				while (tnumber > 0) {
+					int ac = tnumber % 10;
+					tnumber /= 10;
+					int wi, he;
+					SDL_QueryTexture(numlist[key][ac], NULL, NULL, &wi, &he);
+					int w = (wi*h) / he + 1;
+					x += w;
+				}
+				drawNumber(renderer, number, key, x, y, h, ALIGN_RIGHT);
+			}
+			
+			break;
+		case ALIGN_RIGHT:
+			if (number < 10) {
+				int wi, he;
+				SDL_QueryTexture(numlist[key][number], NULL, NULL, &wi, &he);
+				int w = (wi*h) / he;
+				SDL_Rect r = {x - w, y, w, h };
+				SDL_RenderCopy(renderer, numlist[key][number], NULL, &r);
+			}
+			else {
+				while (number > 0) {
+					int ac = number % 10;
+					number /= 10;
+
+					int wi, he;
+					SDL_QueryTexture(numlist[key][ac], NULL, NULL, &wi, &he);
+					int w = (wi*h) / he;
+					SDL_Rect r = { x - w, y, w, h };
+					SDL_RenderCopy(renderer, numlist[key][ac], NULL, &r);
+					x -= w+1;
+				}
+			}
+			break;
+		case ALIGN_CENTER:
+			if (number < 10) {
+				int wi, he;
+				SDL_QueryTexture(numlist[key][number], NULL, NULL, &wi, &he);
+				int w = (wi*h) / he;
+				SDL_Rect r = { x-w/2, y, w, h };
+				SDL_RenderCopy(renderer, numlist[key][number], NULL, &r);
+			}
+			else {
+				int tnumber = 0;
+				int tw = 0;
+				while (tnumber > 0) {
+					int ac = tnumber % 10;
+					tnumber /= 10;
+					int wi, he;
+					SDL_QueryTexture(numlist[key][ac], NULL, NULL, &wi, &he);
+					int w = (wi*h) / he + 1;
+					tw += w;
+				}
+				drawNumber(renderer, number, key, x + tw/2, y, h, ALIGN_RIGHT);
+			}
+			break;
+		default:
+			break;
+	}
+}
+
 bool SpriteManager::keyExists(const std::string &key) {
 	return list.find(key) != list.end();
 }
 
-bool SpriteManager::fileExists(const char *fname) {
-	SDL_RWops* file = SDL_RWFromFile(fname, "r+b");
-	bool ret = (file != NULL);
-	SDL_RWclose(file);
-	return ret;
+bool SpriteManager::keyNExists(const std::string &key) {
+	return numlist.find(key) != numlist.end();
 }

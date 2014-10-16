@@ -1,5 +1,6 @@
 #pragma once
 #include <SDL.h>
+#include <iostream>
 #include "SpriteManager.h"
 #include "Const.h"
 class MainMenu {

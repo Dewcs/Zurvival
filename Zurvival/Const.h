@@ -12,3 +12,9 @@ enum order_t {
 	ORDER_NONE,
 	ORDER_CHANGE_PAGE,
 };
+
+enum align_t {
+	ALIGN_RIGHT,
+	ALIGN_LEFT,
+	ALIGN_CENTER
+};

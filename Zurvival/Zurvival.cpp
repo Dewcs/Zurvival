@@ -29,6 +29,12 @@ Zurvival::Zurvival() {
 	//SDL_SetWindowIcon(window, surface);
 	// create renderer
 	renderer = SDL_CreateRenderer(window, -1, 0);
+	// load config
+	config = new Config("config.xml");
+	if (!config->isLoaded()) {
+		config->setBool("show_fps", true);
+	}
+	config->save();
 	// init SpriteManager
 	sprMngr = new SpriteManager();
 	load_sprites();
@@ -66,34 +72,37 @@ void Zurvival::update() {
 	int value = 0;
 	switch (page) {
 		case LOADING:
-			page = MAINMENU;
+			order = ORDER_CHANGE_PAGE;
+			value = MAINMENU;
 			break;
 		case MAINMENU:
 			mainMenu->listen(stop,order,value);
-			doOrder(order, value);
 			mainMenu->update(delta);
 			mainMenu->draw();
 			break;
 		case DEATHPIT:
 			deathPit->listen(stop, order, value);
-			doOrder(order, value);
 			deathPit->update(delta);
 			deathPit->draw();
 			break;
 		case OPTIONS:
 			options->listen(stop, order, value);
-			doOrder(order, value);
 			options->update(delta);
 			options->draw();
 			break;
 		case GAME:
 			game->listen(stop, order, value);
-			doOrder(order, value);
 			game->update(delta);
 			game->draw();
 			break;
 		default:
 			break;
+	}
+	doOrder(order, value);
+	if (config->getBool("show_fps")) {
+		int fpsr = 1000;
+		if (delta != 0) fpsr = 1000 / delta;
+		sprMngr->drawNumber(renderer, fpsr, "red_numbers", width, 0, height / 50, ALIGN_RIGHT);
 	}
 	SDL_RenderPresent(renderer);
 	last_time = now;
@@ -107,6 +116,7 @@ void Zurvival::load_sprites() {
 	sprMngr->addText(renderer, "menu_options", "OPTIONS", { 255, 0, 0 }, height / 10, "sprites/Gore Font II.ttf", { width *3 / 8, height *8 / 10, width / 4, height / 10 });
 	sprMngr->addText(renderer, "menu_title", "ZURVIVAL", { 255, 0, 0 }, height / 6, "sprites/Gore Font II.ttf", { width / 20, height / 8, width / 2, height / 6 });
 	sprMngr->addText(renderer, "back", "<- Go Back", { 255, 0, 0 }, height / 8, "sprites/Gore Font II.ttf", { width / 20, height *8 / 10, width / 8, height / 8 });
+	sprMngr->addNumbers(renderer, "red_numbers", { 255, 0, 0 }, height / 50, "sprites/Gore Font II.ttf");
 }
 
 

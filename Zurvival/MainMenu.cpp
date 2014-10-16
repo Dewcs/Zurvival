@@ -42,6 +42,9 @@ void MainMenu::listen(bool &end, order_t &order, int &value) {
 				break;
 			case SDL_MOUSEBUTTONDOWN:
 				if (event.button.button == SDL_BUTTON_LEFT) {
+					int x, y;
+					SDL_GetMouseState(&x, &y);
+					std::cout << "MOUSE" << x << "," << y << std::endl;
 					if (sprMngr->isInsideRect("menu_options", event.button.x, event.button.y)) {
 						order = ORDER_CHANGE_PAGE;
 						value = OPTIONS;

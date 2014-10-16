@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include "Const.h"
 #include <SDL.h>
 #include "SpriteManager.h"
@@ -6,7 +7,7 @@
 #include "Options.h"
 #include "DeathPit.h"
 #include "Game.h"
-
+#include "Config.h"
 
 class Zurvival {
 	private:
@@ -18,6 +19,7 @@ class Zurvival {
 		MainMenu *mainMenu;
 		Options *options;
 		DeathPit *deathPit;
+		Config *config;
 		Game *game;
 		bool stop;
 		page_t page;

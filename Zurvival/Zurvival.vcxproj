@@ -89,18 +89,30 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Chunk.cpp" />
+    <ClCompile Include="Config.cpp" />
+    <ClCompile Include="DeathPit.cpp" />
+    <ClCompile Include="Functions.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="Options.cpp" />
     <ClCompile Include="SpriteManager.cpp" />
+    <ClCompile Include="tinyxml2.cpp" />
     <ClCompile Include="Zurvival.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Chunk.h" />
+    <ClInclude Include="Config.h" />
     <ClInclude Include="Const.h" />
+    <ClInclude Include="DeathPit.h" />
+    <ClInclude Include="Functions.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="Options.h" />
     <ClInclude Include="SpriteManager.h" />
+    <ClInclude Include="tinyxml2.h" />
     <ClInclude Include="Zurvival.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
