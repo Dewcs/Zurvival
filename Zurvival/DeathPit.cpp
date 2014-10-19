@@ -30,6 +30,10 @@ void DeathPit::listen(bool &end, order_t &order, int &value) {
 			case SDLK_ESCAPE:
 				end = true;
 				break;
+			case SDLK_BACKSPACE:
+				order = ORDER_CHANGE_PAGE;
+				value = MAINMENU;
+				break;
 			default:
 				break;
 			}

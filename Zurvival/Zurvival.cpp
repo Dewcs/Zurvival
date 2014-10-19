@@ -28,7 +28,7 @@ Zurvival::Zurvival() {
 	);
 	//SDL_SetWindowIcon(window, surface);
 	// create renderer
-	renderer = SDL_CreateRenderer(window, -1, 0);
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
 	// load config
 	config = new Config("config.xml");
 	if (!config->isLoaded()) {
@@ -117,6 +117,9 @@ void Zurvival::load_sprites() {
 	sprMngr->addText(renderer, "menu_title", "ZURVIVAL", { 255, 0, 0 }, height / 6, "sprites/Gore Font II.ttf", { width / 20, height / 8, width / 2, height / 6 });
 	sprMngr->addText(renderer, "back", "<- Go Back", { 255, 0, 0 }, height / 8, "sprites/Gore Font II.ttf", { width / 20, height *8 / 10, width / 8, height / 8 });
 	sprMngr->addNumbers(renderer, "red_numbers", { 255, 0, 0 }, height / 50, "sprites/Gore Font II.ttf");
+	// game sprites
+	sprMngr->addImage(renderer, "grass", "sprites/grass.jpg", { 0, 0, width, height });
+	sprMngr->addImage(renderer, "soldier", "sprites/soldier.png", { 0, 0, width, height });
 }
 
 
