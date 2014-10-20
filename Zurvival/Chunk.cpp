@@ -67,8 +67,8 @@ bool Chunk::areDiferentChunk(int x, int y){
 void Chunk::drawChunk(double centerX,  double  centerY,int  width,int height ,unsigned *drawn){
 	int h = TILE_FOR_HEIGHT;
 	int w = width / (height / TILE_FOR_HEIGHT);
-	if (rectInsideRect(centerX - (w / 2), centerY - (h / 2), w, h, x * CHUNK_SIZE, y * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE)){
-		SDL_Rect rectToDraw = rectIntersect({ x * CHUNK_SIZE, y * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE }, { centerX - (w / 2), centerY - (h/ 2), w, h });
+	if (rectInsideRect(floor(centerX - (w / 2)), floor(centerY - (h / 2)), w, h, x * CHUNK_SIZE, y * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE)){
+		SDL_Rect rectToDraw = rectIntersect({ x * CHUNK_SIZE, y * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE }, { round(centerX - (w / 2)), round(centerY - (h/ 2)), w, h });
 		int relativeX = rectToDraw.x % CHUNK_SIZE;
 		int relativeY = rectToDraw.y % CHUNK_SIZE;
 		for (int i = 0; i < rectToDraw.w ;i++){
