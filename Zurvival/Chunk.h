@@ -14,8 +14,10 @@ public:
 	Chunk(int,int);
 	Chunk(int, int, Chunk* r, Chunk* b, Chunk* l , Chunk* t);
 	~Chunk();
-	void RandomChunk();
-	void SetChunk(int id,Chunk *chunk);
-	Chunk* GetChunk(int id);
+	void randomChunk();
+	void setChunk(int id,Chunk *chunk);
+	Chunk* getChunk(int id);
+	bool areDiferentChunk(int x, int y);
+	void drawChunk(double centerX, double centerY, int width, int  height);
 };
 

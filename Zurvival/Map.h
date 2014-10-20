@@ -1,11 +1,21 @@
 #pragma once
+#include "Chunk.h"
+#include <math.h>
+#include <SDL.h>
+#include "SpriteManager.h"
+
 class Map
 {
+	Chunk *center;
+	double centerX;
+	double centerY; 
+	int width;
+	int height;
 	//Chunk *center;
 public:
-	Map();
+	Map(int w , int h);
 	~Map();
-	void DrawMap();
-	void SetCenter();
+	void drawMap(SDL_Renderer* renderer, SpriteManager* sprMngr);
+	void setCenter(double, double);
 };
 

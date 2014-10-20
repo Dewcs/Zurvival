@@ -40,21 +40,34 @@ Chunk::Chunk(int x, int y, Chunk *r, Chunk* b, Chunk *l, Chunk *t){
 Chunk::~Chunk(){
 }
 
-void Chunk::RandomChunk(){
+void Chunk::randomChunk(){
 	matrix = new int[CHUNK_SIZE * CHUNK_SIZE];
 	for (int i = 0; i < CHUNK_SIZE * CHUNK_SIZE; i++){
 		matrix[i] = rand() % 10;
 	}
 }
 
-void Chunk::SetChunk(int id, Chunk * chunk){
+void Chunk::setChunk(int id, Chunk * chunk){
 
 }
 
-Chunk* Chunk::GetChunk(int id){
+Chunk* Chunk::getChunk(int id){
 	if (id == 0) return top;
 	else if (id == 1) return right;
 	else if (id == 2) return bot;
 	else if(id == 3) return left;
 	return NULL;
+}
+
+bool Chunk::areDiferentChunk(int x, int y){
+	if (this->x != x || this->y != y){
+		return true;
+	}
+	else return false;
+}
+
+void Chunk::drawChunk(double centerX,double  centerY,int  width,int height){
+	if (rectInsideRect(centerX - (width / 2), centerY - (height / 2), width, height, x * 32, y * 32, CHUNK_SIZE, CHUNK_SIZE)){
+	
+	};
 }
