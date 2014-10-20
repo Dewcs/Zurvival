@@ -13,5 +13,6 @@ class MainCharacter {
 		void setView(int x, int y);
 		void startMove(move_t move);
 		void stopMove(move_t move);
+		void update(unsigned delta);
 };
 

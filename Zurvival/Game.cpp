@@ -17,9 +17,12 @@ Game::~Game()
 
 void Game::update(unsigned delta) {
 	// update main
+	// update view
 	int mx, my;
 	SDL_GetMouseState(&mx, &my);
 	mc->setView(mx - width / 2, my - height / 2);
+	// update position
+	mc->update(delta);
 }
 
 void Game::draw() {

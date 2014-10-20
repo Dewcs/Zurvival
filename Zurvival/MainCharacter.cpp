@@ -30,3 +30,17 @@ void MainCharacter::startMove(move_t move) {
 void MainCharacter::stopMove(move_t move) {
 	this->move &= !(unsigned)move;
 }
+
+void MainCharacter::update(unsigned delta) {
+	int mx = 0;
+	int my = 0;
+	if (move&MOVE_TOP) mx += 1;
+	if (move&MOVE_RIGHT) mx += 1;
+	if (move&MOVE_BOT) mx -= 1;
+	if (move&MOVE_LEFT) mx -= 1;
+	double dist = sqrt(mx*mx + my*my);
+	if (dist != 0) {
+		x += dist*mx*delta / 1000;
+		y += dist*my*delta / 1000;
+	}
+}
