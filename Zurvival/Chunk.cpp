@@ -65,14 +65,20 @@ bool Chunk::areDiferentChunk(int x, int y){
 }
 
 void Chunk::drawChunk(double centerX,  double  centerY,int  width,int height ,unsigned *drawn){
+	int size = height / TILE_FOR_HEIGHT;
 	int h = TILE_FOR_HEIGHT;
 	int w = width / (height / TILE_FOR_HEIGHT);
 	if (rectInsideRect(floor(centerX - (w / 2)), floor(centerY - (h / 2)), w, h, x * CHUNK_SIZE, y * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE)){
 		SDL_Rect rectToDraw = rectIntersect({ x * CHUNK_SIZE, y * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE }, { round(centerX - (w / 2)), round(centerY - (h/ 2)), w, h });
+		int distInPixelsX = (rectToDraw.x - centerX)*size;
+		int distInPixelsY = (rectToDraw.y - centerY)*size;
+		int vertexDrawX = (w / 2) + distInPixelsX;
+		int vertexDrawY = (h / 2) + distInPixelsY;
 		int relativeX = rectToDraw.x % CHUNK_SIZE;
 		int relativeY = rectToDraw.y % CHUNK_SIZE;
 		for (int i = 0; i < rectToDraw.w ;i++){
 			for (int j = 0; j < rectToDraw.h ;j++){
+				SDL_Rect rect = {vertexDrawX +(i*size) ,vertexDrawY +(j*size) , size, size };
 				switch (matrix[(relativeX+i)*CHUNK_SIZE+(relativeY+j)]){
 				case GRASS:
 					break;
