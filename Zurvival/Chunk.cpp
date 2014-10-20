@@ -1,7 +1,5 @@
 #include "Chunk.h"
-#include <iostream>
 
-using namespace std;
 
 Chunk::Chunk(int x, int y){
 	//save x and y cordinates
@@ -66,8 +64,22 @@ bool Chunk::areDiferentChunk(int x, int y){
 	else return false;
 }
 
-void Chunk::drawChunk(double centerX,double  centerY,int  width,int height){
-	if (rectInsideRect(centerX - (width / 2), centerY - (height / 2), width, height, x * 32, y * 32, CHUNK_SIZE, CHUNK_SIZE)){
-	
-	};
+void Chunk::drawChunk(double centerX,  double  centerY,int  width,int height ,unsigned *drawn){
+	int h = TILE_FOR_HEIGHT;
+	int w = width / (height / TILE_FOR_HEIGHT);
+	if (rectInsideRect(centerX - (w / 2), centerY - (h / 2), w, h, x * CHUNK_SIZE, y * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE)){
+		SDL_Rect rectToDraw = rectIntersect({ x * CHUNK_SIZE, y * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE }, { centerX - (w / 2), centerY - (h/ 2), w, h });
+		int relativeX = rectToDraw.x % CHUNK_SIZE;
+		int relativeY = rectToDraw.y % CHUNK_SIZE;
+		for (int i = 0; i < rectToDraw.w ;i++){
+			for (int j = 0; j < rectToDraw.h ;j++){
+				switch (matrix[(relativeX+i)*CHUNK_SIZE+(relativeY+j)]){
+				case GRASS:
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
 }

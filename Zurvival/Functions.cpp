@@ -1,5 +1,6 @@
 #include "Functions.h"
-#include <math.h>
+
+
 
 bool fileExists(const char *fname) {
 	if (FILE *file = fopen(fname, "r")) {
@@ -38,4 +39,15 @@ bool rectInsideRect(int x0, int y0, int w0, int h0, int x1, int y1, int w1, int 
 		valueInRange(y1, y0, y0 + h0);
 
 	return xOverlap && yOverlap;
+}
+
+SDL_Rect rectIntersect(SDL_Rect a, SDL_Rect b){
+	int x = fmax(a.x, b.x);
+	int num1 = fmin(a.x + a.w, b.x + b.w);
+	int y = fmax(a.y, b.y);
+	int num2 = fmin(a.y + a.h, b.y + b.h);
+	if (num1 >= x && num2 >= y)
+		return { x, y, num1 - x, num2 - y };
+	else
+		return {0,0,0,0};
 }

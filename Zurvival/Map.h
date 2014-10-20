@@ -3,6 +3,7 @@
 #include <math.h>
 #include <SDL.h>
 #include "SpriteManager.h"
+#include "Const.h"
 
 class Map
 {

@@ -15,8 +15,14 @@ Map::~Map(){
 
 
 void Map::drawMap(SDL_Renderer* renderer, SpriteManager* sprMngr){
+	unsigned *drawn = new unsigned[DRAWN_CHUNKS];
+	for (int i = 0; i < DRAWN_CHUNKS; i++){
+		drawn[i] = NULL;
+	}
+	center->drawChunk(centerX, centerY, width, height, drawn);
 	SDL_Rect rect = { 0, 0, height / 10, height / 10 };
 	SDL_RenderCopy(renderer, sprMngr->getTexture("grass"), NULL, &rect);
+	delete drawn;
 }
 
 void Map::setCenter(double x, double y){

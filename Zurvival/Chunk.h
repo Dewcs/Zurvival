@@ -1,5 +1,7 @@
 #pragma once
-#define CHUNK_SIZE 32
+#include <iostream>
+#include "Functions.h"
+#include "Const.h"
 
 class Chunk
 {
@@ -18,6 +20,6 @@ public:
 	void setChunk(int id,Chunk *chunk);
 	Chunk* getChunk(int id);
 	bool areDiferentChunk(int x, int y);
-	void drawChunk(double centerX, double centerY, int width, int  height);
+	void drawChunk(double centerX, double centerY, int width, int  height, unsigned *drawn);
 };
 

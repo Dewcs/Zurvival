@@ -25,3 +25,12 @@ enum move_t {
 	MOVE_BOT = 4,
 	MOVE_LEFT = 8
 };
+enum tile_t {
+	GRASS,
+	WATER
+};
+#define DRAWN_CHUNKS 4
+
+#define CHUNK_SIZE 32
+
+#define TILE_FOR_HEIGHT 10
