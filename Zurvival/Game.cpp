@@ -5,7 +5,7 @@ Game::Game(SDL_Renderer* renderer, SpriteManager* sprMngr,int width,int height)
 {
 	this->renderer = renderer;
 	this->sprMngr = sprMngr;
-	mc = new MainCharacter();
+	mc = new MainCharacter(0,0);
 	this->width = width;
 	this->height = height;
 }
