@@ -44,3 +44,7 @@ void MainCharacter::update(unsigned delta) {
 		y += dist*my*delta / 1000;
 	}
 }
+
+double MainCharacter::getAngle() {
+	return rad2deg(viewAngle);
+}

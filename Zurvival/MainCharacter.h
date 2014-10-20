@@ -14,5 +14,6 @@ class MainCharacter {
 		void startMove(move_t move);
 		void stopMove(move_t move);
 		void update(unsigned delta);
+		double getAngle();
 };
 

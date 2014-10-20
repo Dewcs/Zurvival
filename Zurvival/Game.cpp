@@ -29,7 +29,9 @@ void Game::draw() {
 	// draw bg
 	SDL_RenderCopy(renderer, sprMngr->getTexture("grass"), NULL, NULL);
 	// draw main character
-	SDL_RenderCopy(renderer, sprMngr->getTexture("soldier"), NULL, NULL);
+	int mainw = height / 15;
+	SDL_Rect mainCharacter = { width / 2 - mainw / 2, height / 2 - mainw / 2, height / 15, height / 15 };
+	SDL_RenderCopyEx(renderer, sprMngr->getTexture("soldier"), NULL, &mainCharacter, mc->getAngle() - 90, NULL, SDL_FLIP_NONE);
 	// draw npc
 
 	// draw zombies
