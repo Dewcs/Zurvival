@@ -18,3 +18,10 @@ enum align_t {
 	ALIGN_LEFT,
 	ALIGN_CENTER
 };
+
+enum move_t {
+	MOVE_TOP = 1,
+	MOVE_RIGHT = 2,
+	MOVE_BOT = 4,
+	MOVE_LEFT = 8
+};

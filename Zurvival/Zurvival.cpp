@@ -42,7 +42,7 @@ Zurvival::Zurvival() {
 	mainMenu = new MainMenu(renderer,sprMngr);
 	options = new Options(renderer, sprMngr);
 	deathPit = new DeathPit(renderer, sprMngr);
-	game = new Game(renderer, sprMngr);
+	game = new Game(renderer, sprMngr,width,height);
 	// set current page
 	page = LOADING;
 	// prepare for delta
