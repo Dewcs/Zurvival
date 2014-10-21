@@ -28,11 +28,21 @@ void Map::drawMap(SDL_Renderer* renderer, SpriteManager* sprMngr){
 void Map::setCenter(double x, double y){
 	int xfloor = floor(x);
 	int yfloor = floor(y);
-	int positionChunkX = xfloor / 32;
-	int positionChunkY = yfloor / 32;
+	int positionChunkX = xfloor / CHUNK_SIZE;
+	int positionChunkY = yfloor / CHUNK_SIZE;
 	if (center->areDiferentChunk(positionChunkX, positionChunkY)){
 		
 	}
 	centerX = x;
 	centerY = y;
+}
+
+SDL_Rect Map::createWindow(){
+	double sizeOnPixels = height / TILE_FOR_HEIGHT;
+	//creem una variable que sigui la height de tiles
+	double h_tiles = TILE_FOR_HEIGHT;
+	//el mateix per la width de tiles
+	double w_tiles = width / sizeOnPixels;
+	//retornem el rectangle que sera la nostre finestra 
+	return{ floor(centerX - (w_tiles / 2)), floor(centerY - (h_tiles / 2)), ceil(w_tiles), ceil(h_tiles) };
 }

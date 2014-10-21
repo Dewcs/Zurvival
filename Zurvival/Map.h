@@ -18,5 +18,6 @@ public:
 	~Map();
 	void drawMap(SDL_Renderer* renderer, SpriteManager* sprMngr);
 	void setCenter(double, double);
+	SDL_Rect createWindow();
 };
 

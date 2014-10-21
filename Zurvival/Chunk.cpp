@@ -75,8 +75,9 @@ void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, in
 	
 	//comprovem si hem de pintar el chunk
 	if (rectInsideRect(floor(centerX_M - (w_tiles / 2)), floor(centerY_M - (h_tiles / 2)), w_tiles, h_tiles, x * CHUNK_SIZE, y * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE)) {
+
 		//creem un rectancle del tros de chunk que hem de pintar en pantalla
-		SDL_Rect rectToDraw = rectIntersect({ x * CHUNK_SIZE, y * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE }, { round(centerX_M - (w_tiles / 2)), round(centerY_M - (h_tiles/ 2)), w_tiles, h_tiles });
+		SDL_Rect rectToDraw = rectIntersect({ x * CHUNK_SIZE, y * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE }, { floor(centerX_M - (w_tiles / 2)), floor(centerY_M - (h_tiles/ 2)), w_tiles, h_tiles });
 		
 		//crrem dues variables que ens guardin la distancia en pixels des del centre fins al vertex del rectangle que hem de pintar
 		int distInPixelsX = (rectToDraw.x - centerX_M)*sizeOnPixels;
@@ -87,10 +88,11 @@ void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, in
 		int vertexDrawY = (height_pixels / 2) + distInPixelsY;
 		int relativeX = rectToDraw.x % CHUNK_SIZE;
 		int relativeY = rectToDraw.y % CHUNK_SIZE;
-		//std::cout << distInPixelsX << " " << distInPixelsY << " " << vertexDrawX << " " << vertexDrawY << " " << relativeX << " " << relativeY << std::endl;
-		for (int i = 0; i < rectToDraw.w ;i++){
-			for (int j = 0; j < rectToDraw.h ;j++){
-				SDL_Rect rect = { vertexDrawX + (i*sizeOnPixels), vertexDrawY + (j*sizeOnPixels), sizeOnPixels, sizeOnPixels };
+		
+		//fer dos bucles per recorrer el rectangle que hem de pintar 
+		for (int i = 0; i <= rectToDraw.w ;i++){
+			for (int j = 0; j <= rectToDraw.h ;j++){
+				SDL_Rect rect = { vertexDrawX + (i*sizeOnPixels)+1, vertexDrawY + (j*sizeOnPixels)+1, sizeOnPixels-2, sizeOnPixels-2 };
 				switch (matrix[(relativeX+i)*CHUNK_SIZE+(relativeY+j)]){
 				case GRASS:
 					SDL_RenderCopy(renderer, sprMngr->getTexture("grass"), NULL, &rect);
@@ -101,4 +103,9 @@ void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, in
 			}
 		}
 	}
+}
+
+
+void Chunk::spawnNeighbors(){
+
 }
