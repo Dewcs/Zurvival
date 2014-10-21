@@ -8,6 +8,7 @@ Game::Game(SDL_Renderer* renderer, SpriteManager* sprMngr,int width,int height)
 	mc = new MainCharacter(0,0);
 	this->width = width;
 	this->height = height;
+	gmap = new Map(width, height);
 }
 
 
@@ -23,11 +24,13 @@ void Game::update(unsigned delta) {
 	mc->setView(mx - width / 2, my - height / 2);
 	// update position
 	mc->update(delta);
+	// update map
+	gmap->setCenter(mc->getX(), mc->getY());
 }
 
 void Game::draw() {
 	// draw bg
-	SDL_RenderCopy(renderer, sprMngr->getTexture("grass"), NULL, NULL);
+	gmap->drawMap(renderer, sprMngr);
 	// draw main character
 	int mainw = height / 15;
 	SDL_Rect mainCharacter = { width / 2 - mainw / 2, height / 2 - mainw / 2, height / 15, height / 15 };
@@ -69,6 +72,7 @@ void Game::listen(bool &end, order_t &order, int &value) {
 				default:
 					break;
 				}
+				break;
 			case SDL_KEYUP:
 				switch (event.key.keysym.sym) {
 				case SDLK_UP:

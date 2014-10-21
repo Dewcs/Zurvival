@@ -6,7 +6,7 @@ Map::Map(int w,int h){
 	centerY = 0;
 	width = w;
 	height = h;
-	Chunk *center = new Chunk(0,0);
+	center = new Chunk(0,0);
 }
 
 
@@ -19,9 +19,9 @@ void Map::drawMap(SDL_Renderer* renderer, SpriteManager* sprMngr){
 	for (int i = 0; i < DRAWN_CHUNKS; i++){
 		drawn[i] = NULL;
 	}
-	center->drawChunk(centerX, centerY, width, height, drawn);
-	SDL_Rect rect = { 0, 0, height / 10, height / 10 };
-	SDL_RenderCopy(renderer, sprMngr->getTexture("grass"), NULL, &rect);
+	center->drawChunk(centerX, centerY, width, height, drawn, renderer, sprMngr);
+	//SDL_Rect rect = { 0, 0, height / 10, height / 10 };
+	//SDL_RenderCopy(renderer, sprMngr->getTexture("grass"), NULL, &rect);
 	delete drawn;
 }
 

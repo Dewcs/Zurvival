@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <istream>
 #include <math.h>
+#include <algorithm>
 
 bool fileExists(const char *fname);
 

@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include "Const.h"
 #include "Functions.h"
 class MainCharacter {
@@ -15,5 +16,7 @@ class MainCharacter {
 		void stopMove(move_t move);
 		void update(unsigned delta);
 		double getAngle();
+		double getX();
+		double getY();
 };
 
