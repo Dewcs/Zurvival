@@ -4,6 +4,7 @@
 #include "Const.h"
 #include "MainCharacter.h"
 #include "Map.h"
+#include "Functions.h"
 
 class Game
 {

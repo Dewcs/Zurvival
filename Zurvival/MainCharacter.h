@@ -16,6 +16,7 @@ class MainCharacter {
 		void stopMove(move_t move);
 		void update(unsigned delta);
 		double getAngle();
+		double getRawAngle();
 		double getX();
 		double getY();
 };

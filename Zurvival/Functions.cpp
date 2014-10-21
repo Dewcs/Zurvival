@@ -18,6 +18,12 @@ double angleP2P(int x0, int y0, int x1, int y1) {
 	return atan2(dy, dx);
 }
 
+double angleP2P(float x0, float y0, float x1, float y1) {
+	int dx = x1 - x0;
+	int dy = y1 - y0;
+	return atan2(dy, dx);
+}
+
 double rad2deg(double angle) {
 	return angle * 180 / M_PI;
 }
@@ -37,6 +43,28 @@ bool rectInsideRect(int x0, int y0, int w0, int h0, int x1, int y1, int w1, int 
 	bool yOverlap = valueInRange(y0, y1, y1 + h1) || valueInRange(y1, y0, y0 + h0);
 
 	return xOverlap && yOverlap;
+}
+
+float distP2P(float x0, float y0, float x1, float y1) {
+	float dx = x1 - x0;
+	float dy = y1 - y0;
+	return sqrt(dx*dx + dy*dy);
+}
+
+int mapf2i(float val, float min, float max, int rangea, int rangeb) {
+	if (val <= min) return rangea;
+	else if (val >= max) return rangeb;
+	else {
+		return int((val - min) / (max - min) * (rangeb - rangea)) + rangea;
+	}
+}
+
+double angleDist(double a, double b) {
+	return abs(atan2(sin(a - b), cos(b - a)));
+}
+
+bool inAngleRange(double angle, double a, double b) {
+	return abs(angleDist(a, b) - angleDist(angle, a) - angleDist(angle, b))<0.001;
 }
 
 SDL_Rect rectIntersect(SDL_Rect a, SDL_Rect b){
