@@ -56,8 +56,11 @@ void Game::draw() {
 		for (int j = 0; j < lightmap->w; ++j) {
 			double tmpangle = angleP2P(p1x, p1y, float(j), float(i));
 			float dist = distP2P(p1x, p1y, j, i);
-			int ratio = mapf2i(dist, mindist, maxdist, LIGHT_BEGIN_ALPHA, LIGHT_FINAL_ALPHA);
-			if (!inAngleRange(tmpangle, angle0, angle1)) ratio = LIGHT_FINAL_ALPHA;
+			int ratio = LIGHT_FINAL_ALPHA;
+			if (dist < mindist) ratio = LIGHT_BEGIN_ALPHA;
+			else if (dist <= maxdist) {
+				if (inAngleRange(tmpangle, angle0, angle1)) ratio = mapf2i(dist, mindist, maxdist, LIGHT_BEGIN_ALPHA, LIGHT_FINAL_ALPHA);
+			}
 			pixels[(i * lightmap->w) + j] = (ratio<<24) | LIGHT_BASE_COLOR;
 		}
 	}

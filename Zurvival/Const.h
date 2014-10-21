@@ -37,7 +37,7 @@ enum tile_t {
 
 // light definitions
 // establishes a factor of reduction nfor faster computation times
-#define LIGHT_REDUCTION 16
+#define LIGHT_REDUCTION 8
 // begin alpha [0-LIGHT_FINAL_ALPHA]
 #define LIGHT_BEGIN_ALPHA 50
 // final alpha [LIGHT_BEGIN_ALPHA-255]
