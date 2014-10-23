@@ -29,11 +29,18 @@ enum tile_t {
 	GRASS,
 	WATER
 };
+
+// should calculate but atm is fine
 #define DRAWN_CHUNKS 4
 
+// wisth and height of map chunks
 #define CHUNK_SIZE 32
 
+// how many tiles on screen heightwise
 #define TILE_FOR_HEIGHT 10
+
+// max amount of zombies on the map
+#define ZOMBIE_AMOUNT 100
 
 // light definitions
 // establishes a factor of reduction for faster computation times

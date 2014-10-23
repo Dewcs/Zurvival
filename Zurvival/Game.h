@@ -5,6 +5,7 @@
 #include "MainCharacter.h"
 #include "Map.h"
 #include "Functions.h"
+#include "Zombie.h"
 
 class Game
 {
@@ -12,6 +13,8 @@ private:
 	SDL_Renderer* renderer;
 	SpriteManager* sprMngr;
 	MainCharacter* mc;
+	Zombie **zombies;
+	int zcount;
 	Map* gmap;
 	int width, height;
 public:

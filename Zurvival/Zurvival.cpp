@@ -126,5 +126,7 @@ void Zurvival::load_sprites() {
 void Zurvival::doOrder(order_t order, int value) {
 	if (order == ORDER_CHANGE_PAGE) {
 		page = (page_t)value;
+		if (value == GAME) SDL_ShowCursor(0);
+		else SDL_ShowCursor(1);
 	}
 }

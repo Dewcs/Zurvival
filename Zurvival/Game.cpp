@@ -9,6 +9,8 @@ Game::Game(SDL_Renderer* renderer, SpriteManager* sprMngr,int width,int height)
 	this->width = width;
 	this->height = height;
 	gmap = new Map(width, height);
+	zombies = new Zombie*[ZOMBIE_AMOUNT];
+	zcount = 0;
 }
 
 
@@ -26,6 +28,28 @@ void Game::update(unsigned delta) {
 	mc->update(delta);
 	// update map
 	gmap->setCenter(mc->getX(), mc->getY());
+	// update zombies
+	// create new zombies??
+	if (zcount < ZOMBIE_AMOUNT && rand()%100==0) {
+		int x = 10;
+		int y = 10;
+		zombies[zcount] = new Zombie(x, y);
+		++zcount;
+	}
+	// update zombies
+	for (int i = 0; i < zcount; ++i) {
+		zombies[i]->update(delta);
+	}
+	// delete zombies
+	for (int i = zcount - 1; i >= 0; ++i) {
+		if (zombies[i]->isDead()) {
+			delete zombies[i];
+			for (int j = i + 1; j < zcount; ++j) {
+				zombies[j - 1] = zombies[j];
+			}
+			--zcount;
+		}
+	}
 }
 
 void Game::draw() {
@@ -38,7 +62,10 @@ void Game::draw() {
 	// draw npc
 
 	// draw zombies
-
+	for (int i = 0; i < zcount; ++i) {
+		SDL_Rect mainCharacter = { zombies[i]->getX() - mainw / 2, zombies[i]->getY() - mainw / 2, height / 15, height / 15 };
+		SDL_RenderCopyEx(renderer, sprMngr->getTexture("soldier"), NULL, &mainCharacter, zombies[i]->getAngle() - 90, NULL, SDL_FLIP_NONE);
+	}
 	// draw light
 	SDL_Surface *lightmap;
 	int lightWidth = width / LIGHT_REDUCTION;
@@ -57,20 +84,25 @@ void Game::draw() {
 	float p2y = (float)my / LIGHT_REDUCTION;
 	int ldiff = LIGHT_FINAL_ALPHA - LIGHT_BEGIN_ALPHA;
 	for (int i = 0; i < lightmap->h; ++i) {
+		// precalt y diffs
 		float dy1 = (p1y - i)*(p1y - i);
 		float dy2 = (p2y - i)*(p2y - i);
 		for (int j = 0; j < lightmap->w; ++j) {
 			float dx2 = (p2x - j)*(p2x - j);
 			float dist2 = dy2 + dx2;
 			int ratio = LIGHT_FINAL_ALPHA;
+			// if can be close
 			if (dist2 < ldist2) {
 				float dx1 = (p1x - j)*(p1x - j);
 				float dist1 = dy1 + dx1;
+				// we want a cone so lets give less power to the origin and more to the target
 				float dist = dist1 / 8 + dist2;
+				// if is still close
 				if (dist < ldist2) {
 					ratio = LIGHT_BEGIN_ALPHA + int(dist / ldist2 * ldiff);
 				}
 			}
+			// add the pixel
 			pixels[(i * lightmap->w) + j] = (ratio<<24) | LIGHT_BASE_COLOR;
 		}
 	}
@@ -107,6 +139,18 @@ void Game::listen(bool &end, order_t &order, int &value) {
 				case SDLK_LEFT:
 					mc->startMove(MOVE_LEFT);
 					break;
+				case SDLK_w:
+					mc->startMove(MOVE_TOP);
+					break;
+				case SDLK_d:
+					mc->startMove(MOVE_RIGHT);
+					break;
+				case SDLK_s:
+					mc->startMove(MOVE_BOT);
+					break;
+				case SDLK_a:
+					mc->startMove(MOVE_LEFT);
+					break;
 				default:
 					break;
 				}
@@ -123,6 +167,18 @@ void Game::listen(bool &end, order_t &order, int &value) {
 					mc->stopMove(MOVE_BOT);
 					break;
 				case SDLK_LEFT:
+					mc->stopMove(MOVE_LEFT);
+					break;
+				case SDLK_w:
+					mc->stopMove(MOVE_TOP);
+					break;
+				case SDLK_d:
+					mc->stopMove(MOVE_RIGHT);
+					break;
+				case SDLK_s:
+					mc->stopMove(MOVE_BOT);
+					break;
+				case SDLK_a:
 					mc->stopMove(MOVE_LEFT);
 					break;
 				default:

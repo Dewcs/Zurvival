@@ -2,11 +2,9 @@
 #include <iostream>
 #include "Const.h"
 #include "Functions.h"
-class MainCharacter {
+#include "Actor.h"
+class MainCharacter: public Actor{
 	private:
-		double x, y;
-		int vx, vy;
-		double viewAngle;
 		unsigned move;
 	public:
 		MainCharacter(int x,int y);
@@ -15,9 +13,6 @@ class MainCharacter {
 		void startMove(move_t move);
 		void stopMove(move_t move);
 		void update(unsigned delta);
-		double getAngle();
-		double getRawAngle();
-		double getX();
-		double getY();
+		
 };
 

@@ -88,6 +88,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Actor.cpp" />
     <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="DeathPit.cpp" />
@@ -100,9 +101,11 @@
     <ClCompile Include="Options.cpp" />
     <ClCompile Include="SpriteManager.cpp" />
     <ClCompile Include="tinyxml2.cpp" />
+    <ClCompile Include="Zombie.cpp" />
     <ClCompile Include="Zurvival.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Actor.h" />
     <ClInclude Include="Chunk.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="Const.h" />
@@ -115,6 +118,7 @@
     <ClInclude Include="Options.h" />
     <ClInclude Include="SpriteManager.h" />
     <ClInclude Include="tinyxml2.h" />
+    <ClInclude Include="Zombie.h" />
     <ClInclude Include="Zurvival.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -46,18 +46,3 @@ void MainCharacter::update(unsigned delta) {
 	}
 }
 
-double MainCharacter::getAngle() {
-	return rad2deg(viewAngle);
-}
-
-double MainCharacter::getRawAngle() {
-	return viewAngle;
-}
-
-double MainCharacter::getX() {
-	return x;
-}
-
-double MainCharacter::getY() {
-	return y;
-}
