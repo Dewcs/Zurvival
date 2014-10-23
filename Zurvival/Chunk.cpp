@@ -36,6 +36,11 @@ Chunk::Chunk(int x, int y, Chunk *r, Chunk* b, Chunk *l, Chunk *t){
 
 
 Chunk::~Chunk(){
+	delete left;
+	delete top;
+	delete right;
+	delete bot;
+	delete matrix;
 }
 
 void Chunk::randomChunk(){
@@ -102,10 +107,71 @@ void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, in
 				}
 			}
 		}
+		spawnNeighbors(centerX_M, centerY_M, w_tiles, h_tiles, width_pixels, height_pixels, drawn, renderer, sprMngr);
 	}
 }
 
 
-void Chunk::spawnNeighbors(){
+void Chunk::spawnNeighbors(double centerX_M, double  centerY_M, int w_tiles, int  h_tiles, int  width_pixels, int height_pixels, unsigned *drawn, SDL_Renderer* renderer, SpriteManager* sprMngr){
+	for (int i = 0; i < 4; i++){
+		if (i == 0){
+			if (rectInsideRect(floor(centerX_M - (w_tiles / 2)), floor(centerY_M - (h_tiles / 2)), w_tiles, h_tiles, (x-1) * CHUNK_SIZE, y * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE)) {
+				Chunk *le = new Chunk((x - 1), y);
+				le->left = left;
+				left = le->left;
+				le->drawNeighbord((x - 1), y, centerX_M, centerY_M, width_pixels, height_pixels, w_tiles, h_tiles, drawn, renderer, sprMngr );
+			}
+		}else if (i == 1){
+			if (rectInsideRect(floor(centerX_M - (w_tiles / 2)), floor(centerY_M - (h_tiles / 2)), w_tiles, h_tiles, x * CHUNK_SIZE, (y-1) * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE)) {
+				Chunk *to = new Chunk(x ,(y - 1));
+				to->top = top;
+				top = to->top;
+				to->drawNeighbord(x, (y - 1), centerX_M, centerY_M, width_pixels, height_pixels, w_tiles, h_tiles, drawn, renderer, sprMngr);
+			}
+		}else if (i == 2){
+			if (rectInsideRect(floor(centerX_M - (w_tiles / 2)), floor(centerY_M - (h_tiles / 2)), w_tiles, h_tiles, (x+1) * CHUNK_SIZE, y * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE)) {
+				Chunk *ri = new Chunk((x + 1), y);
+				ri->right = right;
+				right = ri->right;
+				ri->drawNeighbord((x + 1), y, centerX_M, centerY_M, width_pixels, height_pixels, w_tiles, h_tiles, drawn, renderer, sprMngr);
+			}
+		}else{
+			if (rectInsideRect(floor(centerX_M - (w_tiles / 2)), floor(centerY_M - (h_tiles / 2)), w_tiles, h_tiles, x * CHUNK_SIZE, (y+1) * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE)) {
+				Chunk *bo = new Chunk(x, (y + 1));
+				bo->bot = bot;
+				bot = bo->bot;
+				bo->drawNeighbord(x, (y + 1), centerX_M, centerY_M, width_pixels, height_pixels, w_tiles, h_tiles, drawn, renderer, sprMngr);
+			}
+		}
+	}
+}
 
+void Chunk::drawNeighbord(int xN, int yN, double centerX_M, double  centerY_M, int  width_pixels, int height_pixels, int w_tiles, int  h_tiles, unsigned *drawn, SDL_Renderer* renderer, SpriteManager* sprMngr){
+	int sizeOnPixels = height_pixels / TILE_FOR_HEIGHT;
+
+
+	SDL_Rect rectToDraw = rectIntersect({ xN * CHUNK_SIZE, yN * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE }, { floor(centerX_M - (w_tiles / 2)), floor(centerY_M - (h_tiles / 2)), w_tiles, h_tiles });
+	//crrem dues variables que ens guardin la distancia en pixels des del centre fins al vertex del rectangle que hem de pintar
+	int distInPixelsX = (rectToDraw.x - centerX_M)*sizeOnPixels;
+	int distInPixelsY = (rectToDraw.y - centerY_M)*sizeOnPixels;
+
+	//creem dues variables que siguin la posicio en pixels del nostre vertex
+	int vertexDrawX = (width_pixels / 2) + distInPixelsX;
+	int vertexDrawY = (height_pixels / 2) + distInPixelsY;
+	int relativeX = rectToDraw.x % CHUNK_SIZE;
+	int relativeY = rectToDraw.y % CHUNK_SIZE;
+
+	//fer dos bucles per recorrer el rectangle que hem de pintar 
+	for (int i = 0; i <= rectToDraw.w; i++){
+		for (int j = 0; j <= rectToDraw.h; j++){
+			SDL_Rect rect = { vertexDrawX + (i*sizeOnPixels) + 1, vertexDrawY + (j*sizeOnPixels) + 1, sizeOnPixels - 2, sizeOnPixels - 2 };
+			switch (matrix[(relativeX + i)*CHUNK_SIZE + (relativeY + j)]){
+			case GRASS:
+				SDL_RenderCopy(renderer, sprMngr->getTexture("grass"), NULL, &rect);
+				break;
+			default:
+				break;
+			}
+		}
+	}
 }
