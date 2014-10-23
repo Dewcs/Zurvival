@@ -45,21 +45,31 @@ void Game::draw() {
 	int lightHeight = height / LIGHT_REDUCTION;
 	lightmap = SDL_CreateRGBSurface(0, lightWidth, lightHeight, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
 	Uint32 *pixels = (Uint32 *)lightmap->pixels;
+	// player point
 	float p1x = lightWidth / 2.0;
 	float p1y = lightHeight / 2.0;
-	float mindist = p1y * LIGHT_VIEW_MIN_RANGE;
-	float maxdist = p1y * LIGHT_VIEW_MAX_RANGE;
-	double angle = mc->getRawAngle();
-	double angle0 = angle - LIGHT_VIEW_ANGLE / 2;
-	double angle1 = angle + LIGHT_VIEW_ANGLE / 2;
+	// center of light point (mouse)
+	int mx, my;
+	SDL_GetMouseState(&mx, &my);
+	float ldist = p1y*LIGHT_DISTANCE;
+	float ldist2 = ldist*ldist;
+	float p2x = (float)mx / LIGHT_REDUCTION;
+	float p2y = (float)my / LIGHT_REDUCTION;
+	int ldiff = LIGHT_FINAL_ALPHA - LIGHT_BEGIN_ALPHA;
 	for (int i = 0; i < lightmap->h; ++i) {
+		float dy1 = (p1y - i)*(p1y - i);
+		float dy2 = (p2y - i)*(p2y - i);
 		for (int j = 0; j < lightmap->w; ++j) {
-			double tmpangle = angleP2P(p1x, p1y, float(j), float(i));
-			float dist = distP2P(p1x, p1y, j, i);
+			float dx2 = (p2x - j)*(p2x - j);
+			float dist2 = dy2 + dx2;
 			int ratio = LIGHT_FINAL_ALPHA;
-			if (dist < mindist) ratio = LIGHT_BEGIN_ALPHA;
-			else if (dist <= maxdist) {
-				if (inAngleRange(tmpangle, angle0, angle1)) ratio = mapf2i(dist, mindist, maxdist, LIGHT_BEGIN_ALPHA, LIGHT_FINAL_ALPHA);
+			if (dist2 < ldist2) {
+				float dx1 = (p1x - j)*(p1x - j);
+				float dist1 = dy1 + dx1;
+				float dist = dist1 / 8 + dist2;
+				if (dist < ldist2) {
+					ratio = LIGHT_BEGIN_ALPHA + int(dist / ldist2 * ldiff);
+				}
 			}
 			pixels[(i * lightmap->w) + j] = (ratio<<24) | LIGHT_BASE_COLOR;
 		}
