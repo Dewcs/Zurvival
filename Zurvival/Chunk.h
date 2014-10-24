@@ -24,7 +24,6 @@ class Chunk {
 		Chunk* getChunk(int id);
 		bool areDiferentChunk(int x, int y);
 		void drawChunk(double centerX_M, double  centerY_M, int  width_pixels, int height_pixels, unsigned *drawn, SDL_Renderer* renderer, SpriteManager* sprMngr);
-		void spawnNeighbors(double centerX_M, double  centerY_M, int  w, int h_tiles, int  width_tiles, int height_pixels, unsigned *drawn, SDL_Renderer* renderer, SpriteManager* sprMngr);
-		void drawNeighbord(int xN, int yN, double centerX_M, double  centerY_M, int  width_pixels, int height_pixels, int w_tiles, int  h_tiles, unsigned *drawn, SDL_Renderer* renderer, SpriteManager* sprMngr);
+		void spawnNeighbors(SDL_Rect window);
 };
 

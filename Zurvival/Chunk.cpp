@@ -51,7 +51,10 @@ void Chunk::randomChunk(){
 }
 
 void Chunk::setChunk(int id, Chunk * chunk){
-
+	if (id == 0) top=chunk;
+	else if (id == 1) right = chunk;
+	else if (id == 2) bot = chunk;
+	else if (id == 3) left = chunk;
 }
 
 Chunk* Chunk::getChunk(int id){
@@ -95,27 +98,39 @@ void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, in
 		int relativeY = rectToDraw.y % CHUNK_SIZE;
 		
 		//fer dos bucles per recorrer el rectangle que hem de pintar 
-		for (int i = 0; i <= rectToDraw.w ;i++){
-			for (int j = 0; j <= rectToDraw.h ;j++){
-				SDL_Rect rect = { vertexDrawX + (i*sizeOnPixels)+1, vertexDrawY + (j*sizeOnPixels)+1, sizeOnPixels-2, sizeOnPixels-2 };
-				switch (matrix[(relativeX+i)*CHUNK_SIZE+(relativeY+j)]){
-				case GRASS:
-					SDL_RenderCopy(renderer, sprMngr->getTexture("grass"), NULL, &rect);
-					break;
-				default:
-					break;
+		for (int i = 0; i <= rectToDraw.w; i++){
+			for (int j = 0; j <= rectToDraw.h;j++){
+				if (relativeX + i >= 0 && relativeX + i < CHUNK_SIZE && relativeY + j >= 0 && relativeY + j < CHUNK_SIZE) {
+					SDL_Rect rect = { vertexDrawX + (i*sizeOnPixels) + 1, vertexDrawY + (j*sizeOnPixels) + 1, sizeOnPixels - 2, sizeOnPixels - 2 };
+					switch (matrix[(relativeX + i)*CHUNK_SIZE + (relativeY + j)]){
+					case GRASS:
+						SDL_RenderCopy(renderer, sprMngr->getTexture("grass"), NULL, &rect);
+						break;
+					default:
+						break;
+					}
 				}
 			}
 		}
-		spawnNeighbors(centerX_M, centerY_M, w_tiles, h_tiles, width_pixels, height_pixels, drawn, renderer, sprMngr);
+		//spawnNeighbors(centerX_M, centerY_M, w_tiles, h_tiles, width_pixels, height_pixels, drawn, renderer, sprMngr);
 	}
 }
 
 
-void Chunk::spawnNeighbors(double centerX_M, double  centerY_M, int w_tiles, int  h_tiles, int  width_pixels, int height_pixels, unsigned *drawn, SDL_Renderer* renderer, SpriteManager* sprMngr){
+void Chunk::spawnNeighbors(SDL_Rect window) {
+	int xval[4] = {1,0,-1,0};
+	int yval[4] = { 0, 1, 0, -1 };
 	for (int i = 0; i < 4; i++){
-		if (i == 0){
-			if (rectInsideRect(floor(centerX_M - (w_tiles / 2)), floor(centerY_M - (h_tiles / 2)), w_tiles, h_tiles, (x-1) * CHUNK_SIZE, y * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE)) {
+		if (rectInsideRect(window.x, window.y, window.w, window.h, (x + xval[i]) * CHUNK_SIZE, (y + yval[i]) * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE)) {
+			if (getChunk(i) == NULL) {
+				setChunk(i, new Chunk(x + xval[i], y + yval[i]));
+				getChunk(i)->setChunk((i + 2) % 4, this);
+			} 
+			getChunk(i)->spawnNeighbors(window);
+		}
+	}
+		/*if (i == 0){
+			if () {
 				Chunk *le = new Chunk((x - 1), y);
 				le->left = right;
 				right = le->left;
@@ -147,10 +162,10 @@ void Chunk::spawnNeighbors(double centerX_M, double  centerY_M, int w_tiles, int
 				//bo->spawnNeighbors(centerX_M, centerY_M, w_tiles, h_tiles, width_pixels, height_pixels, drawn, renderer, sprMngr);
 			}
 		}
-	}
+	}*/
 }
 
-void Chunk::drawNeighbord(int xN, int yN, double centerX_M, double  centerY_M, int  width_pixels, int height_pixels, int w_tiles, int  h_tiles, unsigned *drawn, SDL_Renderer* renderer, SpriteManager* sprMngr){
+/*void Chunk::drawNeighbord(int xN, int yN, double centerX_M, double  centerY_M, int  width_pixels, int height_pixels, int w_tiles, int  h_tiles, unsigned *drawn, SDL_Renderer* renderer, SpriteManager* sprMngr){
 	int sizeOnPixels = height_pixels / TILE_FOR_HEIGHT;
 
 
@@ -178,4 +193,4 @@ void Chunk::drawNeighbord(int xN, int yN, double centerX_M, double  centerY_M, i
 			}
 		}
 	}
-}
+}*/

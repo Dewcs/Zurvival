@@ -35,6 +35,8 @@ void Map::setCenter(double x, double y){
 	}
 	centerX = x;
 	centerY = y;
+	// check neighboors
+	center->spawnNeighbors(createWindow());
 }
 
 SDL_Rect Map::createWindow(){
