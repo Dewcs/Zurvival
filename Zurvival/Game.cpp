@@ -31,8 +31,8 @@ void Game::update(unsigned delta) {
 	// update zombies
 	// create new zombies??
 	if (zcount < ZOMBIE_AMOUNT && rand()%100==0) {
-		int x = 10;
-		int y = 10;
+		int x = 0;
+		int y = 1;
 		zombies[zcount] = new Zombie(x, y);
 		++zcount;
 	}
@@ -62,11 +62,13 @@ void Game::draw() {
 	// draw npc
 
 	// draw zombies
+	int zwidth = height / 15;
+	SDL_Rect screen = { 0, 0, width, height };
 	for (int i = 0; i < zcount; ++i) {
 		int x, y;
 		gmap->getScreenPosition(zombies[i]->getX(), zombies[i]->getY(), x, y);
-		SDL_Rect mainCharacter = { x - mainw / 2, y - mainw / 2, height / 15, height / 15 };
-		SDL_RenderCopyEx(renderer, sprMngr->getTexture("zombie"), NULL, &mainCharacter, zombies[i]->getAngle(), NULL, SDL_FLIP_NONE);
+		SDL_Rect zombieRect = { x - zwidth / 2, y - zwidth / 2, zwidth, zwidth };
+		if (rectInsideRect(screen,zombieRect)) SDL_RenderCopyEx(renderer, sprMngr->getTexture("zombie"), NULL, &zombieRect, zombies[i]->getAngle(), NULL, SDL_FLIP_NONE);
 	}
 	// draw light
 	SDL_Surface *lightmap;

@@ -1,7 +1,7 @@
 #include "Chunk.h"
 
 
-Chunk::Chunk(int x, int y){
+Chunk::Chunk(int x, int y, std::set<int>* exists){
 	//save x and y cordinates
 	this->x = x;
 	this->y = y;
@@ -16,9 +16,15 @@ Chunk::Chunk(int x, int y){
 	left = NULL;
 	top = NULL;
 
+	isCalled = false;
+
+	this->exists = exists;
+	std::cout << exists->count(chunkUID(x, y)) << " " << chunkUID(x, y) << std::endl;
+	this->exists->insert(chunkUID(x, y));
+	
 }
 
-Chunk::Chunk(int x, int y, Chunk *r, Chunk* b, Chunk *l, Chunk *t){
+Chunk::Chunk(int x, int y, std::set<int>* exists, Chunk *r, Chunk* b, Chunk *l, Chunk *t){
 	//save x and y cordinates
 	this->x = x;
 	this->y = y;
@@ -32,10 +38,17 @@ Chunk::Chunk(int x, int y, Chunk *r, Chunk* b, Chunk *l, Chunk *t){
 	bot = b;
 	left = l;
 	top = t;
+
+	isCalled = false;
+
+	this->exists = exists;
+	std::cout << exists->count(chunkUID(x, y)) << " " << chunkUID(x, y) << std::endl;
+	this->exists->insert(chunkUID(x, y));
 }
 
 
 Chunk::~Chunk(){
+	// fatal!!!!!!!
 	delete left;
 	delete top;
 	delete right;
@@ -118,79 +131,33 @@ void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, in
 
 
 void Chunk::spawnNeighbors(SDL_Rect window) {
-	int xval[4] = { 0, 1, 0, -1 };
-	int yval[4] = { 1, 0, -1, 0 };
-	for (int i = 0; i < 4; i++){
-		if (rectInsideRect(window.x, window.y, window.w, window.h, (x + xval[i]) * CHUNK_SIZE, (y + yval[i]) * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE)) {
-			if (getChunk(i) == NULL) {
-				setChunk(i, new Chunk(x + xval[i], y + yval[i]));
-				getChunk(i)->setChunk((i + 2) % 4, this);
-			} 
-			getChunk(i)->spawnNeighbors(window);
+	if (!isCalled) {
+		isCalled = true;
+		for (int i = 0; i < 4; i++){
+			if (rectInsideRect(window.x, window.y, window.w, window.h, (x + xval[i]) * CHUNK_SIZE, (y + yval[i]) * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE)) {
+				if (exists->count(chunkUID(x + xval[i], y + yval[i])) != 0) {
+					// search for it
+				}
+				else {
+					Chunk * nei = getChunk(i);
+					if (nei == NULL) {
+						nei = new Chunk(x + xval[i], y + yval[i],exists);
+						setChunk(i, nei);
+						nei->setChunk((i + 2) % 4, this);
+					}
+					nei->spawnNeighbors(window);
+				}
+			}
 		}
 	}
-		/*if (i == 0){
-			if () {
-				Chunk *le = new Chunk((x - 1), y);
-				le->left = right;
-				right = le->left;
-				le->drawNeighbord((x - 1), y, centerX_M, centerY_M, width_pixels, height_pixels, w_tiles, h_tiles, drawn, renderer, sprMngr );
-				//le->spawnNeighbors(centerX_M, centerY_M, w_tiles, h_tiles, width_pixels, height_pixels, drawn, renderer, sprMngr);
-			}
-		}else if (i == 1){
-			if (rectInsideRect(floor(centerX_M - (w_tiles / 2)), floor(centerY_M - (h_tiles / 2)), w_tiles, h_tiles, x * CHUNK_SIZE, (y-1) * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE)) {
-				Chunk *to = new Chunk(x ,(y - 1));
-				to->top = bot;
-				bot = to->top;
-				to->drawNeighbord(x, (y - 1), centerX_M, centerY_M, width_pixels, height_pixels, w_tiles, h_tiles, drawn, renderer, sprMngr);
-				//to->spawnNeighbors(centerX_M, centerY_M, w_tiles, h_tiles, width_pixels, height_pixels, drawn, renderer, sprMngr);
-			}
-		}else if (i == 2){
-			if (rectInsideRect(floor(centerX_M - (w_tiles / 2)), floor(centerY_M - (h_tiles / 2)), w_tiles, h_tiles, (x+1) * CHUNK_SIZE, y * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE)) {
-				Chunk *ri = new Chunk((x + 1), y);
-				ri->right = left;
-				left = ri->right;
-				ri->drawNeighbord((x + 1), y, centerX_M, centerY_M, width_pixels, height_pixels, w_tiles, h_tiles, drawn, renderer, sprMngr);
-				//ri->spawnNeighbors(centerX_M, centerY_M, w_tiles, h_tiles, width_pixels, height_pixels, drawn, renderer, sprMngr);
-			}
-		}else{
-			if (rectInsideRect(floor(centerX_M - (w_tiles / 2)), floor(centerY_M - (h_tiles / 2)), w_tiles, h_tiles, x * CHUNK_SIZE, (y+1) * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE)) {
-				Chunk *bo = new Chunk(x, (y + 1));
-				bo->bot = top;
-				top = bo->bot;
-				bo->drawNeighbord(x, (y + 1), centerX_M, centerY_M, width_pixels, height_pixels, w_tiles, h_tiles, drawn, renderer, sprMngr);
-				//bo->spawnNeighbors(centerX_M, centerY_M, w_tiles, h_tiles, width_pixels, height_pixels, drawn, renderer, sprMngr);
-			}
-		}
-	}*/
 }
 
-/*void Chunk::drawNeighbord(int xN, int yN, double centerX_M, double  centerY_M, int  width_pixels, int height_pixels, int w_tiles, int  h_tiles, unsigned *drawn, SDL_Renderer* renderer, SpriteManager* sprMngr){
-	int sizeOnPixels = height_pixels / TILE_FOR_HEIGHT;
-
-
-	SDL_Rect rectToDraw = rectIntersect({ xN * CHUNK_SIZE, yN * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE }, { floor(centerX_M - (w_tiles / 2)), floor(centerY_M - (h_tiles / 2)), w_tiles, h_tiles });
-	//crrem dues variables que ens guardin la distancia en pixels des del centre fins al vertex del rectangle que hem de pintar
-	int distInPixelsX = (rectToDraw.x - centerX_M)*sizeOnPixels;
-	int distInPixelsY = (rectToDraw.y - centerY_M)*sizeOnPixels;
-
-	//creem dues variables que siguin la posicio en pixels del nostre vertex
-	int vertexDrawX = (width_pixels / 2) + distInPixelsX;
-	int vertexDrawY = (height_pixels / 2) + distInPixelsY;
-	int relativeX = rectToDraw.x % CHUNK_SIZE;
-	int relativeY = rectToDraw.y % CHUNK_SIZE;
-
-	//fer dos bucles per recorrer el rectangle que hem de pintar 
-	for (int i = 0; i <= rectToDraw.w; i++){
-		for (int j = 0; j <= rectToDraw.h; j++){
-			SDL_Rect rect = { vertexDrawX + (i*sizeOnPixels) + 1, vertexDrawY + (j*sizeOnPixels) + 1, sizeOnPixels - 2, sizeOnPixels - 2 };
-			switch (matrix[(relativeX + i)*CHUNK_SIZE + (relativeY + j)]){
-			case GRASS:
-				SDL_RenderCopy(renderer, sprMngr->getTexture("grass"), NULL, &rect);
-				break;
-			default:
-				break;
-			}
+void Chunk::resetCalls() {
+	if (isCalled) {
+		isCalled = false;
+		for (int i = 0; i < 4; i++){
+			Chunk * nei = getChunk(i);
+			if (nei!=NULL) nei->resetCalls();
 		}
 	}
-}*/
+}

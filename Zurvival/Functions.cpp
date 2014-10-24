@@ -45,6 +45,14 @@ bool rectInsideRect(int x0, int y0, int w0, int h0, int x1, int y1, int w1, int 
 	return xOverlap && yOverlap;
 }
 
+bool rectInsideRect(SDL_Rect a, SDL_Rect b) {
+	bool xOverlap = valueInRange(a.x, b.x, b.x + b.w) || valueInRange(b.x, a.x, a.x + a.w);
+
+	bool yOverlap = valueInRange(a.y, b.y, b.y + b.h) || valueInRange(b.y, a.y, a.y + a.h);
+
+	return xOverlap && yOverlap;
+}
+
 float distP2P(float x0, float y0, float x1, float y1) {
 	float dx = x1 - x0;
 	float dy = y1 - y0;
@@ -80,4 +88,8 @@ SDL_Rect rectIntersect(SDL_Rect a, SDL_Rect b){
 		SDL_Rect ret = { 0, 0, 0, 0 };
 		return ret;
 	}
+}
+
+unsigned chunkUID(int x, int y) {
+	return (x + MAX_CHUNK >> 1) * MAX_CHUNK + (y + MAX_CHUNK >> 1);
 }

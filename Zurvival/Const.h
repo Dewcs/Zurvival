@@ -30,8 +30,16 @@ enum tile_t {
 	WATER
 };
 
+// x and y offsets for chunk neighbors
+const int xval[] = { 0, 1, 0, -1 };
+const int yval[] = { 1, 0, -1, 0 };
+
 // should calculate but atm is fine
 #define DRAWN_CHUNKS 4
+
+// how many chunks can have the map in x and y coordinates power of 2 please
+
+#define MAX_CHUNK 256
 
 // wisth and height of map chunks
 #define CHUNK_SIZE 32

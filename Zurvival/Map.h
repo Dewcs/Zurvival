@@ -2,6 +2,7 @@
 #include "Chunk.h"
 #include <math.h>
 #include <SDL.h>
+#include <set>
 #include "SpriteManager.h"
 #include "Const.h"
 
@@ -12,7 +13,7 @@ class Map
 	double centerY; 
 	int width;
 	int height;
-	//Chunk *center;
+	std::set<int> exists;
 public:
 	Map(int w , int h);
 	~Map();

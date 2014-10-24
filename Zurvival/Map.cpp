@@ -6,7 +6,7 @@ Map::Map(int w,int h){
 	centerY = 0;
 	width = w;
 	height = h;
-	center = new Chunk(0,0);
+	center = new Chunk(0, 0, &exists);
 }
 
 
@@ -37,6 +37,7 @@ void Map::setCenter(double x, double y){
 	centerY = y;
 	// check neighboors
 	center->spawnNeighbors(createWindow());
+	center->resetCalls();
 }
 
 SDL_Rect Map::createWindow(){
@@ -46,13 +47,11 @@ SDL_Rect Map::createWindow(){
 	//el mateix per la width de tiles
 	double w_tiles = width / sizeOnPixels;
 	//retornem el rectangle que sera la nostre finestra 
-	return{ floor(centerX - (w_tiles / 2)), floor(centerY - (h_tiles / 2)), ceil(w_tiles), ceil(h_tiles) };
+	return { floor(centerX - (w_tiles / 2)), floor(centerY - (h_tiles / 2)), ceil(w_tiles), ceil(h_tiles) };
 }
 
 void Map::getScreenPosition(double x, double y, int &sx, int &sy) {
-	x -= centerX;
-	y -= centerY;
-	double scale = (double)TILE_FOR_HEIGHT / height;
-	sx = round(width / 2 + x * scale);
-	sy = round(height / 2 + y * scale);
+	double scale = (double)height/TILE_FOR_HEIGHT;
+	sx = round(width / 2 + (x-centerX) * scale);
+	sy = round(height / 2 + (y-centerY) * scale);
 }
