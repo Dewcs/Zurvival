@@ -117,30 +117,34 @@ void Chunk::spawnNeighbors(double centerX_M, double  centerY_M, int w_tiles, int
 		if (i == 0){
 			if (rectInsideRect(floor(centerX_M - (w_tiles / 2)), floor(centerY_M - (h_tiles / 2)), w_tiles, h_tiles, (x-1) * CHUNK_SIZE, y * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE)) {
 				Chunk *le = new Chunk((x - 1), y);
-				le->left = left;
-				left = le->left;
+				le->left = right;
+				right = le->left;
 				le->drawNeighbord((x - 1), y, centerX_M, centerY_M, width_pixels, height_pixels, w_tiles, h_tiles, drawn, renderer, sprMngr );
+				//le->spawnNeighbors(centerX_M, centerY_M, w_tiles, h_tiles, width_pixels, height_pixels, drawn, renderer, sprMngr);
 			}
 		}else if (i == 1){
 			if (rectInsideRect(floor(centerX_M - (w_tiles / 2)), floor(centerY_M - (h_tiles / 2)), w_tiles, h_tiles, x * CHUNK_SIZE, (y-1) * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE)) {
 				Chunk *to = new Chunk(x ,(y - 1));
-				to->top = top;
-				top = to->top;
+				to->top = bot;
+				bot = to->top;
 				to->drawNeighbord(x, (y - 1), centerX_M, centerY_M, width_pixels, height_pixels, w_tiles, h_tiles, drawn, renderer, sprMngr);
+				//to->spawnNeighbors(centerX_M, centerY_M, w_tiles, h_tiles, width_pixels, height_pixels, drawn, renderer, sprMngr);
 			}
 		}else if (i == 2){
 			if (rectInsideRect(floor(centerX_M - (w_tiles / 2)), floor(centerY_M - (h_tiles / 2)), w_tiles, h_tiles, (x+1) * CHUNK_SIZE, y * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE)) {
 				Chunk *ri = new Chunk((x + 1), y);
-				ri->right = right;
-				right = ri->right;
+				ri->right = left;
+				left = ri->right;
 				ri->drawNeighbord((x + 1), y, centerX_M, centerY_M, width_pixels, height_pixels, w_tiles, h_tiles, drawn, renderer, sprMngr);
+				//ri->spawnNeighbors(centerX_M, centerY_M, w_tiles, h_tiles, width_pixels, height_pixels, drawn, renderer, sprMngr);
 			}
 		}else{
 			if (rectInsideRect(floor(centerX_M - (w_tiles / 2)), floor(centerY_M - (h_tiles / 2)), w_tiles, h_tiles, x * CHUNK_SIZE, (y+1) * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE)) {
 				Chunk *bo = new Chunk(x, (y + 1));
-				bo->bot = bot;
-				bot = bo->bot;
+				bo->bot = top;
+				top = bo->bot;
 				bo->drawNeighbord(x, (y + 1), centerX_M, centerY_M, width_pixels, height_pixels, w_tiles, h_tiles, drawn, renderer, sprMngr);
+				//bo->spawnNeighbors(centerX_M, centerY_M, w_tiles, h_tiles, width_pixels, height_pixels, drawn, renderer, sprMngr);
 			}
 		}
 	}
