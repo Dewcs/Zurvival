@@ -48,3 +48,11 @@ SDL_Rect Map::createWindow(){
 	//retornem el rectangle que sera la nostre finestra 
 	return{ floor(centerX - (w_tiles / 2)), floor(centerY - (h_tiles / 2)), ceil(w_tiles), ceil(h_tiles) };
 }
+
+void Map::getScreenPosition(double x, double y, int &sx, int &sy) {
+	x -= centerX;
+	y -= centerY;
+	double scale = (double)TILE_FOR_HEIGHT / height;
+	sx = round(width / 2 + x * scale);
+	sy = round(height / 2 + y * scale);
+}

@@ -63,8 +63,10 @@ void Game::draw() {
 
 	// draw zombies
 	for (int i = 0; i < zcount; ++i) {
-		SDL_Rect mainCharacter = { zombies[i]->getX() - mainw / 2, zombies[i]->getY() - mainw / 2, height / 15, height / 15 };
-		SDL_RenderCopyEx(renderer, sprMngr->getTexture("soldier"), NULL, &mainCharacter, zombies[i]->getAngle() - 90, NULL, SDL_FLIP_NONE);
+		int x, y;
+		gmap->getScreenPosition(zombies[i]->getX(), zombies[i]->getY(), x, y);
+		SDL_Rect mainCharacter = { x - mainw / 2, y - mainw / 2, height / 15, height / 15 };
+		SDL_RenderCopyEx(renderer, sprMngr->getTexture("zombie"), NULL, &mainCharacter, zombies[i]->getAngle(), NULL, SDL_FLIP_NONE);
 	}
 	// draw light
 	SDL_Surface *lightmap;

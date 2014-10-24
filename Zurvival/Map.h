@@ -19,5 +19,6 @@ public:
 	void drawMap(SDL_Renderer* renderer, SpriteManager* sprMngr);
 	void setCenter(double, double);
 	SDL_Rect createWindow();
+	void getScreenPosition(double x, double y, int &sx, int &sy);
 };
 

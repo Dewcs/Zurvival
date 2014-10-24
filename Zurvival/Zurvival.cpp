@@ -120,6 +120,7 @@ void Zurvival::load_sprites() {
 	// game sprites
 	sprMngr->addImage(renderer, "grass", "sprites/grass.jpg", { 0, 0, width, height });
 	sprMngr->addImage(renderer, "soldier", "sprites/soldier.png", { 0, 0, width, height });
+	sprMngr->addImage(renderer, "zombie", "sprites/zombie.png", { 0, 0, width, height });
 }
 
 
