@@ -13,7 +13,7 @@ class Map
 	double centerY; 
 	int width;
 	int height;
-	std::set<int> exists;
+	std::set<unsigned> exists;
 public:
 	Map(int w , int h);
 	~Map();

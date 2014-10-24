@@ -1,7 +1,7 @@
 #include "Chunk.h"
 
 
-Chunk::Chunk(int x, int y, std::set<int>* exists){
+Chunk::Chunk(int x, int y, std::set<unsigned>* exists){
 	//save x and y cordinates
 	this->x = x;
 	this->y = y;
@@ -24,7 +24,7 @@ Chunk::Chunk(int x, int y, std::set<int>* exists){
 	
 }
 
-Chunk::Chunk(int x, int y, std::set<int>* exists, Chunk *r, Chunk* b, Chunk *l, Chunk *t){
+Chunk::Chunk(int x, int y, std::set<unsigned>* exists, Chunk *r, Chunk* b, Chunk *l, Chunk *t){
 	//save x and y cordinates
 	this->x = x;
 	this->y = y;
@@ -134,19 +134,24 @@ void Chunk::spawnNeighbors(SDL_Rect window) {
 	if (!isCalled) {
 		isCalled = true;
 		for (int i = 0; i < 4; i++){
+			// is inside the screen window?
 			if (rectInsideRect(window.x, window.y, window.w, window.h, (x + xval[i]) * CHUNK_SIZE, (y + yval[i]) * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE)) {
-				if (exists->count(chunkUID(x + xval[i], y + yval[i])) != 0) {
-					// search for it
-				}
-				else {
-					Chunk * nei = getChunk(i);
-					if (nei == NULL) {
-						nei = new Chunk(x + xval[i], y + yval[i],exists);
-						setChunk(i, nei);
-						nei->setChunk((i + 2) % 4, this);
+				Chunk * nei = getChunk(i);
+				if (nei == NULL) {
+					// does the chunk exists?
+					if (exists->count(chunkUID(x + xval[i], y + yval[i])) != 0) {
+						// search for it
+						nei = search(x + xval[i], y + yval[i]);
 					}
-					nei->spawnNeighbors(window);
+					else {
+						// create id
+						nei = new Chunk(x + xval[i], y + yval[i], exists);
+					}
+					// add links
+					setChunk(i, nei);
+					nei->setChunk((i + 2) % 4, this);
 				}
+				nei->spawnNeighbors(window);
 			}
 		}
 	}
@@ -159,5 +164,27 @@ void Chunk::resetCalls() {
 			Chunk * nei = getChunk(i);
 			if (nei!=NULL) nei->resetCalls();
 		}
+	}
+}
+
+Chunk* Chunk::search(int x, int y) {
+	std::set<unsigned> visited;
+	return _search(x, y, chunkUID(x, y), &visited);
+}
+
+// SHOULD BE OPTIMIZED!!!!
+Chunk* Chunk::_search(int x, int y, unsigned uid, std::set<unsigned> *visited) {
+	if (uid == chunkUID(this->x, this->y)) return this;
+	else {
+		Chunk * ret = NULL;
+		for (int i = 0; i < 4 && ret == NULL; ++i) {
+			Chunk * nei = getChunk(i);
+			unsigned neiUID = chunkUID(this->x + xval[i], this->y + yval[i]);
+			if (nei != NULL && visited->count(neiUID) == 0) {
+				visited->insert(neiUID);
+				ret = nei->_search(x, y, uid, visited);
+			}
+		}
+		return ret;
 	}
 }
