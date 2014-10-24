@@ -118,8 +118,8 @@ void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, in
 
 
 void Chunk::spawnNeighbors(SDL_Rect window) {
-	int xval[4] = {1,0,-1,0};
-	int yval[4] = { 0, 1, 0, -1 };
+	int xval[4] = { 0, 1, 0, -1 };
+	int yval[4] = { 1, 0, -1, 0 };
 	for (int i = 0; i < 4; i++){
 		if (rectInsideRect(window.x, window.y, window.w, window.h, (x + xval[i]) * CHUNK_SIZE, (y + yval[i]) * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE)) {
 			if (getChunk(i) == NULL) {
