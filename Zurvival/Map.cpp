@@ -11,6 +11,8 @@ Map::Map(int w,int h){
 
 
 Map::~Map(){
+	delete center;
+	exists.clear();
 }
 
 

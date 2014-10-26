@@ -8,7 +8,7 @@
 #include "SpriteManager.h"
 
 class Chunk {
-	public:
+	private:
 		int *matrix;
 		int x;
 		int y;
@@ -31,6 +31,8 @@ class Chunk {
 		void resetCalls();
 		Chunk* search(int x, int y);
 		Chunk* _search(int x, int y, unsigned uid, std::set<unsigned> *visited);
-		
+	private:
+		int countLinks();
+		void debug();
 };
 

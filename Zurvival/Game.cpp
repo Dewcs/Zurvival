@@ -16,6 +16,9 @@ Game::Game(SDL_Renderer* renderer, SpriteManager* sprMngr,int width,int height)
 
 Game::~Game()
 {
+	delete mc;
+	delete gmap;
+	delete [] zombies;
 }
 
 void Game::update(unsigned delta) {
@@ -68,7 +71,7 @@ void Game::draw() {
 		int x, y;
 		gmap->getScreenPosition(zombies[i]->getX(), zombies[i]->getY(), x, y);
 		SDL_Rect zombieRect = { x - zwidth / 2, y - zwidth / 2, zwidth, zwidth };
-		if (rectInsideRect(screen,zombieRect)) SDL_RenderCopyEx(renderer, sprMngr->getTexture("zombie"), NULL, &zombieRect, zombies[i]->getAngle(), NULL, SDL_FLIP_NONE);
+		if (rectInsideRect(screen, zombieRect)) SDL_RenderCopyEx(renderer, sprMngr->getTexture("zombie_anim" + std::to_string((SDL_GetTicks()/100)%8)), NULL, &zombieRect, zombies[i]->getAngle() - 90, NULL, SDL_FLIP_NONE);
 	}
 	// draw light
 	SDL_Surface *lightmap;
@@ -77,12 +80,12 @@ void Game::draw() {
 	lightmap = SDL_CreateRGBSurface(0, lightWidth, lightHeight, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
 	Uint32 *pixels = (Uint32 *)lightmap->pixels;
 	// player point
-	float p1x = lightWidth / 2.0;
-	float p1y = lightHeight / 2.0;
+	float p1x = (float)lightWidth / 2;
+	float p1y = (float)lightHeight / 2;
 	// center of light point (mouse)
 	int mx, my;
 	SDL_GetMouseState(&mx, &my);
-	float ldist = p1y*LIGHT_DISTANCE;
+	float ldist = p1y*(float)LIGHT_DISTANCE;
 	float ldist2 = ldist*ldist;
 	float p2x = (float)mx / LIGHT_REDUCTION;
 	float p2y = (float)my / LIGHT_REDUCTION;

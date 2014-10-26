@@ -7,9 +7,9 @@
 
 bool fileExists(const char *fname);
 
-double angleP2P(int x0, int y0, int x1, int y1);
+double angleP2P(double x0, double y0, double x1, double y1);
 
-double angleP2P(float x0, float y0, float x1, float y1);
+//float angleP2P(float x0, float y0, float x1, float y1);
 
 double rad2deg(double angle);
 

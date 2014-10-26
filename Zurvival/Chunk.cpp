@@ -19,7 +19,7 @@ Chunk::Chunk(int x, int y, std::set<unsigned>* exists){
 	isCalled = false;
 
 	this->exists = exists;
-	std::cout << exists->count(chunkUID(x, y)) << " " << chunkUID(x, y) << std::endl;
+	std::cout << "CREATED CHUNK " << x << " " << y << std::endl;
 	this->exists->insert(chunkUID(x, y));
 	
 }
@@ -42,18 +42,92 @@ Chunk::Chunk(int x, int y, std::set<unsigned>* exists, Chunk *r, Chunk* b, Chunk
 	isCalled = false;
 
 	this->exists = exists;
-	std::cout << exists->count(chunkUID(x, y)) << " " << chunkUID(x, y) << std::endl;
+	std::cout << "CREATED CHUNK " << x << " " << y << std::endl;
 	this->exists->insert(chunkUID(x, y));
 }
 
 
 Chunk::~Chunk(){
-	// fatal!!!!!!!
-	delete left;
-	delete top;
-	delete right;
-	delete bot;
+	int links = countLinks();
+	std::cout << "DELETED CHUNK " << x << " " << y << " " << links << std::endl;
+	exists->erase(chunkUID(x, y));
+	for (int i = 0; i < 4; ++i) {
+		if (getChunk(i) != NULL) {
+			if (getChunk(i) != NULL && exists->count(chunkUID(getChunk(i)->x, getChunk(i)->y)) == 1) {
+				Chunk *tmp = getChunk(i);
+				tmp->setChunk((i + 2) % 4, NULL);
+				setChunk(i, NULL);
+				delete tmp;
+			}
+		}
+	}
 	delete matrix;
+	/* keep it maybe you will need it someday...
+	if (links == 1) {
+		// if i only have 1 neighbor just remove the link delete him and remove my link
+		for (int i = 0; i < 4; ++i) {
+			if (getChunk(i) != NULL) {
+				getChunk(i)->setChunk((i + 2) % 4, NULL);
+				delete getChunk(i);
+				setChunk(i, NULL);
+			}
+		}
+	}
+	else if (links == 2) {
+		// if i have 2 neighboors just cross my links to them delete them and delete me
+		int a, b;
+		a = b = -1;
+		for (int i = 0; i < 4; ++i) {
+			if (getChunk(i) != NULL) {
+				if (a == -1) a = i;
+				else b = i;
+			}
+		}
+		getChunk(a)->setChunk((a + 2) % 4, getChunk(b));
+		getChunk(b)->setChunk((b + 2) % 4, getChunk(a));
+		delete getChunk(a);
+		for (int i = 0; i < 4; ++i) {
+			setChunk(i, NULL);
+		}
+	}
+	else if (links == 3) {
+		int a, b, c;
+		a = b = c = -1;
+		for (int i = 0; i < 4; ++i) {
+			if (getChunk(i) != NULL) {
+				if (a == -1) a = i;
+				else if (b==-1) b = i;
+				else c = i;
+			}
+		}
+		getChunk(a)->setChunk((a + 2) % 4, getChunk(b));
+		getChunk(b)->setChunk((b + 2) % 4, getChunk(a));
+		delete getChunk(a);
+		getChunk(c)->setChunk((c + 2) % 4, NULL);
+		delete getChunk(c);
+		for (int i = 0; i < 4; ++i) {
+			setChunk(i, NULL);
+		}
+	}
+	else if (links == 4) {
+		// if i have 4 neighboors just make 2 crosses and delete them
+		for (int i = 0; i < 2; ++i) {
+			getChunk(i)->setChunk((i + 2) % 4, getChunk((i + 2) % 4));
+			getChunk((i + 2) % 4)->setChunk(i, getChunk(i));	
+		}
+		delete getChunk(0);
+		delete getChunk(1);
+		for (int i = 0; i < 4; ++i) {
+			setChunk(i, NULL);
+		}
+	}
+	for (int i = 0; i < 4; ++i) {
+		if (getChunk(i) != NULL) {
+			getChunk(i)->setChunk((i + 2) % 4,NULL);
+			delete getChunk(i);
+		}
+	}*/
+	
 }
 
 void Chunk::randomChunk(){
@@ -187,4 +261,16 @@ Chunk* Chunk::_search(int x, int y, unsigned uid, std::set<unsigned> *visited) {
 		}
 		return ret;
 	}
+}
+
+int Chunk::countLinks() {
+	int count = 0;
+	for (int i = 0; i < 4; ++i) {
+		if (getChunk(i) != NULL) ++count;
+	}
+	return count;
+}
+
+void Chunk::debug() {
+	std::cout << x << " " << y << " " << this << " " << top << " " << right << " " << bot << " " << left << std::endl;
 }
