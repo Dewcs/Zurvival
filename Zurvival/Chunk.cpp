@@ -86,48 +86,48 @@ bool Chunk::areDiferentChunk(int x, int y){
 }
 
 void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, int height_pixels, unsigned *drawn, SDL_Renderer* renderer, SpriteManager* sprMngr){
-	//creem una variable que sigui la width i el height d'un tile en pixels
-	int sizeOnPixels = height_pixels / TILE_FOR_HEIGHT;
-	//creem una variable que sigui la height de tiles
-	int h_tiles = TILE_FOR_HEIGHT;
+	if (!isCalled) {
+		//creem una variable que sigui la width i el height d'un tile en pixels
+		int sizeOnPixels = height_pixels / TILE_FOR_HEIGHT;
+		//creem una variable que sigui la height de tiles
+		int h_tiles = TILE_FOR_HEIGHT;
 
-	//el mateix per la width de tiles
-	int w_tiles = ceil(width_pixels / (double)(height_pixels / TILE_FOR_HEIGHT));
-	
-	//comprovem si hem de pintar el chunk
-	if (rectInsideRect(floor(centerX_M - (w_tiles / 2)), floor(centerY_M - (h_tiles / 2)), w_tiles, h_tiles, x * CHUNK_SIZE, y * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE)) {
+		//el mateix per la width de tiles
+		int w_tiles = ceil(width_pixels / (double)(height_pixels / TILE_FOR_HEIGHT));
 
-		//creem un rectancle del tros de chunk que hem de pintar en pantalla
-		SDL_Rect rectToDraw = rectIntersect({ x * CHUNK_SIZE, y * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE }, { floor(centerX_M - (w_tiles / 2)), floor(centerY_M - (h_tiles/ 2)), w_tiles, h_tiles });
-		
-		//crrem dues variables que ens guardin la distancia en pixels des del centre fins al vertex del rectangle que hem de pintar
-		int distInPixelsX = (rectToDraw.x - centerX_M)*sizeOnPixels;
-		int distInPixelsY = (rectToDraw.y - centerY_M)*sizeOnPixels;
+		//comprovem si hem de pintar el chunk
+		if (rectInsideRect(floor(centerX_M - (w_tiles / 2)), floor(centerY_M - (h_tiles / 2)), w_tiles, h_tiles, x * CHUNK_SIZE, y * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE)) {
 
-		//creem dues variables que siguin la posicio en pixels del nostre vertex
-		int vertexDrawX = (width_pixels / 2) + distInPixelsX;
-		int vertexDrawY = (height_pixels / 2) + distInPixelsY;
-		int relativeX = rectToDraw.x % CHUNK_SIZE;
-		int relativeY = rectToDraw.y % CHUNK_SIZE;
-		
-		//fer dos bucles per recorrer el rectangle que hem de pintar 
-		for (int i = 0; i <= rectToDraw.w; i++){
-			for (int j = 0; j <= rectToDraw.h;j++){
-				if (relativeX + i >= 0 && relativeX + i < CHUNK_SIZE && relativeY + j >= 0 && relativeY + j < CHUNK_SIZE) {
-					SDL_Rect rect = { vertexDrawX + (i*sizeOnPixels) + 1, vertexDrawY + (j*sizeOnPixels) + 1, sizeOnPixels - 2, sizeOnPixels - 2 };
-					switch (matrix[(relativeX + i)*CHUNK_SIZE + (relativeY + j)]){
-					case GRASS:
-						SDL_RenderCopy(renderer, sprMngr->getTexture("grass"), NULL, &rect);
-						break;
-					default:
-						break;
+			//creem un rectancle del tros de chunk que hem de pintar en pantalla
+			SDL_Rect rectToDraw = rectIntersect({ x * CHUNK_SIZE, y * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE }, { floor(centerX_M - (w_tiles / 2)), floor(centerY_M - (h_tiles / 2)), w_tiles, h_tiles });
+
+			//crrem dues variables que ens guardin la distancia en pixels des del centre fins al vertex del rectangle que hem de pintar
+			int distInPixelsX = (rectToDraw.x - centerX_M)*sizeOnPixels;
+			int distInPixelsY = (rectToDraw.y - centerY_M)*sizeOnPixels;
+
+			//creem dues variables que siguin la posicio en pixels del nostre vertex
+			int vertexDrawX = (width_pixels / 2) + distInPixelsX;
+			int vertexDrawY = (height_pixels / 2) + distInPixelsY;
+			int relativeX = rectToDraw.x % CHUNK_SIZE;
+			int relativeY = rectToDraw.y % CHUNK_SIZE;
+
+			//fer dos bucles per recorrer el rectangle que hem de pintar 
+			for (int i = 0; i <= rectToDraw.w; i++){
+				for (int j = 0; j <= rectToDraw.h; j++){
+					if (relativeX + i >= 0 && relativeX + i < CHUNK_SIZE && relativeY + j >= 0 && relativeY + j < CHUNK_SIZE) {
+						SDL_Rect rect = { vertexDrawX + (i*sizeOnPixels) + 1, vertexDrawY + (j*sizeOnPixels) + 1, sizeOnPixels - 2, sizeOnPixels - 2 };
+						switch (matrix[(relativeX + i)*CHUNK_SIZE + (relativeY + j)]){
+						case GRASS:
+							SDL_RenderCopy(renderer, sprMngr->getTexture("grass"), NULL, &rect);
+							break;
+						default:
+							break;
+						}
 					}
 				}
 			}
-		}
-		//spawnNeighbors(centerX_M, centerY_M, w_tiles, h_tiles, width_pixels, height_pixels, drawn, renderer, sprMngr);
+			//spawnNeighbors(centerX_M, centerY_M, w_tiles, h_tiles, width_pixels, height_pixels, drawn, renderer, sprMngr);
 
-		if (!isCalled) {
 			isCalled = true;
 			for (int i = 0; i < 4; i++){
 				Chunk * nei = getChunk(i);
@@ -137,6 +137,7 @@ void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, in
 			}
 		}
 	}
+	
 }
 
 
