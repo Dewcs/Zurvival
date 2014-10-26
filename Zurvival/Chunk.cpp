@@ -19,7 +19,7 @@ Chunk::Chunk(int x, int y, std::set<unsigned>* exists){
 	isCalled = false;
 
 	this->exists = exists;
-	std::cout << "CREATED CHUNK " << x << " " << y << std::endl;
+	SDL_Log("CREATED CHUNK %d %d", x, y);
 	this->exists->insert(chunkUID(x, y));
 	
 }
@@ -42,14 +42,14 @@ Chunk::Chunk(int x, int y, std::set<unsigned>* exists, Chunk *r, Chunk* b, Chunk
 	isCalled = false;
 
 	this->exists = exists;
-	std::cout << "CREATED CHUNK " << x << " " << y << std::endl;
+	SDL_Log("CREATED CHUNK %d %d", x, y);
 	this->exists->insert(chunkUID(x, y));
 }
 
 
 Chunk::~Chunk(){
 	int links = countLinks();
-	std::cout << "DELETED CHUNK " << x << " " << y << " " << links << std::endl;
+	SDL_Log("DELETED CHUNK %d %d", x, y);
 	exists->erase(chunkUID(x, y));
 	for (int i = 0; i < 4; ++i) {
 		if (getChunk(i) != NULL) {

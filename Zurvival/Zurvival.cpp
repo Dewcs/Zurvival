@@ -34,7 +34,6 @@ Zurvival::Zurvival() {
 	if (!config->isLoaded()) {
 		config->setBool("show_fps", true);
 	}
-	config->save();
 	// init SpriteManager
 	sprMngr = new SpriteManager();
 	load_sprites();
