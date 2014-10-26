@@ -162,6 +162,7 @@ bool Chunk::areDiferentChunk(int x, int y){
 void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, int height_pixels, unsigned *drawn, SDL_Renderer* renderer, SpriteManager* sprMngr){
 	if (!isCalled) {
 		isCalled = true;
+		SDL_Log("DRAWN CHUNK %d %d", x, y);
 		//creem una variable que sigui la width i el height d'un tile en pixels
 		int sizeOnPixels = height_pixels / TILE_FOR_HEIGHT;
 		//creem una variable que sigui la height de tiles
@@ -183,8 +184,8 @@ void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, in
 			//creem dues variables que siguin la posicio en pixels del nostre vertex
 			int vertexDrawX = (width_pixels / 2) + distInPixelsX;
 			int vertexDrawY = (height_pixels / 2) + distInPixelsY;
-			int relativeX = rectToDraw.x % CHUNK_SIZE;
-			int relativeY = rectToDraw.y % CHUNK_SIZE;
+			int relativeX = ((rectToDraw.x % CHUNK_SIZE) + CHUNK_SIZE) % CHUNK_SIZE;
+			int relativeY = ((rectToDraw.y % CHUNK_SIZE) + CHUNK_SIZE) % CHUNK_SIZE;
 
 			//fer dos bucles per recorrer el rectangle que hem de pintar 
 			for (int i = 0; i <= rectToDraw.w; i++){

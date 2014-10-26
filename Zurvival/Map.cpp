@@ -34,7 +34,7 @@ void Map::setCenter(double x, double y){
 	int positionChunkX = xfloor / CHUNK_SIZE;
 	int positionChunkY = yfloor / CHUNK_SIZE;
 	if (center->areDiferentChunk(positionChunkX, positionChunkY)){
-		
+		center = center->search(positionChunkX, positionChunkY);
 	}
 	centerX = x;
 	centerY = y;
