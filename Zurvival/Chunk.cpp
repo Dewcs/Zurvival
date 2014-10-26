@@ -161,6 +161,7 @@ bool Chunk::areDiferentChunk(int x, int y){
 
 void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, int height_pixels, unsigned *drawn, SDL_Renderer* renderer, SpriteManager* sprMngr){
 	if (!isCalled) {
+		isCalled = true;
 		//creem una variable que sigui la width i el height d'un tile en pixels
 		int sizeOnPixels = height_pixels / TILE_FOR_HEIGHT;
 		//creem una variable que sigui la height de tiles
@@ -202,7 +203,6 @@ void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, in
 			}
 			//spawnNeighbors(centerX_M, centerY_M, w_tiles, h_tiles, width_pixels, height_pixels, drawn, renderer, sprMngr);
 
-			isCalled = true;
 			for (int i = 0; i < 4; i++){
 				Chunk * nei = getChunk(i);
 				if (nei != NULL){
