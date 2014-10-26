@@ -29,10 +29,13 @@ void Map::drawMap(SDL_Renderer* renderer, SpriteManager* sprMngr){
 }
 
 void Map::setCenter(double x, double y){
+
 	int xfloor = floor(x);
 	int yfloor = floor(y);
 	int positionChunkX = xfloor / CHUNK_SIZE;
 	int positionChunkY = yfloor / CHUNK_SIZE;
+	if (xfloor < 0) positionChunkX = positionChunkX - 1;
+	if (yfloor < 0) positionChunkY = positionChunkY - 1;
 	if (center->areDiferentChunk(positionChunkX, positionChunkY)){
 		center = center->search(positionChunkX, positionChunkY);
 	}
