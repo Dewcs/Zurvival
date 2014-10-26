@@ -24,6 +24,7 @@ void Map::drawMap(SDL_Renderer* renderer, SpriteManager* sprMngr){
 	center->drawChunk(centerX, centerY, width, height, drawn, renderer, sprMngr);
 	//SDL_Rect rect = { 0, 0, height / 10, height / 10 };
 	//SDL_RenderCopy(renderer, sprMngr->getTexture("grass"), NULL, &rect);
+	center->resetCalls();
 	delete drawn;
 }
 
