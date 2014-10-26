@@ -126,6 +126,16 @@ void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, in
 			}
 		}
 		//spawnNeighbors(centerX_M, centerY_M, w_tiles, h_tiles, width_pixels, height_pixels, drawn, renderer, sprMngr);
+
+		if (!isCalled) {
+			isCalled = true;
+			for (int i = 0; i < 4; i++){
+				Chunk * nei = getChunk(i);
+				if (nei != NULL){
+					nei->drawChunk(centerX_M, centerY_M, width_pixels, height_pixels, drawn, renderer, sprMngr);
+				}
+			}
+		}
 	}
 }
 
@@ -188,3 +198,22 @@ Chunk* Chunk::_search(int x, int y, unsigned uid, std::set<unsigned> *visited) {
 		return ret;
 	}
 }
+/*
+void Chunk::drawNeighbords(double centerX_M, double  centerY_M, int  width_pixels, int height_pixels, unsigned *drawn, SDL_Renderer* renderer, SpriteManager* sprMngr){
+if (left != NULL && left->isCalled ==false){
+left->drawChunk(centerX_M, centerY_M, width_pixels, height_pixels, drawn, renderer, sprMngr);
+left->isCalled = true;
+}
+if (right != NULL && right->isCalled == false){
+right->drawChunk(centerX_M, centerY_M, width_pixels, height_pixels, drawn, renderer, sprMngr);
+right->isCalled = true;
+}
+if (top != NULL && top->isCalled == false){
+top->drawChunk(centerX_M, centerY_M, width_pixels, height_pixels, drawn, renderer, sprMngr);
+top->isCalled = true;
+}
+if (bot != NULL && bot->isCalled == false){
+
+}
+}
+*/

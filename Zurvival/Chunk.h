@@ -31,6 +31,7 @@ class Chunk {
 		void resetCalls();
 		Chunk* search(int x, int y);
 		Chunk* _search(int x, int y, unsigned uid, std::set<unsigned> *visited);
+		void drawNeighbords(double centerX_M, double  centerY_M, int  width_pixels, int height_pixels, unsigned *drawn, SDL_Renderer* renderer, SpriteManager* sprMngr);
 		
 };
 
