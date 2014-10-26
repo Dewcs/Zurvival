@@ -34,7 +34,6 @@ Zurvival::Zurvival() {
 	if (!config->isLoaded()) {
 		config->setBool("show_fps", true);
 	}
-	config->save();
 	// init SpriteManager
 	sprMngr = new SpriteManager();
 	load_sprites();
@@ -53,6 +52,10 @@ Zurvival::Zurvival() {
 
 Zurvival::~Zurvival() {
 	delete sprMngr;
+	delete mainMenu;
+	delete options;
+	delete game;
+	delete config;
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	IMG_Quit();
@@ -121,6 +124,7 @@ void Zurvival::load_sprites() {
 	sprMngr->addImage(renderer, "grass", "sprites/grass.jpg", { 0, 0, width, height });
 	sprMngr->addImage(renderer, "soldier", "sprites/soldier.png", { 0, 0, width, height });
 	sprMngr->addImage(renderer, "zombie", "sprites/zombie.png", { 0, 0, width, height });
+	sprMngr->addSpriteSheet(renderer, "zombie_anim", "sprites/zombie3.png", { 0, 0, width, height },48,48,1,0xFFFFFFFF);
 }
 
 

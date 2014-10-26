@@ -36,6 +36,40 @@ void SpriteManager::addImage(SDL_Renderer *renderer, const std::string &key, con
 	}
 }
 
+void SpriteManager::addSpriteSheet(SDL_Renderer *renderer, const std::string &key, const char *fname, SDL_Rect r, int w, int h, int border,unsigned transp) {
+	if (fileExists(fname)) {
+		SDL_Surface * image = IMG_Load(fname);
+		int iw = image->w;
+		int ih = image->h;
+		SDL_Surface * tmp = SDL_CreateRGBSurface(0, w, h, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+		Uint32 *pixels = (Uint32 *)tmp->pixels;
+		Uint32 *origpixels = (Uint32 *)image->pixels;
+		int c = 0;
+		for (int i = border; i < iw-w; i += w + border) {
+			for (int j = border; j < ih-h; j += h + border) {
+				for (int x = 0; x < w; ++x) {
+					for (int y = 0; y < h; ++y) {
+						if ((origpixels[(j + y)*iw + (i + x)] ^ transp) == 0) pixels[x + y*w] = 0;
+						else pixels[x + y*w] = origpixels[(j + y)*iw + (i + x)];
+					}
+				}
+				std::string tmpkey = key + std::to_string(c);
+				++c;
+				if (!keyExists(tmpkey)) {
+					list[tmpkey] = Sprite(SDL_CreateTextureFromSurface(renderer, tmp), r, w, h);
+				}
+				else {
+					std::cerr << "Repeated sprite key " << key << std::endl;
+				}
+			}
+		}
+		
+	}
+	else {
+		std::cerr << "File not found " << fname << std::endl;
+	}
+}
+
 void SpriteManager::addText(SDL_Renderer *renderer, const std::string &key, const char *text, const SDL_Color &color, int ptsize, const char* fontfile, SDL_Rect r) {
 	if (!keyExists(key)) {
 		if (fileExists(fontfile)) {

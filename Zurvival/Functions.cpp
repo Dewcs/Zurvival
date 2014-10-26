@@ -12,17 +12,17 @@ bool fileExists(const char *fname) {
 	}
 }
 
-double angleP2P(int x0, int y0, int x1, int y1) {
-	int dx = x1 - x0;
-	int dy = y1 - y0;
+double angleP2P(double x0, double y0, double x1, double y1) {
+	double dx = x1 - x0;
+	double dy = y1 - y0;
 	return atan2(dy, dx);
 }
 
-double angleP2P(float x0, float y0, float x1, float y1) {
-	int dx = x1 - x0;
-	int dy = y1 - y0;
+/*float angleP2P(float x0, float y0, float x1, float y1) {
+	float dx = x1 - x0;
+	float dy = y1 - y0;
 	return atan2(dy, dx);
-}
+}*/
 
 double rad2deg(double angle) {
 	return angle * 180 / M_PI;
@@ -91,5 +91,5 @@ SDL_Rect rectIntersect(SDL_Rect a, SDL_Rect b){
 }
 
 unsigned chunkUID(int x, int y) {
-	return (x + MAX_CHUNK >> 1) * MAX_CHUNK + (y + MAX_CHUNK >> 1);
+	return (x + (MAX_CHUNK >> 1)) * MAX_CHUNK + (y + (MAX_CHUNK >> 1));
 }

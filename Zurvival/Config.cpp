@@ -12,6 +12,10 @@ Config::Config(char * fname) {
 
 
 Config::~Config() {
+	save();
+	intList.clear();
+	stringList.clear();
+	boolList.clear();
 }
 
 bool Config::isLoaded() {
