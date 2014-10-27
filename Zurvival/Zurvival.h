@@ -11,9 +11,9 @@
 
 class Zurvival {
 	private:
-		int width, height, fps;
-		unsigned last_time;
-		SDL_Window *window;
+		int width, height, fps; // screen info
+		unsigned last_time; // delta purposes
+		SDL_Window *window; 
 		SDL_Renderer *renderer;
 		SpriteManager *sprMngr;
 		MainMenu *mainMenu;
@@ -21,16 +21,16 @@ class Zurvival {
 		DeathPit *deathPit;
 		Config *config;
 		Game *game;
-		bool stop;
-		page_t page;
+		bool stop; // did the game end
+		page_t page; // current game page
 	public:
 		Zurvival();
 		~Zurvival();
-		bool running();
-		void update();
-		void doOrder(order_t order, int value);
+		bool running(); // returns true if game didn't end
+		void update(); // updates the game at constant fps rate
+		void doOrder(order_t order, int value); // perform an order onto the game
 	private:
-		void load_sprites();
+		void load_sprites(); // load game sprites
 };
 
 

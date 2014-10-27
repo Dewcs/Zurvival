@@ -1,9 +1,12 @@
 #include "Config.h"
 
-
+/*
+	fname represents the file where the data will be stored or read
+*/
 Config::Config(char * fname) {
 	this->fname = fname;
 	loaded = false;
+	// if exists load it
 	if (fileExists(fname)) {
 		load();
 		loaded = true;
@@ -12,6 +15,7 @@ Config::Config(char * fname) {
 
 
 Config::~Config() {
+	// store before closing 
 	save();
 	intList.clear();
 	stringList.clear();
@@ -66,7 +70,6 @@ void Config::load() {
 	tinyxml2::XMLNode *rootnode = doc.FirstChild();
 	tinyxml2::XMLNode *confignode = rootnode->FirstChild();
 	for (tinyxml2::XMLNode* node = confignode->FirstChild(); node; node = node->NextSibling()) {
-		//const char * type= parent->Attribute("type");
 		const tinyxml2::XMLElement *element = node->ToElement();
 		int type;
 		element->QueryIntAttribute("type", &type);
@@ -90,6 +93,7 @@ void Config::load() {
 		} 
 	}
 	/*
+	how to query float and double
 	pointElement->FirstChildElement( "x" )->QueryFloatText( &floatValue );
 	pointElement->FirstChildElement( "x" )->QueryDoubleText( &doubleValue );
 	*/
