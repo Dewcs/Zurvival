@@ -1,5 +1,8 @@
 #include "Chunk.h"
 
+/*chunk constructor
+parameters: x position / y position / list set if exist this chunk
+create a chunk, asign x and y position, create a matrix pointer with chunk_size and put boolean isCalled false. put this chunk in set exists*/
 
 Chunk::Chunk(int x, int y, std::set<unsigned>* exists){
 	//save x and y cordinates
@@ -24,6 +27,10 @@ Chunk::Chunk(int x, int y, std::set<unsigned>* exists){
 	
 }
 
+/*chunk constructor 2
+parameters: x position / y position / list set if exist this chunk / four pointers, right, bot, left, and top
+create a chunk, asign x and y position, create a matrix pointer with chunk_size, asign pointer neighbords to foru pointers and put boolean isCalled false. put this chunk in set exists*/
+
 Chunk::Chunk(int x, int y, std::set<unsigned>* exists, Chunk *r, Chunk* b, Chunk *l, Chunk *t){
 	//save x and y cordinates
 	this->x = x;
@@ -46,7 +53,9 @@ Chunk::Chunk(int x, int y, std::set<unsigned>* exists, Chunk *r, Chunk* b, Chunk
 	this->exists->insert(chunkUID(x, y));
 }
 
-
+/*chunk destructor
+delete chunk and all neighbord links
+*/
 Chunk::~Chunk(){
 	int links = countLinks();
 	SDL_Log("DELETED CHUNK %d %d", x, y);
@@ -62,73 +71,10 @@ Chunk::~Chunk(){
 		}
 	}
 	delete matrix;
-	/* keep it maybe you will need it someday...
-	if (links == 1) {
-		// if i only have 1 neighbor just remove the link delete him and remove my link
-		for (int i = 0; i < 4; ++i) {
-			if (getChunk(i) != NULL) {
-				getChunk(i)->setChunk((i + 2) % 4, NULL);
-				delete getChunk(i);
-				setChunk(i, NULL);
-			}
-		}
-	}
-	else if (links == 2) {
-		// if i have 2 neighboors just cross my links to them delete them and delete me
-		int a, b;
-		a = b = -1;
-		for (int i = 0; i < 4; ++i) {
-			if (getChunk(i) != NULL) {
-				if (a == -1) a = i;
-				else b = i;
-			}
-		}
-		getChunk(a)->setChunk((a + 2) % 4, getChunk(b));
-		getChunk(b)->setChunk((b + 2) % 4, getChunk(a));
-		delete getChunk(a);
-		for (int i = 0; i < 4; ++i) {
-			setChunk(i, NULL);
-		}
-	}
-	else if (links == 3) {
-		int a, b, c;
-		a = b = c = -1;
-		for (int i = 0; i < 4; ++i) {
-			if (getChunk(i) != NULL) {
-				if (a == -1) a = i;
-				else if (b==-1) b = i;
-				else c = i;
-			}
-		}
-		getChunk(a)->setChunk((a + 2) % 4, getChunk(b));
-		getChunk(b)->setChunk((b + 2) % 4, getChunk(a));
-		delete getChunk(a);
-		getChunk(c)->setChunk((c + 2) % 4, NULL);
-		delete getChunk(c);
-		for (int i = 0; i < 4; ++i) {
-			setChunk(i, NULL);
-		}
-	}
-	else if (links == 4) {
-		// if i have 4 neighboors just make 2 crosses and delete them
-		for (int i = 0; i < 2; ++i) {
-			getChunk(i)->setChunk((i + 2) % 4, getChunk((i + 2) % 4));
-			getChunk((i + 2) % 4)->setChunk(i, getChunk(i));	
-		}
-		delete getChunk(0);
-		delete getChunk(1);
-		for (int i = 0; i < 4; ++i) {
-			setChunk(i, NULL);
-		}
-	}
-	for (int i = 0; i < 4; ++i) {
-		if (getChunk(i) != NULL) {
-			getChunk(i)->setChunk((i + 2) % 4,NULL);
-			delete getChunk(i);
-		}
-	}*/
-	
 }
+
+/*randomChunk()
+randomize all cells in the matrix chunk*/
 
 void Chunk::randomChunk(){
 	matrix = new int[CHUNK_SIZE * CHUNK_SIZE];
@@ -137,12 +83,20 @@ void Chunk::randomChunk(){
 	}
 }
 
+/*setChunk
+parameters: int id chunk / pointer chunk
+igualate neighbord pointers of this chunk*/
+
 void Chunk::setChunk(int id, Chunk * chunk){
 	if (id == 0) top=chunk;
 	else if (id == 1) right = chunk;
 	else if (id == 2) bot = chunk;
 	else if (id == 3) left = chunk;
 }
+
+/*getChunk
+parameters: int id chunk
+return one neighbord of this chunk*/
 
 Chunk* Chunk::getChunk(int id){
 	if (id == 0) return top;
@@ -152,6 +106,10 @@ Chunk* Chunk::getChunk(int id){
 	return NULL;
 }
 
+/*areDiferentChunk
+parameters; int x position, int y position
+return true if this x and y cordinates are diferents of this chunk*/
+
 bool Chunk::areDiferentChunk(int x, int y){
 	if (this->x != x || this->y != y){
 		return true;
@@ -159,9 +117,13 @@ bool Chunk::areDiferentChunk(int x, int y){
 	else return false;
 }
 
+/*drawChunk
+parameters: double center map x / double center map y / int width in pixels / int height in pixels / sdl renderer / pointer sprite manager
+draw chunk and draw neighbord if i need*/
+
 void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, int height_pixels, unsigned *drawn, SDL_Renderer* renderer, SpriteManager* sprMngr){
-	if (!isCalled) {
-		isCalled = true;
+	if (!isCalled) { //comprovem que el chunk ha sigut dibuixat
+		isCalled = true; //com no ha sigut dibuixat i hem entrat posem el seu boolea a true
 		SDL_Log("DRAWN CHUNK %d %d", x, y);
 		//creem una variable que sigui la width i el height d'un tile en pixels
 		int sizeOnPixels = height_pixels / TILE_FOR_HEIGHT;
@@ -202,8 +164,7 @@ void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, in
 					}
 				}
 			}
-			//spawnNeighbors(centerX_M, centerY_M, w_tiles, h_tiles, width_pixels, height_pixels, drawn, renderer, sprMngr);
-
+			// fem un for pels 4 veins i per cada vei que no sigui NULL, tornem a cridar la funcio drawChunk
 			for (int i = 0; i < 4; i++){
 				Chunk * nei = getChunk(i);
 				if (nei != NULL){
@@ -215,6 +176,9 @@ void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, in
 	
 }
 
+/*spawnNeighbords
+parameters: window
+create a neighbords if i need*/
 
 void Chunk::spawnNeighbors(SDL_Rect window) {
 	if (!isCalled) {
@@ -237,11 +201,15 @@ void Chunk::spawnNeighbors(SDL_Rect window) {
 					setChunk(i, nei);
 					nei->setChunk((i + 2) % 4, this);
 				}
+				//call spawnNeighbords whith neibord
 				nei->spawnNeighbors(window);
 			}
 		}
 	}
 }
+
+/*resetCalls
+transform all booleans of chunk of false*/
 
 void Chunk::resetCalls() {
 	if (isCalled) {
@@ -252,6 +220,10 @@ void Chunk::resetCalls() {
 		}
 	}
 }
+
+/*serch
+parameters: int x position / int y position
+return chunk alocated in this position*/
 
 Chunk* Chunk::search(int x, int y) {
 	std::set<unsigned> visited;
@@ -283,6 +255,9 @@ int Chunk::countLinks() {
 	}
 	return count;
 }
+
+/*debug
+print in console all information of this chunk*/
 
 void Chunk::debug() {
 	std::cout << x << " " << y << " " << this << " " << top << " " << right << " " << bot << " " << left << std::endl;

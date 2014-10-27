@@ -9,28 +9,28 @@
 
 class Chunk {
 	private:
-		int *matrix;
-		int x;
-		int y;
-		Chunk *left;
-		Chunk *right;
-		Chunk *top;
-		Chunk *bot;
-		bool isCalled;
-		std::set<unsigned> *exists;
+		int *matrix; //pointer matrix 
+		int x; // x position
+		int y; // y position
+		Chunk *left; // neighbord pointer left
+		Chunk *right; // neighbord pointer right
+		Chunk *top; // neighbord pointer top
+		Chunk *bot; // neighbord pointer bot
+		bool isCalled; // boolean is called
+		std::set<unsigned> *exists; // pointer set exist chunk
 	public:
-		Chunk(int, int, std::set<unsigned>*);
-		Chunk(int, int, std::set<unsigned>*, Chunk* r, Chunk* b, Chunk* l, Chunk* t);
-		~Chunk();
-		void randomChunk();
-		void setChunk(int id,Chunk *chunk);
-		Chunk* getChunk(int id);
-		bool areDiferentChunk(int x, int y);
-		void drawChunk(double centerX_M, double  centerY_M, int  width_pixels, int height_pixels, unsigned *drawn, SDL_Renderer* renderer, SpriteManager* sprMngr);
-		void spawnNeighbors(SDL_Rect window);
-		void resetCalls();
-		Chunk* search(int x, int y);
-		Chunk* _search(int x, int y, unsigned uid, std::set<unsigned> *visited);
+		Chunk(int, int, std::set<unsigned>*); //constructor
+		Chunk(int, int, std::set<unsigned>*, Chunk* r, Chunk* b, Chunk* l, Chunk* t); // constructor 2
+		~Chunk(); //destructor
+		void randomChunk(); //randomsize all values of chunk matrix
+		void setChunk(int id,Chunk *chunk); //asign neighbords of chunk 
+		Chunk* getChunk(int id); //return neighbords
+		bool areDiferentChunk(int x, int y); // 
+		void drawChunk(double centerX_M, double  centerY_M, int  width_pixels, int height_pixels, unsigned *drawn, SDL_Renderer* renderer, SpriteManager* sprMngr); // draw chunk if i need and draw neighbords if i need
+		void spawnNeighbors(SDL_Rect window); // create neighbords if i need
+		void resetCalls(); // return booleans isCalled as false
+		Chunk* search(int x, int y); // serch chunk 
+		Chunk* _search(int x, int y, unsigned uid, std::set<unsigned> *visited); // return chunk 
 	private:
 		int countLinks();
 		void debug();
