@@ -99,6 +99,7 @@
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Options.cpp" />
+    <ClCompile Include="Radar.cpp" />
     <ClCompile Include="SpriteManager.cpp" />
     <ClCompile Include="tinyxml2.cpp" />
     <ClCompile Include="Zombie.cpp" />
@@ -116,6 +117,7 @@
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Options.h" />
+    <ClInclude Include="Radar.h" />
     <ClInclude Include="SpriteManager.h" />
     <ClInclude Include="tinyxml2.h" />
     <ClInclude Include="Zombie.h" />

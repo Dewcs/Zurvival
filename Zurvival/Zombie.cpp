@@ -8,6 +8,8 @@ Zombie::Zombie(int x,int y)
 	viewAngle = 0;
 	vx = 0;
 	vy = 0;
+	ia = new Brain(4,2);
+	ia->randomize();
 }
 
 
