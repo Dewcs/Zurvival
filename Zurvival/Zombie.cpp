@@ -6,9 +6,9 @@ Zombie::Zombie(int x,int y)
 	this->x = x;
 	this->y = y;
 	viewAngle = 0;
-	vx = 0;
-	vy = 0;
-	ia = new Brain(6,2);
+	lx = 0;
+	ly = 0;
+	ia = new Brain(8,2);
 	ia->randomize();
 	kills = 0;
 	hp = 120000;
@@ -39,7 +39,7 @@ void Zombie::update(unsigned delta, Radar *smells, Radar * sounds) {
 		v2x = sox - x;
 		v2y = soy - y;
 	}
-	float input[] = { x,y,v1x, v1y, v2x, v2y };
+	float input[] = { lx,ly,x,y,v1x, v1y, v2x, v2y };
 	ia->setInput(input);
 	ia->evaluate();
 	float *output;

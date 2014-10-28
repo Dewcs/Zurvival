@@ -8,7 +8,7 @@
 class Zombie {
 private:
 	double x, y;
-	double vx, vy;
+	double lx, ly;
 	double viewAngle;
 	Brain *ia;
 	int kills;
