@@ -65,3 +65,4 @@ const int yval[] = { 1, 0, -1, 0 };
 #define DP_ZOMBIE_AMOUNT 500
 #define DP_HUMAN_AMOUNT 100
 #define DP_RATIO 4
+#define DP_TIME_SPEED 4

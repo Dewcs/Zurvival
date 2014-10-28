@@ -23,6 +23,7 @@ DeathPit::~DeathPit()
 }
 
 void DeathPit::update(unsigned delta) {
+	delta *= DP_TIME_SPEED;
 	// update humans
 	// spawn
 	if (hcount < DP_HUMAN_AMOUNT && rand() % 20 == 0) {
