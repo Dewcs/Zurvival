@@ -124,7 +124,7 @@ draw chunk and draw neighbord if i need*/
 void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, int height_pixels, unsigned *drawn, SDL_Renderer* renderer, SpriteManager* sprMngr){
 	if (!isCalled) { //comprovem que el chunk ha sigut dibuixat
 		isCalled = true; //com no ha sigut dibuixat i hem entrat posem el seu boolea a true
-		SDL_Log("DRAWN CHUNK %d %d", x, y);
+		//SDL_Log("DRAWN CHUNK %d %d", x, y);
 		//creem una variable que sigui la width i el height d'un tile en pixels
 		int sizeOnPixels = height_pixels / TILE_FOR_HEIGHT;
 		//creem una variable que sigui la height de tiles

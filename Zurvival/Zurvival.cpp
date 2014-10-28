@@ -40,7 +40,7 @@ Zurvival::Zurvival() {
 	// init pages
 	mainMenu = new MainMenu(renderer,sprMngr);
 	options = new Options(renderer, sprMngr);
-	deathPit = new DeathPit(renderer, sprMngr);
+	deathPit = new DeathPit(renderer, sprMngr, width, height);
 	game = new Game(renderer, sprMngr,width,height);
 	// set current page
 	page = LOADING;
@@ -125,6 +125,9 @@ void Zurvival::load_sprites() {
 	sprMngr->addImage(renderer, "soldier", "sprites/soldier.png", { 0, 0, width, height });
 	sprMngr->addImage(renderer, "zombie", "sprites/zombie.png", { 0, 0, width, height });
 	sprMngr->addSpriteSheet(renderer, "zombie_anim", "sprites/zombie3.png", { 0, 0, width, height },48,48,1,0xFFFFFFFF);
+	// death pit sprites
+	sprMngr->addImage(renderer, "pred", "sprites/pred.png", { 0, 0, width, height });
+	sprMngr->addImage(renderer, "pgreen", "sprites/pgreen.png", { 0, 0, width, height });
 }
 
 

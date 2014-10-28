@@ -6,13 +6,14 @@ Radar::Radar(double speed, double decayRate, unsigned size)
 	this->speed = speed;
 	this->decayRate = decayRate;
 	this->size = size;
-	this->amount = 0;
-	this->list = new RNode*[size];
+	amount = 0;
+	list = new RNode*[size];
 }
 
 
 Radar::~Radar()
 {
+	delete[] list;
 }
 
 void Radar::addPoint(double x, double y, double value, unsigned timestamp) {
@@ -32,7 +33,7 @@ void Radar::addPoint(double x, double y, double value, unsigned timestamp) {
 		tmp->value = value;
 		tmp->timestamp = timestamp;
 		tmp->radius = 0;
-		for (int i = 0; i < amount; ++i) {
+		for (unsigned i = 0; i < amount; ++i) {
 			if (eval(tmp, list[i])) {
 				RNode *tmp2 = list[i];
 				list[i] = tmp;
@@ -43,16 +44,42 @@ void Radar::addPoint(double x, double y, double value, unsigned timestamp) {
 	}
 }
 
-void Radar::getValue(double x, double y, double &ox, double &oy) {
-
+void Radar::getValue(double x, double y, double &ox, double &oy, bool &valid) {
+	valid = false;
+	for (int i = amount-1; i >= 0; --i) {
+		if (list[i]->value < 1) return;
+		else if (distP2P(x, y, list[i]->x, list[i]->y) < list[i]->radius) {
+			ox = list[i]->x;
+			oy = list[i]->y;
+			valid = true;
+			return;
+		}
+	}
+	
 }
 
 void Radar::update(unsigned delta) {
-	for (int i = 0; i < amount; ++i) {
+	for (unsigned i = 0; i < amount; ++i) {
 		list[i]->radius += delta / 1000.0 * speed;
-		list[i]->value *= 1 - decayRate;
+		list[i]->value *= 1 - (decayRate * delta / 1000.0);
 	}
 	// now lets sort values
+	bool swapped = true;
+	unsigned j = 0;
+	RNode *tmp;
+	// bubble sort op!
+	while (swapped && amount) {
+		swapped = false;
+		j++;
+		for (unsigned i = 0; i < amount - j; i++) {
+			if (eval(list[i],list[i+1])) {
+				tmp = list[i];
+				list[i] = list[i + 1];
+				list[i + 1] = tmp;
+				swapped = true;
+			}
+		}
+	}
 }
 
 bool Radar::eval(RNode *a, RNode *b) {

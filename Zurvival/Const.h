@@ -61,3 +61,7 @@ const int yval[] = { 1, 0, -1, 0 };
 #define LIGHT_FINAL_ALPHA 255
 // light color [0-0xffffff] BGR
 #define LIGHT_BASE_COLOR 0
+
+#define DP_ZOMBIE_AMOUNT 500
+#define DP_HUMAN_AMOUNT 100
+#define DP_RATIO 4

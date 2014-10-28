@@ -27,6 +27,8 @@ bool valueInRange(int value, int min, int max);
 bool rectInsideRect(int x0, int y0, int w0, int h0, int x1, int y1, int w1, int h1);
 // does 2 rect had a common part
 bool rectInsideRect(SDL_Rect a, SDL_Rect b);
+// is point inside rectangle
+bool pointInsideRect(int x0, int y0, int x1, int y1, int w1, int h1);
 // distance between 2 points
 float distP2P(float x0, float y0, float x1, float y1);
 // map floats to int

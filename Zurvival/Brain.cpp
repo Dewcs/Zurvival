@@ -21,7 +21,13 @@ Brain* Brain::copy() {
 }
 
 void Brain::tweak() {
-
+	unsigned inid = fastrand() % (output + hidden);
+	unsigned outid = fastrand() % (output + hidden);
+	nodes[inid].in = infunc(fastrand() % INF_SIZE);
+	nodes[outid].out = outfunc(fastrand() % OUTF_SIZE);
+	unsigned linkid = fastrand() % (output + hidden);
+	unsigned linkpos = fastrand() % (nodes[linkid].size);
+	nodes[linkid].ids[linkpos] = fastrand() % (input + 5 + linkid);
 }
 
 void Brain::randomize() {

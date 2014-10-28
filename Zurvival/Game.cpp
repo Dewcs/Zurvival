@@ -11,6 +11,8 @@ Game::Game(SDL_Renderer* renderer, SpriteManager* sprMngr,int width,int height)
 	gmap = new Map(width, height);
 	zombies = new Zombie*[ZOMBIE_AMOUNT];
 	zcount = 0;
+	sounds = new Radar(453, 0.5, 100);
+	smells = new Radar(5, 0, 1000);
 }
 
 
@@ -19,6 +21,8 @@ Game::~Game()
 	delete mc;
 	delete gmap;
 	delete [] zombies;
+	delete smells;
+	delete sounds;
 }
 
 void Game::update(unsigned delta) {
@@ -31,6 +35,12 @@ void Game::update(unsigned delta) {
 	mc->update(delta);
 	// update map
 	gmap->setCenter(mc->getX(), mc->getY());
+	// update smell map
+	smells->addPoint(mc->getX(), mc->getY(), 1, SDL_GetTicks());
+	// update sounds map
+	sounds->addPoint(mc->getX(), mc->getY(), 30, SDL_GetTicks());
+	smells->update(delta);
+	sounds->update(delta);
 	// update zombies
 	// create new zombies??
 	if (zcount < ZOMBIE_AMOUNT && rand()%100==0) {
@@ -41,7 +51,7 @@ void Game::update(unsigned delta) {
 	}
 	// update zombies
 	for (int i = 0; i < zcount; ++i) {
-		zombies[i]->update(delta);
+		zombies[i]->update(delta,smells,sounds);
 	}
 	// delete zombies
 	for (int i = zcount - 1; i >= 0; ++i) {

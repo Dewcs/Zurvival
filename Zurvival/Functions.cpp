@@ -53,6 +53,11 @@ bool rectInsideRect(SDL_Rect a, SDL_Rect b) {
 	return xOverlap && yOverlap;
 }
 
+bool pointInsideRect(int x0, int y0, int x1, int y1, int w1, int h1) {
+	return x0 >= x1 && x0 <= x1 + w1 && y0 >= y1 && y0 <= y1 + h1;
+}
+
+
 float distP2P(float x0, float y0, float x1, float y1) {
 	float dx = x1 - x0;
 	float dy = y1 - y0;

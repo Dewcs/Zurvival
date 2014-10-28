@@ -6,6 +6,7 @@
 #include "Map.h"
 #include "Functions.h"
 #include "Zombie.h"
+#include "Radar.h"
 
 class Game
 {
@@ -17,6 +18,7 @@ private:
 	int zcount;
 	Map* gmap;
 	int width, height;
+	Radar *sounds, *smells;
 public:
 	Game(SDL_Renderer* renderer, SpriteManager* sprMngr, int width,int height);
 	~Game();

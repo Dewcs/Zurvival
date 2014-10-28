@@ -94,6 +94,7 @@
     <ClCompile Include="DeathPit.cpp" />
     <ClCompile Include="Functions.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="humanDummy.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainCharacter.cpp" />
     <ClCompile Include="MainMenu.cpp" />
@@ -113,6 +114,7 @@
     <ClInclude Include="DeathPit.h" />
     <ClInclude Include="Functions.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="humanDummy.h" />
     <ClInclude Include="MainCharacter.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Map.h" />
