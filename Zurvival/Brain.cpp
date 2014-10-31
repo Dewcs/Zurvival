@@ -22,34 +22,167 @@ Brain* Brain::copy() {
 
 void Brain::tweak() {
 	changes_t change = (changes_t)(fastrand() % CHANGES_MAX);
+	unsigned nodeid = fastrand() % (output + hidden);
+	unsigned linkid = fastrand() % (nodes[nodeid].size);
+	Node *tmpnodes = NULL;
+	unsigned *tmpids = NULL;
+	unsigned next = 0;
+	unsigned a, b, tmp;
 	switch (change)
 	{
-	case NONE:
+	case CHANGE_NONE:
 		break;
 	case CHANGE_INF:
-		unsigned inid = fastrand() % (output + hidden);
-		nodes[inid].in = infunc(fastrand() % INF_SIZE);
+		nodes[nodeid].in = infunc(fastrand() % INF_SIZE);
 		break;
 	case CHANGE_OUTF:
-		unsigned outid = fastrand() % (output + hidden);
-		nodes[outid].out = outfunc(fastrand() % OUTF_SIZE);
+		nodes[nodeid].out = outfunc(fastrand() % OUTF_SIZE);
 		break;
 	case CHANGE_LINK:
-		unsigned nodeid = fastrand() % (output + hidden);
-		unsigned linkid = fastrand() % (nodes[nodeid].size);
 		nodes[nodeid].ids[linkid] = fastrand() % (input + 5 + linkid);
 		break;
 	case REMOVE_NODE:
-		unsigned nodeid = fastrand() % (output + hidden);
+		SDL_Log("BEGIN REMOVE NODE");
+		--hidden;
+		size = input + 5 + output + hidden;
+		values = new float[size];
+		tmpnodes = new Node[output + hidden];
+		for (unsigned i = 0; i < nodeid; ++i) {
+			// copy before nodeid values
+			tmpnodes[i].in = nodes[i].in;
+			tmpnodes[i].out = nodes[i].out;
+			tmpnodes[i].size = nodes[i].size;
+			tmpnodes[i].ids = new unsigned[nodes[i].size];
+			for (unsigned j = 0; j < tmpnodes[i].size; ++j) {
+				tmpnodes[i].ids[j] = nodes[i].ids[j];
+			}
+			delete nodes[i].ids;
+		}
+		for (unsigned i = nodeid; i < output + hidden; ++i) {
+			// copy after nodeid values
+			tmpnodes[i].in = nodes[i + 1].in;
+			tmpnodes[i].out = nodes[i + 1].out;
+			tmpnodes[i].size = nodes[i + 1].size;
+			tmpnodes[i].ids = new unsigned[nodes[i+1].size];
+			next = 0; // counter for next element to insert
+			for (unsigned j = 0; j < nodes[i + 1].size; ++j) {
+				if (nodes[i + 1].ids[j]<nodeid) tmpnodes[i].ids[next++] = nodes[i + 1].ids[j]; // no problem
+				else if (nodes[i + 1].ids[j]>nodeid) tmpnodes[i].ids[next++] = nodes[i + 1].ids[j] - 1; // subratct 1 position
+				else {
+					// remove link
+					--tmpnodes[i].size;
+					tmpids = new unsigned[tmpnodes[i].size];
+					for (unsigned k = 0; k < next; ++k) {
+						tmpids[k] = tmpnodes[i].ids[k];
+					}
+					delete tmpnodes[i].ids;
+					tmpnodes[i].ids = tmpids;
+				}
+			}
+			delete nodes[i+1].ids;
+		}
+		delete nodes;
+		nodes = tmpnodes;
+		SDL_Log("END REMOVE NODE");
 		break;
 	case REMOVE_LINK:
-		unsigned nodeid = fastrand() % (output + hidden);
+		SDL_Log("BEGIN REMOVE LINK");
+		nodes[nodeid].size -= 1;
+		tmpids = new unsigned[nodes[nodeid].size];
+		for (unsigned j = 0; j < linkid; ++j) {
+			tmpids[j] = nodes[nodeid].ids[j];
+		}
+		for (unsigned j = linkid; j < nodes[nodeid].size; ++j) {
+			tmpids[j] = nodes[nodeid].ids[j + 1];
+		}
+		delete nodes[nodeid].ids;
+		nodes[nodeid].ids = tmpids;
+		SDL_Log("END REMOVE LINK");
 		break;
 	case ADD_NODE:
-		unsigned nodeid = fastrand() % (output + hidden);
+		SDL_Log("BEGIN ADD NODE");
+		++hidden;
+		size = input + 5 + output + hidden;
+		values = new float[size];
+		tmpnodes = new Node[output + hidden];
+		// pre nodes
+		for (unsigned i = 0; i < nodeid; ++i) {
+			// copy before nodeid values
+			tmpnodes[i].in = nodes[i].in;
+			tmpnodes[i].out = nodes[i].out;
+			tmpnodes[i].size = nodes[i].size;
+			tmpnodes[i].ids = new unsigned[nodes[i].size];
+			for (unsigned j = 0; j < tmpnodes[i].size; ++j) {
+				tmpnodes[i].ids[j] = nodes[i].ids[j];
+			}
+			delete nodes[i].ids;
+		}
+		// node
+		tmpnodes[nodeid].in = infunc(fastrand() % INF_SIZE);
+		tmpnodes[nodeid].out = outfunc(fastrand() % OUTF_SIZE);
+		tmpnodes[nodeid].size = fastrand() % (input + 4 + nodeid) + 1;
+		tmpnodes[nodeid].ids = new unsigned[tmpnodes[nodeid].size];
+		for (unsigned j = 0; j < tmpnodes[nodeid].size; ++j) {
+			tmpnodes[nodeid].ids[j] = fastrand() % (input + 5 + nodeid);
+		}
+		// post nodes
+		for (unsigned i = nodeid; i < output + hidden - 1; ++i) {
+			// copy after nodeid values
+			tmpnodes[i+1].in = nodes[i].in;
+			tmpnodes[i+1].out = nodes[i].out;
+			tmpnodes[i+1].size = nodes[i].size;
+			tmpnodes[i+1].ids = new unsigned[nodes[i].size];
+			next = 0; // counter for next element to insert
+			for (unsigned j = 0; j < nodes[i].size; ++j) {
+				if (nodes[i].ids[j]<nodeid) tmpnodes[i+1].ids[j] = nodes[i].ids[j]; // no problem
+				else tmpnodes[i+1].ids[j] = nodes[i].ids[j] + 1; // add 1 position
+			}
+			// lets link
+			if (fastrand() % (input + 5 + nodeid) == 0) {
+				// copy current
+				tmpids = new unsigned[tmpnodes[i + 1].size + 1];
+				for (unsigned k = 0; k < tmpnodes[i + 1].size; ++k) {
+					tmpids[k] = tmpnodes[i + 1].ids[k];
+				}
+				// add new
+				tmpids[tmpnodes[i + 1].size] = nodeid;
+				delete tmpnodes[i + 1].ids;
+				tmpnodes[i + 1].size += 1;
+				tmpnodes[i + 1].ids = tmpids;
+			}
+			delete nodes[i].ids;
+		}
+		
+		delete nodes;
+		nodes = tmpnodes;
+		SDL_Log("END ADD NODE");
 		break;
 	case ADD_LINK:
-		unsigned nodeid = fastrand() % (output + hidden);
+		SDL_Log("BEGIN ADD LINK");
+		nodes[nodeid].size += 1;
+		tmpids = new unsigned[nodes[nodeid].size];
+		for (unsigned j = 0; j < linkid; ++j) {
+			tmpids[j] = nodes[nodeid].ids[j];
+		}
+		tmpids[linkid] = fastrand() % (input + 5 + nodeid);
+		for (unsigned j = linkid; j < nodes[nodeid].size; ++j) {
+			tmpids[j + 1] = nodes[nodeid].ids[j];
+		}
+		delete nodes[nodeid].ids;
+		nodes[nodeid].ids = tmpids;
+		SDL_Log("END ADD LINK");
+		break;
+	case SHUFFLE_LINKS:
+		SDL_Log("BEGIN SHUFFLE LINK");
+		for (unsigned j = 0; j < nodes[nodeid].size; ++j) {
+			a = fastrand() % nodes[nodeid].size;
+			b = fastrand() % nodes[nodeid].size;
+			// swap
+			tmp = nodes[nodeid].ids[a];
+			nodes[nodeid].ids[a] = nodes[nodeid].ids[b];
+			nodes[nodeid].ids[b] = tmp;
+		}
+		SDL_Log("END SHUFFLE LINKS");
 		break;
 	default:
 		break;
@@ -124,12 +257,12 @@ void Brain::store(const char* fname) {
 	printer.OpenElement("output");
 	printer.PushText(output);
 	printer.CloseElement();
-	for (int i = 0; i < output + hidden; ++i) {
+	for (unsigned i = 0; i < output + hidden; ++i) {
 		printer.OpenElement("node");
 		printer.PushAttribute("inf", nodes[i].in);
 		printer.PushAttribute("outf", nodes[i].out);
 		printer.PushAttribute("size", nodes[i].size);
-		for (int j = 0; j < nodes[i].size; ++j) {
+		for (unsigned j = 0; j < nodes[i].size; ++j) {
 			printer.OpenElement("link");
 			printer.PushText(nodes[i].ids[j]);
 			printer.CloseElement();

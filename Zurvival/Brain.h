@@ -1,4 +1,5 @@
 #pragma once
+#include <SDL.h>
 #include <math.h>
 #include <algorithm>
 #include "tinyxml2.h"
@@ -14,7 +15,7 @@ inline void fast_srand(int seed) {
 
 //fastrand routine returns one integer, similar output value range as C lib.
 
-inline int fastrand() {
+inline unsigned fastrand() {
 	g_seed = (214013 * g_seed + 2531011);
 	return (g_seed >> 16) & 0x7FFF;
 }
@@ -116,10 +117,8 @@ enum outfunc {
 	COS
 };
 
-#define CHANGE_AMOUNT 8
-
 enum changes_t {
-	NONE,
+	CHANGE_NONE,
 	CHANGE_INF,
 	CHANGE_OUTF,
 	CHANGE_LINK,
@@ -127,6 +126,7 @@ enum changes_t {
 	REMOVE_LINK,
 	ADD_NODE,
 	ADD_LINK,
+	SHUFFLE_LINKS,
 	CHANGES_MAX
 };
 
