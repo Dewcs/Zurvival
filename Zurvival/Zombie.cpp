@@ -1,7 +1,7 @@
 #include "Zombie.h"
 
 
-Zombie::Zombie(int x,int y)
+Zombie::Zombie(int x,int y,int timestamp)
 {
 	this->x = x;
 	this->y = y;
@@ -12,6 +12,7 @@ Zombie::Zombie(int x,int y)
 	ia->randomize();
 	kills = 0;
 	hp = 120000;
+	begin = timestamp;
 }
 
 
@@ -75,9 +76,16 @@ void Zombie::setBrain(Brain *brain) {
 	ia = brain;
 }
 
-Zombie* Zombie::clone(int x,int y) {
-	Zombie *ret = new Zombie(x, y);
+Zombie* Zombie::clone(int x, int y, int timestamp) {
+	Zombie *ret = new Zombie(x, y, timestamp);
 	ret->setBrain(ia->copy());
 	ia->tweak();
 	return ret;
+}
+
+void Zombie::save(int timestamp) {
+	if (kills > 0) {
+		double kps = (double)kills / (timestamp - begin);
+		ia->store(("data/zombies/"+std::to_string(kps)+".xml").c_str());
+	}
 }

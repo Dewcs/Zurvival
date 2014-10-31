@@ -21,13 +21,39 @@ Brain* Brain::copy() {
 }
 
 void Brain::tweak() {
-	unsigned inid = fastrand() % (output + hidden);
-	unsigned outid = fastrand() % (output + hidden);
-	nodes[inid].in = infunc(fastrand() % INF_SIZE);
-	nodes[outid].out = outfunc(fastrand() % OUTF_SIZE);
-	unsigned linkid = fastrand() % (output + hidden);
-	unsigned linkpos = fastrand() % (nodes[linkid].size);
-	nodes[linkid].ids[linkpos] = fastrand() % (input + 5 + linkid);
+	changes_t change = (changes_t)(fastrand() % CHANGES_MAX);
+	switch (change)
+	{
+	case NONE:
+		break;
+	case CHANGE_INF:
+		unsigned inid = fastrand() % (output + hidden);
+		nodes[inid].in = infunc(fastrand() % INF_SIZE);
+		break;
+	case CHANGE_OUTF:
+		unsigned outid = fastrand() % (output + hidden);
+		nodes[outid].out = outfunc(fastrand() % OUTF_SIZE);
+		break;
+	case CHANGE_LINK:
+		unsigned nodeid = fastrand() % (output + hidden);
+		unsigned linkid = fastrand() % (nodes[nodeid].size);
+		nodes[nodeid].ids[linkid] = fastrand() % (input + 5 + linkid);
+		break;
+	case REMOVE_NODE:
+		unsigned nodeid = fastrand() % (output + hidden);
+		break;
+	case REMOVE_LINK:
+		unsigned nodeid = fastrand() % (output + hidden);
+		break;
+	case ADD_NODE:
+		unsigned nodeid = fastrand() % (output + hidden);
+		break;
+	case ADD_LINK:
+		unsigned nodeid = fastrand() % (output + hidden);
+		break;
+	default:
+		break;
+	}
 }
 
 void Brain::randomize() {
@@ -80,6 +106,66 @@ void Brain::getResult(float* &arr, unsigned &size) {
 	arr = new float[output];
 	size = output;
 	for (unsigned i = 0; i < size; ++i) arr[i] = values[input + 5 + hidden + i];
+}
+
+void Brain::store(const char* fname) {
+	tinyxml2::XMLDocument doc;
+	tinyxml2::XMLPrinter printer;
+	printer.OpenElement("brain");
+	// store number of input
+	printer.OpenElement("input");
+	printer.PushText(input);
+	printer.CloseElement();
+	// store number of hidden
+	printer.OpenElement("hidden");
+	printer.PushText(hidden);
+	printer.CloseElement();
+	// store number of output
+	printer.OpenElement("output");
+	printer.PushText(output);
+	printer.CloseElement();
+	for (int i = 0; i < output + hidden; ++i) {
+		printer.OpenElement("node");
+		printer.PushAttribute("inf", nodes[i].in);
+		printer.PushAttribute("outf", nodes[i].out);
+		printer.PushAttribute("size", nodes[i].size);
+		for (int j = 0; j < nodes[i].size; ++j) {
+			printer.OpenElement("link");
+			printer.PushText(nodes[i].ids[j]);
+			printer.CloseElement();
+		}
+		printer.CloseElement();
+	}
+	printer.CloseElement();
+	doc.Parse(printer.CStr());
+	doc.SaveFile(fname);
+}
+
+void Brain::load(const char* fname) {
+	tinyxml2::XMLDocument doc;
+	doc.LoadFile(fname);
+	// first element
+	tinyxml2::XMLNode *rootnode = doc.FirstChild();
+	rootnode->FirstChildElement("input")->QueryIntText((int*)&input);
+	rootnode->FirstChildElement("hidden")->QueryIntText((int*)&hidden);
+	rootnode->FirstChildElement("output")->QueryIntText((int*)&output);
+	size = input + 5 + hidden + output;
+	values = new float[size];
+	nodes = new Node[output + hidden];
+	tinyxml2::XMLNode *nodesNode = rootnode->FirstChildElement("node");
+	for (unsigned i = 0; i < output + hidden; ++i) {
+		const tinyxml2::XMLElement *element = nodesNode->ToElement();
+		element->QueryIntAttribute("inf", (int*)nodes[i].in);
+		element->QueryIntAttribute("outf", (int*)nodes[i].out);
+		element->QueryIntAttribute("size", (int*)nodes[i].size);
+		nodes[i].ids = new unsigned[nodes[i].size];
+		tinyxml2::XMLNode *linksNode = nodesNode->FirstChildElement("link");
+		for (unsigned j = 0; j < nodes[i].size; ++j) {
+			linksNode->ToElement()->QueryIntText((int*)&nodes[i].ids[j]);
+			linksNode = linksNode->NextSibling();
+		}
+		nodesNode = nodesNode->NextSibling();
+	}
 }
 
 float isum_all(float* values, unsigned* ids, unsigned size) {

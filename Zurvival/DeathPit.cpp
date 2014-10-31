@@ -19,7 +19,19 @@ DeathPit::DeathPit(SDL_Renderer* renderer, SpriteManager* sprMngr, int width, in
 
 DeathPit::~DeathPit()
 {
-	
+	delete sounds;
+	delete smells;
+
+	for (int i = 0; i < zcount; ++i) {
+		zombies[i]->save(SDL_GetTicks());
+		delete zombies[i];
+	}
+	delete zombies;
+
+	for (int i = 0; i < hcount; ++i) {
+		delete humans[i];
+	}
+	delete humans;
 }
 
 void DeathPit::update(unsigned delta) {
@@ -60,7 +72,7 @@ void DeathPit::update(unsigned delta) {
 	if (zcount < DP_ZOMBIE_AMOUNT/2 && rand() % 10 == 0) {
 		int x = (width / DP_RATIO) / 2 - 10;
 		int y = (height / DP_RATIO) / 2 - 10;
-		zombies[zcount] = new Zombie(x, y);
+		zombies[zcount] = new Zombie(x, y , SDL_GetTicks());
 		++zcount;
 	}
 	// update zombies
@@ -70,6 +82,7 @@ void DeathPit::update(unsigned delta) {
 	// delete zombies
 	for (int i = zcount - 1; i >= 0; --i) {
 		if (zombies[i]->isDead() || !pointInsideRect(zombies[i]->getX(), zombies[i]->getY(), 0, 0, width / DP_RATIO, height / DP_RATIO)) {
+			zombies[i]->save(SDL_GetTicks());
 			delete zombies[i];
 			for (int j = i + 1; j < zcount; ++j) {
 				zombies[j - 1] = zombies[j];
@@ -87,8 +100,8 @@ void DeathPit::update(unsigned delta) {
 				if (abs(hx - zx) < 3 && abs(hy - zy) < 3 && distP2P(hx, hy, zx, zy) <= 1.5) {
 					zombies[j]->addKills(1);
 					SDL_Log("KILLED HUMAN BY ZC: %d", zombies[j]->getKills());
-					zombies[zcount] = new Zombie(hx, hy);
-					zombies[zcount]->addKills(zombies[j]->getKills());
+					zombies[zcount] = zombies[j]->clone(hx, hy, SDL_GetTicks());
+					//zombies[zcount]->addKills(zombies[j]->getKills());
 					++zcount;
 					humans[i]->kill();
 					break;

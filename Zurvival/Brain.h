@@ -1,6 +1,7 @@
 #pragma once
 #include <math.h>
 #include <algorithm>
+#include "tinyxml2.h"
 #define OUTF_SIZE 11
 #define INF_SIZE 9
 static unsigned int g_seed = 0;
@@ -115,6 +116,20 @@ enum outfunc {
 	COS
 };
 
+#define CHANGE_AMOUNT 8
+
+enum changes_t {
+	NONE,
+	CHANGE_INF,
+	CHANGE_OUTF,
+	CHANGE_LINK,
+	REMOVE_NODE,
+	REMOVE_LINK,
+	ADD_NODE,
+	ADD_LINK,
+	CHANGES_MAX
+};
+
 struct Node{
 	infunc in;
 	outfunc out;
@@ -140,5 +155,7 @@ public:
 	void setValues(unsigned, float*, Node*);
 	void evaluate();
 	void getResult(float*&, unsigned&);
+	void store(const char* fname);
+	void load(const char* fname);
 };
 

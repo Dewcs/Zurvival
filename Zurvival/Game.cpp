@@ -46,7 +46,7 @@ void Game::update(unsigned delta) {
 	if (zcount < ZOMBIE_AMOUNT && rand()%100==0) {
 		int x = 0;
 		int y = 1;
-		zombies[zcount] = new Zombie(x, y);
+		zombies[zcount] = new Zombie(x, y, SDL_GetTicks());
 		++zcount;
 	}
 	// update zombies
