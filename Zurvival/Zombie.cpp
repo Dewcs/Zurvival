@@ -1,15 +1,25 @@
 #include "Zombie.h"
 
 
-Zombie::Zombie(int x,int y,int timestamp)
+Zombie::Zombie(int x, int y, int timestamp, std::string mode)
 {
 	this->x = x;
 	this->y = y;
 	viewAngle = 0;
 	lx = 0;
 	ly = 0;
-	ia = new Brain(8,2);
-	ia->randomize();
+	if (mode == "random") {
+		ia = new Brain(8, 2);
+		ia->randomize();
+	}
+	else if (mode == "empty") {
+		ia = NULL;
+	}
+	else {
+		ia = new Brain(8,2);
+		ia->load(mode.c_str());
+		ia->tweak();
+	}
 	kills = 0;
 	hp = 120000;
 	begin = timestamp;
@@ -72,12 +82,12 @@ double Zombie::getY() {
 }
 
 void Zombie::setBrain(Brain *brain) {
-	delete ia;
+	if (ia!=NULL) delete ia;
 	ia = brain;
 }
 
 Zombie* Zombie::clone(int x, int y, int timestamp) {
-	Zombie *ret = new Zombie(x, y, timestamp);
+	Zombie *ret = new Zombie(x, y, timestamp,"empty");
 	ret->setBrain(ia->copy());
 	ia->tweak();
 	return ret;
@@ -86,6 +96,6 @@ Zombie* Zombie::clone(int x, int y, int timestamp) {
 void Zombie::save(int timestamp) {
 	if (kills > 0) {
 		double kps = (double)kills / (timestamp - begin);
-		ia->store(("data/zombies/"+std::to_string(kps)+".xml").c_str());
+		ia->store(("data/zombies/" + to_string_with_precision(kps,15) + ".xml").c_str());
 	}
 }

@@ -5,6 +5,10 @@
 #include "Functions.h"
 #include "Brain.h"
 #include "Radar.h"
+#include <istream>
+#include <iostream>
+#include <iomanip>
+#include <sstream>
 
 class Zombie {
 private:
@@ -16,7 +20,7 @@ private:
 	int hp;
 	int begin;
 public:
-	Zombie(int x, int y, int timestamp);
+	Zombie(int x, int y, int timestamp, std::string mode);
 	~Zombie();
 	bool isDead();
 	void update(unsigned delta,Radar *smells,Radar * sounds);

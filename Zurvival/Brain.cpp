@@ -42,62 +42,66 @@ void Brain::tweak() {
 		nodes[nodeid].ids[linkid] = fastrand() % (input + 5 + linkid);
 		break;
 	case REMOVE_NODE:
-		SDL_Log("BEGIN REMOVE NODE");
-		--hidden;
-		size = input + 5 + output + hidden;
-		values = new float[size];
-		tmpnodes = new Node[output + hidden];
-		for (unsigned i = 0; i < nodeid; ++i) {
-			// copy before nodeid values
-			tmpnodes[i].in = nodes[i].in;
-			tmpnodes[i].out = nodes[i].out;
-			tmpnodes[i].size = nodes[i].size;
-			tmpnodes[i].ids = new unsigned[nodes[i].size];
-			for (unsigned j = 0; j < tmpnodes[i].size; ++j) {
-				tmpnodes[i].ids[j] = nodes[i].ids[j];
-			}
-			delete nodes[i].ids;
-		}
-		for (unsigned i = nodeid; i < output + hidden; ++i) {
-			// copy after nodeid values
-			tmpnodes[i].in = nodes[i + 1].in;
-			tmpnodes[i].out = nodes[i + 1].out;
-			tmpnodes[i].size = nodes[i + 1].size;
-			tmpnodes[i].ids = new unsigned[nodes[i+1].size];
-			next = 0; // counter for next element to insert
-			for (unsigned j = 0; j < nodes[i + 1].size; ++j) {
-				if (nodes[i + 1].ids[j]<nodeid) tmpnodes[i].ids[next++] = nodes[i + 1].ids[j]; // no problem
-				else if (nodes[i + 1].ids[j]>nodeid) tmpnodes[i].ids[next++] = nodes[i + 1].ids[j] - 1; // subratct 1 position
-				else {
-					// remove link
-					--tmpnodes[i].size;
-					tmpids = new unsigned[tmpnodes[i].size];
-					for (unsigned k = 0; k < next; ++k) {
-						tmpids[k] = tmpnodes[i].ids[k];
-					}
-					delete tmpnodes[i].ids;
-					tmpnodes[i].ids = tmpids;
+		if (hidden > 0) {
+			SDL_Log("BEGIN REMOVE NODE");
+			--hidden;
+			size = input + 5 + output + hidden;
+			values = new float[size];
+			tmpnodes = new Node[output + hidden];
+			for (unsigned i = 0; i < nodeid; ++i) {
+				// copy before nodeid values
+				tmpnodes[i].in = nodes[i].in;
+				tmpnodes[i].out = nodes[i].out;
+				tmpnodes[i].size = nodes[i].size;
+				tmpnodes[i].ids = new unsigned[nodes[i].size];
+				for (unsigned j = 0; j < tmpnodes[i].size; ++j) {
+					tmpnodes[i].ids[j] = nodes[i].ids[j];
 				}
+				delete nodes[i].ids;
 			}
-			delete nodes[i+1].ids;
+			for (unsigned i = nodeid; i < output + hidden; ++i) {
+				// copy after nodeid values
+				tmpnodes[i].in = nodes[i + 1].in;
+				tmpnodes[i].out = nodes[i + 1].out;
+				tmpnodes[i].size = nodes[i + 1].size;
+				tmpnodes[i].ids = new unsigned[nodes[i + 1].size];
+				next = 0; // counter for next element to insert
+				for (unsigned j = 0; j < nodes[i + 1].size; ++j) {
+					if (nodes[i + 1].ids[j]<nodeid) tmpnodes[i].ids[next++] = nodes[i + 1].ids[j]; // no problem
+					else if (nodes[i + 1].ids[j]>nodeid) tmpnodes[i].ids[next++] = nodes[i + 1].ids[j] - 1; // subratct 1 position
+					else {
+						// remove link
+						--tmpnodes[i].size;
+						tmpids = new unsigned[tmpnodes[i].size];
+						for (unsigned k = 0; k < next; ++k) {
+							tmpids[k] = tmpnodes[i].ids[k];
+						}
+						delete tmpnodes[i].ids;
+						tmpnodes[i].ids = tmpids;
+					}
+				}
+				delete nodes[i + 1].ids;
+			}
+			delete nodes;
+			nodes = tmpnodes;
+			SDL_Log("END REMOVE NODE");
 		}
-		delete nodes;
-		nodes = tmpnodes;
-		SDL_Log("END REMOVE NODE");
 		break;
 	case REMOVE_LINK:
 		SDL_Log("BEGIN REMOVE LINK");
-		nodes[nodeid].size -= 1;
-		tmpids = new unsigned[nodes[nodeid].size];
-		for (unsigned j = 0; j < linkid; ++j) {
-			tmpids[j] = nodes[nodeid].ids[j];
+		if (nodes[nodeid].size > 1) {
+			nodes[nodeid].size -= 1;
+			tmpids = new unsigned[nodes[nodeid].size];
+			for (unsigned j = 0; j < linkid; ++j) {
+				tmpids[j] = nodes[nodeid].ids[j];
+			}
+			for (unsigned j = linkid; j < nodes[nodeid].size; ++j) {
+				tmpids[j] = nodes[nodeid].ids[j + 1];
+			}
+			delete nodes[nodeid].ids;
+			nodes[nodeid].ids = tmpids;
+			SDL_Log("END REMOVE LINK");
 		}
-		for (unsigned j = linkid; j < nodes[nodeid].size; ++j) {
-			tmpids[j] = nodes[nodeid].ids[j + 1];
-		}
-		delete nodes[nodeid].ids;
-		nodes[nodeid].ids = tmpids;
-		SDL_Log("END REMOVE LINK");
 		break;
 	case ADD_NODE:
 		SDL_Log("BEGIN ADD NODE");
@@ -173,7 +177,7 @@ void Brain::tweak() {
 		SDL_Log("END ADD LINK");
 		break;
 	case SHUFFLE_LINKS:
-		SDL_Log("BEGIN SHUFFLE LINK");
+		SDL_Log("END SHUFFLE");
 		for (unsigned j = 0; j < nodes[nodeid].size; ++j) {
 			a = fastrand() % nodes[nodeid].size;
 			b = fastrand() % nodes[nodeid].size;
@@ -361,7 +365,7 @@ float imed(float* values, unsigned* ids, unsigned size) {
 	std::sort(tmp, tmp + size);
 	float ret = tmp[size / 2];
 	if (size % 2 == 0) {
-		ret = (ret + tmp[(size / 2) + 1]) / 2;
+		ret = (ret + tmp[(size / 2) - 1]) / 2;
 	}
 	delete tmp;
 	return ret;

@@ -1,7 +1,8 @@
 #include "SpriteManager.h"
 
 
-SpriteManager::SpriteManager() {
+SpriteManager::SpriteManager(SDL_Renderer *renderer) {
+	this->renderer = renderer;
 }
 
 
@@ -19,24 +20,25 @@ SpriteManager::~SpriteManager() {
 	numlist.clear();
 }
 
-void SpriteManager::addImage(SDL_Renderer *renderer, const std::string &key, const char *fname, SDL_Rect r) {
+void SpriteManager::addImage(const std::string &key, const char *fname, SDL_Rect r) {
 	// check if key exists 
 	if (!keyExists(key)) {
 		if (fileExists(fname)) {
 			SDL_Surface * image = IMG_Load(fname);
 			list[key] = Sprite(SDL_CreateTextureFromSurface(renderer, image), r,image->w,image->h);
 			SDL_FreeSurface(image);
+			log(VERBOSE_LOAD, "LOADED SPRITESHEET %s FROM %s",key.c_str(), fname);
 		}
 		else {
-			std::cerr << "File not found " << fname << std::endl;
+			log(VERBOSE_ERRORS, "File not found %s", fname);
 		}
 	}
 	else {
-		std::cerr << "Repeated sprite key " << key << std::endl;
+		log(VERBOSE_ERRORS, "Repeated sprite key %s", key.c_str());
 	}
 }
 
-void SpriteManager::addSpriteSheet(SDL_Renderer *renderer, const std::string &key, const char *fname, SDL_Rect r, int w, int h, int border,unsigned transp) {
+void SpriteManager::addSpriteSheet(const std::string &key, const char *fname, SDL_Rect r, int w, int h, int border,unsigned transp) {
 	if (fileExists(fname)) {
 		SDL_Surface * image = IMG_Load(fname);
 		int iw = image->w;
@@ -57,20 +59,21 @@ void SpriteManager::addSpriteSheet(SDL_Renderer *renderer, const std::string &ke
 				++c;
 				if (!keyExists(tmpkey)) {
 					list[tmpkey] = Sprite(SDL_CreateTextureFromSurface(renderer, tmp), r, w, h);
+					log(VERBOSE_LOAD, "LOADED SPRITESHEET %s FROM %s", tmpkey.c_str(), fname);
 				}
 				else {
-					std::cerr << "Repeated sprite key " << key << std::endl;
+					log(VERBOSE_ERRORS, "Repeated sprite key %s", tmpkey.c_str());
 				}
 			}
 		}
 		
 	}
 	else {
-		std::cerr << "File not found " << fname << std::endl;
+		log(VERBOSE_ERRORS, "File not found %s", fname);
 	}
 }
 
-void SpriteManager::addText(SDL_Renderer *renderer, const std::string &key, const char *text, const SDL_Color &color, int ptsize, const char* fontfile, SDL_Rect r) {
+void SpriteManager::addText(const std::string &key, const char *text, const SDL_Color &color, int ptsize, const char* fontfile, SDL_Rect r) {
 	if (!keyExists(key)) {
 		if (fileExists(fontfile)) {
 			TTF_Font* font;
@@ -79,33 +82,34 @@ void SpriteManager::addText(SDL_Renderer *renderer, const std::string &key, cons
 			list[key] = Sprite(SDL_CreateTextureFromSurface(renderer, image), r, image->w, image->h);
 			SDL_FreeSurface(image);
 			TTF_CloseFont(font);
+			log(VERBOSE_LOAD, "LOADED TEXT %s [%s] USING %s", key.c_str(), text, fontfile);
 		}
 		else {
-			std::cerr << "File not found " << fontfile << std::endl;
+			log(VERBOSE_ERRORS, "File not found %s", fontfile);
 		}
 	}
 	else {
-		std::cerr << "Repeated sprite key " << key << std::endl;
+		log(VERBOSE_ERRORS, "Repeated sprite key %s", key.c_str());
 	}
 }
 
 SDL_Texture* SpriteManager::getTexture(const std::string &key) {
-	if (!keyExists(key)) std::cerr << "Unknown sprite key " << key << std::endl;
+	if (!keyExists(key)) log(VERBOSE_ERRORS, "Unknown sprite key %s", key.c_str());
 	return list[key].texture;
 }
 
 SDL_Rect SpriteManager::getRect(const std::string &key) {
-	if (!keyExists(key)) std::cerr << "Unknown sprite key " << key << std::endl;
+	if (!keyExists(key)) log(VERBOSE_ERRORS, "Unknown sprite key %s", key.c_str());
 	return list[key].rect;
 }
 
 bool SpriteManager::isInsideRect(const std::string &key,int x, int y) {
-	if (!keyExists(key)) std::cerr << "Unknown sprite key " << key << std::endl;
+	if (!keyExists(key)) log(VERBOSE_ERRORS, "Unknown sprite key %s", key.c_str());
 	SDL_Rect r = getRect(key);
 	return r.x <= x && x <= r.x + r.w && r.y <= y && y <= r.y + r.h;
 }
 
-void SpriteManager::addNumbers(SDL_Renderer *renderer, const std::string &key, const SDL_Color &color, int ptsize, const char* fontfile) {
+void SpriteManager::addNumbers(const std::string &key, const SDL_Color &color, int ptsize, const char* fontfile) {
 	if (!keyNExists(key)) {
 		if (fileExists(fontfile)) {
 			TTF_Font* font;
@@ -119,19 +123,20 @@ void SpriteManager::addNumbers(SDL_Renderer *renderer, const std::string &key, c
 			}
 			TTF_CloseFont(font);
 			numlist[key] = tmp;
+			log(VERBOSE_LOAD, "LOADED NUMBER %s USING %s", key.c_str(), fontfile);
 		}
 		else {
-			std::cerr << "File not found " << fontfile << std::endl;
+			log(VERBOSE_ERRORS, "File not found %s", fontfile);
 		}
 	}
 	else {
-		std::cerr << "Repeated number key " << key << std::endl;
+		log(VERBOSE_ERRORS, "Repeated number key %s", key.c_str());
 	}
 }
 /*
 	draws number into renderer using numbers defined in key onto (x,y) with h as height and align (ALIGN_RIGHT,ALIGN_LEFT,ALIGN_CENTER)
 */
-void SpriteManager::drawNumber(SDL_Renderer *renderer, int number, const std::string &key, int x, int y, int h, align_t align) {
+void SpriteManager::drawNumber(int number, const std::string &key, int x, int y, int h, align_t align) {
 	switch (align) {
 		case ALIGN_LEFT:
 			if (number < 10) {
@@ -151,7 +156,7 @@ void SpriteManager::drawNumber(SDL_Renderer *renderer, int number, const std::st
 					int w = (wi*h) / he + 1;
 					x += w;
 				}
-				drawNumber(renderer, number, key, x, y, h, ALIGN_RIGHT);
+				drawNumber(number, key, x, y, h, ALIGN_RIGHT);
 			}
 			
 			break;
@@ -183,7 +188,7 @@ void SpriteManager::drawNumber(SDL_Renderer *renderer, int number, const std::st
 				SDL_QueryTexture(numlist[key][number], NULL, NULL, &wi, &he);
 				int w = (wi*h) / he;
 				SDL_Rect r = { x-w/2, y, w, h };
-				SDL_RenderCopy(renderer, numlist[key][number], NULL, &r);
+				SDL_RenderCopy(renderer,numlist[key][number], NULL, &r);
 			}
 			else {
 				int tnumber = 0;
@@ -196,7 +201,7 @@ void SpriteManager::drawNumber(SDL_Renderer *renderer, int number, const std::st
 					int w = (wi*h) / he + 1;
 					tw += w;
 				}
-				drawNumber(renderer, number, key, x + tw/2, y, h, ALIGN_RIGHT);
+				drawNumber(number, key, x + tw/2, y, h, ALIGN_RIGHT);
 			}
 			break;
 		default:

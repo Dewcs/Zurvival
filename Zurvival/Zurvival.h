@@ -11,7 +11,8 @@
 
 class Zurvival {
 	private:
-		int width, height, fps; // screen info
+		int width, height; // screen info
+		float fps;
 		unsigned last_time; // delta purposes
 		SDL_Window *window; 
 		SDL_Renderer *renderer;
@@ -21,7 +22,7 @@ class Zurvival {
 		DeathPit *deathPit;
 		Config *config;
 		Game *game;
-		bool stop; // did the game end
+		bool stop,pause; // did the game end
 		page_t page; // current game page
 	public:
 		Zurvival();

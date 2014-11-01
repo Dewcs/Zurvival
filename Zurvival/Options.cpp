@@ -5,11 +5,15 @@ Options::Options(SDL_Renderer* renderer, SpriteManager* sprMngr)
 {
 	this->renderer = renderer;
 	this->sprMngr = sprMngr;
+	log(VERBOSE_DATA_CREATION, "CREATED OPTIONS");
 }
 
 
 Options::~Options()
 {
+	renderer = NULL;
+	sprMngr = NULL;
+	log(VERBOSE_DATA_CREATION, "DELETED OPTIONS");
 }
 
 void Options::update(unsigned delta) {
@@ -21,7 +25,7 @@ void Options::draw() {
 	SDL_RenderCopy(renderer, sprMngr->getTexture("back"), NULL, &sprMngr->getRect("back"));
 }
 
-void Options::listen(bool &end, order_t &order, int &value) {
+void Options::listen(bool &end, bool &pause, order_t &order, int &value) {
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 		switch (event.type){
@@ -49,6 +53,18 @@ void Options::listen(bool &end, order_t &order, int &value) {
 					value = MAINMENU;
 					return;
 				}
+			}
+			break;
+		case SDL_WINDOWEVENT:
+			switch (event.window.event) {
+			case SDL_WINDOWEVENT_MINIMIZED:
+				pause = true;
+				break;
+			case SDL_WINDOWEVENT_RESTORED:
+				pause = false;
+				break;
+			default:
+				break;
 			}
 			break;
 

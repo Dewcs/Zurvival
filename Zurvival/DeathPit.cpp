@@ -14,6 +14,10 @@ DeathPit::DeathPit(SDL_Renderer* renderer, SpriteManager* sprMngr, int width, in
 	hcount = 0;
 	sounds = new Radar(453, 0.5, 750);
 	smells = new Radar(5, 0, 5000);
+
+	zTrainer = new Trainer("data/zombies");
+
+	log(VERBOSE_DATA_CREATION, "CREATED DEATHPIT");
 }
 
 
@@ -32,6 +36,8 @@ DeathPit::~DeathPit()
 		delete humans[i];
 	}
 	delete humans;
+
+	delete zTrainer;
 }
 
 void DeathPit::update(unsigned delta) {
@@ -44,6 +50,7 @@ void DeathPit::update(unsigned delta) {
 		humans[hcount] = new humanDummy(x, y);
 		++hcount;
 	}
+	
 	// update
 	for (int i = 0; i < hcount; ++i) {
 		// update position
@@ -72,7 +79,8 @@ void DeathPit::update(unsigned delta) {
 	if (zcount < DP_ZOMBIE_AMOUNT/2 && rand() % 10 == 0) {
 		int x = (width / DP_RATIO) / 2 - 10;
 		int y = (height / DP_RATIO) / 2 - 10;
-		zombies[zcount] = new Zombie(x, y , SDL_GetTicks());
+		std::string mode = zTrainer->random();
+		zombies[zcount] = new Zombie(x, y , SDL_GetTicks(), mode);
 		++zcount;
 	}
 	// update zombies
@@ -100,9 +108,14 @@ void DeathPit::update(unsigned delta) {
 				if (abs(hx - zx) < 3 && abs(hy - zy) < 3 && distP2P(hx, hy, zx, zy) <= 1.5) {
 					zombies[j]->addKills(1);
 					SDL_Log("KILLED HUMAN BY ZC: %d", zombies[j]->getKills());
-					zombies[zcount] = zombies[j]->clone(hx, hy, SDL_GetTicks());
-					//zombies[zcount]->addKills(zombies[j]->getKills());
-					++zcount;
+					if (zcount < DP_ZOMBIE_AMOUNT) {
+						zombies[zcount] = zombies[j]->clone(hx, hy, SDL_GetTicks());
+						//zombies[zcount]->addKills(zombies[j]->getKills());
+						++zcount;
+					}
+					else {
+						SDL_Log("ZOMBIE ARR FULL");
+					}
 					humans[i]->kill();
 					break;
 				}
@@ -122,7 +135,7 @@ void DeathPit::draw() {
 	}
 }
 
-void DeathPit::listen(bool &end, order_t &order, int &value) {
+void DeathPit::listen(bool &end, bool &pause, order_t &order, int &value) {
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 		switch (event.type){
@@ -142,6 +155,18 @@ void DeathPit::listen(bool &end, order_t &order, int &value) {
 			break;
 		case SDL_QUIT:
 			end = true;
+			break;
+		case SDL_WINDOWEVENT:
+			switch (event.window.event) {
+			case SDL_WINDOWEVENT_MINIMIZED:
+				pause = true;
+				break;
+			case SDL_WINDOWEVENT_RESTORED:
+				pause = false;
+				break;
+			default:
+				break;
+			}
 			break;
 
 		default:

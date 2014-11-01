@@ -5,6 +5,7 @@
 #include "Zombie.h"
 #include "humanDummy.h"
 #include "Radar.h"
+#include "Trainer.h"
 
 class DeathPit
 {
@@ -19,11 +20,12 @@ private:
 	int hcount;
 	int zcount;
 	int width, height;
+	Trainer *zTrainer;
 
 public:
 	DeathPit(SDL_Renderer* renderer, SpriteManager* sprMngr, int width, int height);
 	~DeathPit();
-	void listen(bool &end, order_t &order, int &value);
+	void listen(bool &end, bool &pause, order_t &order, int &value);
 	void update(unsigned);
 	void draw();
 };

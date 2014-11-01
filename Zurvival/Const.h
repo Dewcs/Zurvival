@@ -1,5 +1,18 @@
 #pragma once
 
+enum verbose_t {
+	VERBOSE_NONE = 0,
+	VERBOSE_BASIC = 1,
+	VERBOSE_USER_INPUT = 2,
+	VERBOSE_DATA_CREATION = 4,
+	VERBOSE_ERRORS = 8,
+	VERBOSE_FRAME_DRAW = 16,
+	VERBOSE_LOAD = 32,
+	VERBOSE_ALL = 0x7FFFFFFF,
+};
+
+#define VERBOSE_LEVEL VERBOSE_ALL
+
 enum page_t {
 	LOADING,
 	MAINMENU,
@@ -66,3 +79,9 @@ const int yval[] = { 1, 0, -1, 0 };
 #define DP_HUMAN_AMOUNT 100
 #define DP_RATIO 4
 #define DP_TIME_SPEED 4
+
+#define DP_RANDOM_ZOMBIE_CHANCES 50 // [0-99]
+
+#define MAX_ZOMBIE_STORAGE 1000
+
+#define MAX_HUMAN_STORAGE 1000

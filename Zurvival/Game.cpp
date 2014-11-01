@@ -13,6 +13,8 @@ Game::Game(SDL_Renderer* renderer, SpriteManager* sprMngr,int width,int height)
 	zcount = 0;
 	sounds = new Radar(453, 0.5, 100);
 	smells = new Radar(5, 0, 1000);
+
+	log(VERBOSE_DATA_CREATION, "CREATED GAME");
 }
 
 
@@ -46,7 +48,7 @@ void Game::update(unsigned delta) {
 	if (zcount < ZOMBIE_AMOUNT && rand()%100==0) {
 		int x = 0;
 		int y = 1;
-		zombies[zcount] = new Zombie(x, y, SDL_GetTicks());
+		zombies[zcount] = new Zombie(x, y, SDL_GetTicks(),"random");
 		++zcount;
 	}
 	// update zombies
@@ -131,7 +133,7 @@ void Game::draw() {
 	// draw gui
 }
 
-void Game::listen(bool &end, order_t &order, int &value) {
+void Game::listen(bool &end, bool &pause, order_t &order, int &value) {
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 		switch (event.type){
@@ -204,6 +206,18 @@ void Game::listen(bool &end, order_t &order, int &value) {
 				break;
 			case SDL_QUIT:
 				end = true;
+				break;
+			case SDL_WINDOWEVENT:
+				switch (event.window.event) {
+				case SDL_WINDOWEVENT_MINIMIZED:
+					pause = true;
+					break;
+				case SDL_WINDOWEVENT_RESTORED:
+					pause = false;
+					break;
+				default:
+					break;
+				}
 				break;
 
 			default:

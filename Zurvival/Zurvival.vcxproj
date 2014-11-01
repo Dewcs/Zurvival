@@ -113,6 +113,7 @@
     <ClInclude Include="Config.h" />
     <ClInclude Include="Const.h" />
     <ClInclude Include="DeathPit.h" />
+    <ClInclude Include="dirent.h" />
     <ClInclude Include="Functions.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="humanDummy.h" />

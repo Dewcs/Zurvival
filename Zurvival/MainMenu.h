@@ -10,7 +10,7 @@ class MainMenu {
 	public:
 		MainMenu(SDL_Renderer* renderer, SpriteManager* sprMngr);
 		~MainMenu();
-		void listen(bool &end,order_t &order,int &value);
+		void listen(bool &end, bool &pause, order_t &order, int &value);
 		void update(unsigned);
 		void draw();
 };

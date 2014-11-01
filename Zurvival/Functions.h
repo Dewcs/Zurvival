@@ -1,9 +1,15 @@
 #pragma once
 #include <SDL.h>
 #include <istream>
+#include <iostream>
+#include <iomanip>
+#include <sstream>
 #include <math.h>
+#include <stdio.h>
 #include <algorithm>
+#include <time.h>
 #include "Const.h"
+#include "dirent.h"
 
 
 /*******************************************************************************
@@ -11,6 +17,11 @@ FILE FUNCTIONS
 ********************************************************************************/
 // checks if a file exists
 bool fileExists(const char *fname);
+// deletes a file
+bool deleteFile(const char *fname);
+
+/*LOG*/
+int log(int level, const char *format, ...);
 
 /*******************************************************************************
 GEOMETRY FUNCTIONS
@@ -39,6 +50,12 @@ SDL_Rect rectIntersect(SDL_Rect a, SDL_Rect b);
 double angleDist(double a, double b);
 // is angle between angle a and angle b?
 bool inAngleRange(double angle, double a, double b);
+
+
+/*************************************************************************
+STRING FUNCTIONS
+**************************************************************************/
+std::string to_string_with_precision(double a_value, const int n);
 
 /*************************************************************************
 OTHER FUNCTIONS

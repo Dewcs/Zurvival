@@ -4,6 +4,7 @@
 MainMenu::MainMenu(SDL_Renderer* renderer, SpriteManager* sprMngr) {
 	this->renderer = renderer;
 	this->sprMngr = sprMngr;
+	log(VERBOSE_DATA_CREATION, "CREATED MAINMENU");
 }
 
 
@@ -23,7 +24,7 @@ void MainMenu::draw() {
 	SDL_RenderCopyEx(renderer, sprMngr->getTexture("menu_title"), NULL, &sprMngr->getRect("menu_title"), -15, NULL, SDL_FLIP_NONE);
 }
 
-void MainMenu::listen(bool &end, order_t &order, int &value) {
+void MainMenu::listen(bool &end, bool &pause, order_t &order, int &value) {
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 		switch (event.type){
@@ -61,6 +62,17 @@ void MainMenu::listen(bool &end, order_t &order, int &value) {
 				break;
 			case SDL_WINDOWEVENT:
 				switch (event.window.event) {
+				case SDL_WINDOWEVENT_MINIMIZED:
+					pause = true;
+					break;
+				case SDL_WINDOWEVENT_RESTORED:
+					pause = false;
+					break;
+				default:
+					break;
+				}
+				break;
+				/*switch (event.window.event) {
 				case SDL_WINDOWEVENT_SHOWN:
 					SDL_Log("Window %d shown", event.window.windowID);
 					break;
@@ -81,12 +93,14 @@ void MainMenu::listen(bool &end, order_t &order, int &value) {
 						event.window.data2);
 					break;
 				case SDL_WINDOWEVENT_MINIMIZED:
+					pause = true;
 					SDL_Log("Window %d minimized", event.window.windowID);
 					break;
 				case SDL_WINDOWEVENT_MAXIMIZED:
 					SDL_Log("Window %d maximized", event.window.windowID);
 					break;
 				case SDL_WINDOWEVENT_RESTORED:
+					pause = false;
 					SDL_Log("Window %d restored", event.window.windowID);
 					break;
 				case SDL_WINDOWEVENT_ENTER:
@@ -112,7 +126,7 @@ void MainMenu::listen(bool &end, order_t &order, int &value) {
 						event.window.windowID, event.window.event);
 					break;
 				}
-				break;
+				break;*/
 			default:
 				break;
 		}

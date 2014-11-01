@@ -12,6 +12,29 @@ bool fileExists(const char *fname) {
 	}
 }
 
+bool deleteFile(const char *fname) {
+	if (fileExists(fname) && remove(fname)==0) return true;
+	return false;
+}
+
+int log(int level, const char *format, ...) {
+	if ((level & VERBOSE_LEVEL)!=0) {
+		va_list arg;
+		int done;
+
+		va_start(arg, format);
+		time_t t = time(0);   // get time now
+		struct tm * now = localtime(&t);
+		printf("[%04d/%02d/%02d %02d:%02d:%02d] ", now->tm_year+1900, now->tm_mon, now->tm_mday, now->tm_hour, now->tm_min, now->tm_sec);
+		done = vfprintf(stdout, format, arg);
+		printf("\n");
+		va_end(arg);
+
+		return done;
+	}
+	return 0;
+}
+
 double angleP2P(double x0, double y0, double x1, double y1) {
 	double dx = x1 - x0;
 	double dy = y1 - y0;
@@ -81,10 +104,10 @@ bool inAngleRange(double angle, double a, double b) {
 }
 
 SDL_Rect rectIntersect(SDL_Rect a, SDL_Rect b){
-	int x = std::max(a.x, b.x);
-	int num1 = std::min(a.x + a.w, b.x + b.w);
-	int y = std::max(a.y, b.y);
-	int num2 = std::min(a.y + a.h, b.y + b.h);
+	int x = max(a.x, b.x);
+	int num1 = min(a.x + a.w, b.x + b.w);
+	int y = max(a.y, b.y);
+	int num2 = min(a.y + a.h, b.y + b.h);
 	if (num1 >= x && num2 >= y) {
 		SDL_Rect ret = { x, y, num1 - x, num2 - y };
 		return ret;
@@ -93,6 +116,12 @@ SDL_Rect rectIntersect(SDL_Rect a, SDL_Rect b){
 		SDL_Rect ret = { 0, 0, 0, 0 };
 		return ret;
 	}
+}
+
+std::string to_string_with_precision(double a_value, const int n) {
+	std::ostringstream out;
+	out << std::fixed << std::setprecision(n) << a_value;
+	return out.str();
 }
 
 unsigned chunkUID(int x, int y) {

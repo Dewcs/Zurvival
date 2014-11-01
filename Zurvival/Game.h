@@ -22,7 +22,7 @@ private:
 public:
 	Game(SDL_Renderer* renderer, SpriteManager* sprMngr, int width,int height);
 	~Game();
-	void listen(bool &end, order_t &order, int &value);
+	void listen(bool &end, bool &pause, order_t &order, int &value);
 	void update(unsigned);
 	void draw();
 };
