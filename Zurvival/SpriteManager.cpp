@@ -18,6 +18,7 @@ SpriteManager::~SpriteManager() {
 		delete[] it->second;
 	}
 	numlist.clear();
+	renderer = NULL;
 }
 
 void SpriteManager::addImage(const std::string &key, const char *fname, SDL_Rect r) {

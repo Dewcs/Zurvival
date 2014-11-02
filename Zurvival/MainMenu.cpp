@@ -10,6 +10,8 @@ MainMenu::MainMenu(SDL_Renderer* renderer, SpriteManager* sprMngr) {
 
 MainMenu::~MainMenu()
 {
+	renderer = NULL;
+	sprMngr = NULL;
 }
 
 void MainMenu::update(unsigned delta) {

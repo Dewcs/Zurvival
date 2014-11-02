@@ -3,15 +3,18 @@
 Brain::Brain(unsigned input, unsigned output) {
 	this->input = input;
 	this->output = output;
+	/*values = NULL;
+	nodes = NULL;*/
 }
 
 
 Brain::~Brain() {
-	for (unsigned i = 0; i < output + hidden; ++i) {
-		delete nodes[i].ids;
+	for (unsigned i = 0; i < nodes.size(); ++i) {
+		nodes[i].ids.clear();
 	}
-	delete nodes;
-	delete values;
+	nodes.clear();
+	values.clear();
+	log(VERBOSE_BRAIN, "BRAIN DELETED");
 }
 
 Brain* Brain::copy() {
@@ -21,13 +24,14 @@ Brain* Brain::copy() {
 }
 
 void Brain::tweak() {
+	
 	changes_t change = (changes_t)(fastrand() % CHANGES_MAX);
+	log(VERBOSE_BRAIN, "BRAIN TWEAKED %d", change);
 	unsigned nodeid = fastrand() % (output + hidden);
 	unsigned linkid = fastrand() % (nodes[nodeid].size);
-	Node *tmpnodes = NULL;
-	unsigned *tmpids = NULL;
 	unsigned next = 0;
 	unsigned a, b, tmp;
+	Node node;
 	switch (change)
 	{
 	case CHANGE_NONE:
@@ -43,141 +47,66 @@ void Brain::tweak() {
 		break;
 	case REMOVE_NODE:
 		if (hidden > 0) {
-			SDL_Log("BEGIN REMOVE NODE");
 			--hidden;
 			size = input + 5 + output + hidden;
-			values = new float[size];
-			tmpnodes = new Node[output + hidden];
-			for (unsigned i = 0; i < nodeid; ++i) {
-				// copy before nodeid values
-				tmpnodes[i].in = nodes[i].in;
-				tmpnodes[i].out = nodes[i].out;
-				tmpnodes[i].size = nodes[i].size;
-				tmpnodes[i].ids = new unsigned[nodes[i].size];
-				for (unsigned j = 0; j < tmpnodes[i].size; ++j) {
-					tmpnodes[i].ids[j] = nodes[i].ids[j];
-				}
-				delete nodes[i].ids;
-			}
+			// remove value
+			values.erase(values.begin() + nodeid);
+			nodes.erase(nodes.begin() + nodeid);
 			for (unsigned i = nodeid; i < output + hidden; ++i) {
-				// copy after nodeid values
-				tmpnodes[i].in = nodes[i + 1].in;
-				tmpnodes[i].out = nodes[i + 1].out;
-				tmpnodes[i].size = nodes[i + 1].size;
-				tmpnodes[i].ids = new unsigned[nodes[i + 1].size];
-				next = 0; // counter for next element to insert
-				for (unsigned j = 0; j < nodes[i + 1].size; ++j) {
-					if (nodes[i + 1].ids[j]<nodeid) tmpnodes[i].ids[next++] = nodes[i + 1].ids[j]; // no problem
-					else if (nodes[i + 1].ids[j]>nodeid) tmpnodes[i].ids[next++] = nodes[i + 1].ids[j] - 1; // subratct 1 position
-					else {
+				for (unsigned j = 0; j < nodes[i].size; ++j) {
+					if (nodes[i].ids[j]>nodeid) --nodes[i].ids[j]; // no problem
+					else if (nodes[i].ids[j] == nodeid) {
 						// remove link
-						--tmpnodes[i].size;
-						tmpids = new unsigned[tmpnodes[i].size];
-						for (unsigned k = 0; k < next; ++k) {
-							tmpids[k] = tmpnodes[i].ids[k];
-						}
-						delete tmpnodes[i].ids;
-						tmpnodes[i].ids = tmpids;
+						--nodes[i].size;
+						nodes[i].ids.erase(nodes[i].ids.begin() + j);
 					}
 				}
-				delete nodes[i + 1].ids;
+				if (nodes[i].size == 0) {
+					nodes[i].size = fastrand() % (input + 4 + nodeid) + 1;
+					nodes[i].ids = std::vector<unsigned>(node.size);
+					for (unsigned j = 0; j < node.size; ++j) {
+						nodes[i].ids[j] = fastrand() % (input + 5 + i);
+					}
+				}
 			}
-			delete nodes;
-			nodes = tmpnodes;
-			SDL_Log("END REMOVE NODE");
 		}
 		break;
 	case REMOVE_LINK:
-		SDL_Log("BEGIN REMOVE LINK");
 		if (nodes[nodeid].size > 1) {
 			nodes[nodeid].size -= 1;
-			tmpids = new unsigned[nodes[nodeid].size];
-			for (unsigned j = 0; j < linkid; ++j) {
-				tmpids[j] = nodes[nodeid].ids[j];
-			}
-			for (unsigned j = linkid; j < nodes[nodeid].size; ++j) {
-				tmpids[j] = nodes[nodeid].ids[j + 1];
-			}
-			delete nodes[nodeid].ids;
-			nodes[nodeid].ids = tmpids;
-			SDL_Log("END REMOVE LINK");
+			nodes[nodeid].ids.erase(nodes[nodeid].ids.begin() + linkid);
 		}
 		break;
 	case ADD_NODE:
-		SDL_Log("BEGIN ADD NODE");
 		++hidden;
 		size = input + 5 + output + hidden;
-		values = new float[size];
-		tmpnodes = new Node[output + hidden];
-		// pre nodes
-		for (unsigned i = 0; i < nodeid; ++i) {
-			// copy before nodeid values
-			tmpnodes[i].in = nodes[i].in;
-			tmpnodes[i].out = nodes[i].out;
-			tmpnodes[i].size = nodes[i].size;
-			tmpnodes[i].ids = new unsigned[nodes[i].size];
-			for (unsigned j = 0; j < tmpnodes[i].size; ++j) {
-				tmpnodes[i].ids[j] = nodes[i].ids[j];
-			}
-			delete nodes[i].ids;
+		values.insert(values.begin() + nodeid, 0);
+		node.in = infunc(fastrand() % INF_SIZE);
+		node.out = outfunc(fastrand() % OUTF_SIZE);
+		node.size = fastrand() % (input + 4 + nodeid) + 1;
+		node.ids = std::vector<unsigned> (node.size);
+		for (unsigned j = 0; j < node.size; ++j) {
+			node.ids[j] = fastrand() % (input + 5 + nodeid);
 		}
-		// node
-		tmpnodes[nodeid].in = infunc(fastrand() % INF_SIZE);
-		tmpnodes[nodeid].out = outfunc(fastrand() % OUTF_SIZE);
-		tmpnodes[nodeid].size = fastrand() % (input + 4 + nodeid) + 1;
-		tmpnodes[nodeid].ids = new unsigned[tmpnodes[nodeid].size];
-		for (unsigned j = 0; j < tmpnodes[nodeid].size; ++j) {
-			tmpnodes[nodeid].ids[j] = fastrand() % (input + 5 + nodeid);
-		}
-		// post nodes
-		for (unsigned i = nodeid; i < output + hidden - 1; ++i) {
-			// copy after nodeid values
-			tmpnodes[i+1].in = nodes[i].in;
-			tmpnodes[i+1].out = nodes[i].out;
-			tmpnodes[i+1].size = nodes[i].size;
-			tmpnodes[i+1].ids = new unsigned[nodes[i].size];
-			next = 0; // counter for next element to insert
+		nodes.insert(nodes.begin() + nodeid, node);
+		// fix post nodes
+		for (unsigned i = nodeid+1; i < nodes.size(); ++i) {
 			for (unsigned j = 0; j < nodes[i].size; ++j) {
-				if (nodes[i].ids[j]<nodeid) tmpnodes[i+1].ids[j] = nodes[i].ids[j]; // no problem
-				else tmpnodes[i+1].ids[j] = nodes[i].ids[j] + 1; // add 1 position
+				if (nodes[i].ids[j]>=nodeid) ++nodes[i].ids[j]; // no problem
 			}
+			// copy after nodeid values
 			// lets link
 			if (fastrand() % (input + 5 + nodeid) == 0) {
-				// copy current
-				tmpids = new unsigned[tmpnodes[i + 1].size + 1];
-				for (unsigned k = 0; k < tmpnodes[i + 1].size; ++k) {
-					tmpids[k] = tmpnodes[i + 1].ids[k];
-				}
-				// add new
-				tmpids[tmpnodes[i + 1].size] = nodeid;
-				delete tmpnodes[i + 1].ids;
-				tmpnodes[i + 1].size += 1;
-				tmpnodes[i + 1].ids = tmpids;
+				nodes[i].ids.insert(nodes[i].ids.begin() + (rand() % nodes[i].size), nodeid);
+				++nodes[i].size;
 			}
-			delete nodes[i].ids;
 		}
-		
-		delete nodes;
-		nodes = tmpnodes;
-		SDL_Log("END ADD NODE");
 		break;
 	case ADD_LINK:
-		SDL_Log("BEGIN ADD LINK");
+		nodes[nodeid].ids.insert(nodes[nodeid].ids.begin() + linkid, fastrand() % (input + 5 + nodeid));
 		nodes[nodeid].size += 1;
-		tmpids = new unsigned[nodes[nodeid].size];
-		for (unsigned j = 0; j < linkid; ++j) {
-			tmpids[j] = nodes[nodeid].ids[j];
-		}
-		tmpids[linkid] = fastrand() % (input + 5 + nodeid);
-		for (unsigned j = linkid; j < nodes[nodeid].size; ++j) {
-			tmpids[j + 1] = nodes[nodeid].ids[j];
-		}
-		delete nodes[nodeid].ids;
-		nodes[nodeid].ids = tmpids;
-		SDL_Log("END ADD LINK");
 		break;
 	case SHUFFLE_LINKS:
-		SDL_Log("END SHUFFLE");
 		for (unsigned j = 0; j < nodes[nodeid].size; ++j) {
 			a = fastrand() % nodes[nodeid].size;
 			b = fastrand() % nodes[nodeid].size;
@@ -186,7 +115,6 @@ void Brain::tweak() {
 			nodes[nodeid].ids[a] = nodes[nodeid].ids[b];
 			nodes[nodeid].ids[b] = tmp;
 		}
-		SDL_Log("END SHUFFLE LINKS");
 		break;
 	default:
 		break;
@@ -196,20 +124,20 @@ void Brain::tweak() {
 void Brain::randomize() {
 	hidden = fastrand() % ((input + output) / 2) + 1;
 	size = input + 5 + output + hidden;
-	values = new float[size];
-	nodes = new Node[output + hidden];
-	for (unsigned i = 0; i < output + hidden; ++i) {
+	values = std::vector<float> (size);
+	nodes = std::vector<Node> (output + hidden);
+	for (unsigned i = 0; i < nodes.size(); ++i) {
 		nodes[i].in = infunc(fastrand() % INF_SIZE);
 		nodes[i].out = outfunc(fastrand() % OUTF_SIZE);
 		unsigned size2 = fastrand() % (input + 4 + i) + 1;
 		nodes[i].size = size2;
-		nodes[i].ids = new unsigned[size2];
+		nodes[i].ids = std::vector<unsigned> (size2);
 		for (unsigned j = 0; j < size2; ++j) {
 			nodes[i].ids[j] = fastrand() % (input + 5 + i);
 		}
 	}
 }
-void Brain::setInput(float* input) {
+void Brain::setInput(const std::vector<float> &input) {
 	for (unsigned i = 0; i < this->input; ++i) {
 		values[i] = input[i];
 	}
@@ -219,30 +147,32 @@ void Brain::setInput(float* input) {
 	values[this->input + 3] = (float)this->input;
 	values[this->input + 4] = (float)this->output;
 }
-void Brain::setValues(unsigned hidden, float *values, Node* nodes) {
+void Brain::setValues(unsigned hidden, const std::vector<float> &values, const std::vector<Node> &nodes) {
 	this->hidden = hidden;
 	size = input + 5 + output + hidden;
-	this->values = new float[size];
-	this->nodes = new Node[output + hidden];
+	this->values = std::vector<float>(size);
+	this->nodes = std::vector<Node>(output + hidden);
 	for (unsigned i = 0; i < output + hidden; ++i) {
 		this->nodes[i].in = nodes[i].in;
 		this->nodes[i].out = nodes[i].out;
 		this->nodes[i].size = nodes[i].size;
-		this->nodes[i].ids = new unsigned[nodes[i].size];
+		this->nodes[i].ids = std::vector<unsigned> (nodes[i].size);
 		for (unsigned j = 0; j < nodes[i].size; ++j) {
 			this->nodes[i].ids[j] = nodes[i].ids[j];
 		}
 	}
 }
 void Brain::evaluate() {
+	log(VERBOSE_BRAIN, "EVAL %d NODES", output + hidden);
 	for (unsigned i = 0; i < output + hidden; ++i) {
+		log(VERBOSE_BRAIN, "EVAL NODE %d IN: %d OUT: %d SIZE: %d", i, nodes[i].in, nodes[i].in, nodes[i].size);
 		values[i + 5 + input] = out_f[nodes[i].out](in_f[nodes[i].in](values, nodes[i].ids, nodes[i].size));
+		log(VERBOSE_BRAIN, "EVAL NODE %d RESULT: %f", i, values[i + 5 + input]);
 	}
 }
-void Brain::getResult(float* &arr, unsigned &size) {
-	arr = new float[output];
-	size = output;
-	for (unsigned i = 0; i < size; ++i) arr[i] = values[input + 5 + hidden + i];
+void Brain::getResult(std::vector<float> &output) {
+	output = std::vector<float>(output);
+	for (unsigned i = 0; i < this->output; ++i) output[i] = values[input + 5 + hidden + i];
 }
 
 void Brain::store(const char* fname) {
@@ -279,6 +209,7 @@ void Brain::store(const char* fname) {
 }
 
 void Brain::load(const char* fname) {
+	log(VERBOSE_BRAIN, "BRAIN READ FROM %s",fname);
 	tinyxml2::XMLDocument doc;
 	doc.LoadFile(fname);
 	// first element
@@ -287,49 +218,52 @@ void Brain::load(const char* fname) {
 	rootnode->FirstChildElement("hidden")->QueryIntText((int*)&hidden);
 	rootnode->FirstChildElement("output")->QueryIntText((int*)&output);
 	size = input + 5 + hidden + output;
-	values = new float[size];
-	nodes = new Node[output + hidden];
+	log(VERBOSE_BRAIN, "INPUT: %d HIDDEN: %d OUTPUT: %d",input,hidden,output);
+	values = std::vector<float> (size);
+	nodes = std::vector<Node>(output + hidden);
 	tinyxml2::XMLNode *nodesNode = rootnode->FirstChildElement("node");
 	for (unsigned i = 0; i < output + hidden; ++i) {
 		const tinyxml2::XMLElement *element = nodesNode->ToElement();
-		element->QueryIntAttribute("inf", (int*)nodes[i].in);
-		element->QueryIntAttribute("outf", (int*)nodes[i].out);
-		element->QueryIntAttribute("size", (int*)nodes[i].size);
-		nodes[i].ids = new unsigned[nodes[i].size];
+		element->QueryIntAttribute("inf", (int*)&nodes[i].in);
+		element->QueryIntAttribute("outf", (int*)&nodes[i].out);
+		element->QueryIntAttribute("size", (int*)&nodes[i].size);
+		log(VERBOSE_BRAIN, "NODE: %d INF: %d OUTF: %d SIZE: %d", i, nodes[i].in, nodes[i].out,nodes[i].size);
+		nodes[i].ids = std::vector<unsigned>(nodes[i].size);
 		tinyxml2::XMLNode *linksNode = nodesNode->FirstChildElement("link");
 		for (unsigned j = 0; j < nodes[i].size; ++j) {
 			linksNode->ToElement()->QueryIntText((int*)&nodes[i].ids[j]);
+			log(VERBOSE_BRAIN, "LINK: %d ID: %d", j, nodes[i].ids[j]);
 			linksNode = linksNode->NextSibling();
 		}
 		nodesNode = nodesNode->NextSibling();
 	}
 }
 
-float isum_all(float* values, unsigned* ids, unsigned size) {
+float isum_all(const std::vector<float> &values, const std::vector<unsigned> &ids, unsigned size) {
 	float sum = 0;
 	for (unsigned i = 0; i < size; ++i) sum += values[ids[i]];
 	return sum;
 }
 
-float irest(float* values, unsigned* ids, unsigned size) {
+float irest(const std::vector<float> &values, const std::vector<unsigned> &ids, unsigned size) {
 	float ret = values[ids[0]];
 	for (unsigned i = 1; i < size; ++i) ret -= values[ids[i]];
 	return ret;
 }
 
-float irest2(float* values, unsigned* ids, unsigned size) {
+float irest2(const std::vector<float> &values, const std::vector<unsigned> &ids, unsigned size) {
 	float ret = -values[ids[0]];
 	for (unsigned i = 1; i < size; ++i) ret -= values[ids[i]];
 	return ret;
 }
 
-float imul(float* values, unsigned* ids, unsigned size) {
+float imul(const std::vector<float> &values, const std::vector<unsigned> &ids, unsigned size) {
 	float ret = 1;
 	for (unsigned i = 0; i < size; ++i) ret *= values[ids[i]];
 	return ret;
 }
 
-float idiv(float* values, unsigned* ids, unsigned size) {
+float idiv(const std::vector<float> &values, const std::vector<unsigned> &ids, unsigned size) {
 	float ret = values[ids[0]];
 	for (unsigned i = 1; i < size; ++i) {
 		if (values[ids[i]] != 0) ret /= values[ids[i]];
@@ -337,7 +271,7 @@ float idiv(float* values, unsigned* ids, unsigned size) {
 	return ret;
 }
 
-float imin(float* values, unsigned* ids, unsigned size) {
+float imin(const std::vector<float> &values, const std::vector<unsigned> &ids, unsigned size) {
 	float min = values[ids[0]];
 	for (unsigned i = 1; i < size; ++i) {
 		if (min>values[ids[i]]) {
@@ -347,7 +281,7 @@ float imin(float* values, unsigned* ids, unsigned size) {
 	return min;
 }
 
-float imax(float* values, unsigned* ids, unsigned size) {
+float imax(const std::vector<float> &values, const std::vector<unsigned> &ids, unsigned size) {
 	float max = values[ids[0]];
 	for (unsigned i = 1; i < size; ++i) {
 		if (max<values[ids[i]]) {
@@ -357,21 +291,21 @@ float imax(float* values, unsigned* ids, unsigned size) {
 	return max;
 }
 
-float imed(float* values, unsigned* ids, unsigned size) {
-	float *tmp = new float[size];
+float imed(const std::vector<float> &values, const std::vector<unsigned> &ids, unsigned size) {
+	std::vector<float> tmp(size);
 	for (unsigned i = 0; i < size; ++i) {
 		tmp[i] = values[ids[i]];
 	}
-	std::sort(tmp, tmp + size);
+	std::sort(tmp.begin(), tmp.end());
 	float ret = tmp[size / 2];
 	if (size % 2 == 0) {
 		ret = (ret + tmp[(size / 2) - 1]) / 2;
 	}
-	delete tmp;
+	tmp.clear();
 	return ret;
 }
 
-float iavg(float* values, unsigned* ids, unsigned size) {
+float iavg(const std::vector<float> &values, const std::vector<unsigned> &ids, unsigned size) {
 	float sum = 0;
 	for (unsigned i = 0; i < size; ++i) sum += values[ids[i]];
 	return sum / size;

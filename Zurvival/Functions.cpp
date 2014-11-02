@@ -29,7 +29,7 @@ int log(int level, const char *format, ...) {
 		done = vfprintf(stdout, format, arg);
 		printf("\n");
 		va_end(arg);
-
+		fflush(stdout);
 		return done;
 	}
 	return 0;

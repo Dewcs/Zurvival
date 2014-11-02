@@ -64,19 +64,26 @@ Zurvival::Zurvival() {
 
 
 Zurvival::~Zurvival() {
+	log(VERBOSE_BASIC, "DELETING ZURVIVAL");
 	if (mainMenu != NULL) delete mainMenu;
 	if (options != NULL) delete options;
 	if (game != NULL) delete game;
 	if (deathPit != NULL) delete deathPit;
-
+	log(VERBOSE_BASIC, "DELETING SPRITE MANAGER");
 	delete sprMngr;
+	log(VERBOSE_BASIC, "DELETING CONFIG");
 	delete config;
-
+	log(VERBOSE_BASIC, "DELETING SDL %d",&renderer);
 	SDL_DestroyRenderer(renderer);
+	log(VERBOSE_BASIC, "DONE DELETING RENDERER");
 	SDL_DestroyWindow(window);
+	log(VERBOSE_BASIC, "DONE DELETING WINDOW");
 	IMG_Quit();
+	log(VERBOSE_BASIC, "DONE DELETING IMG");
 	TTF_Quit();
+	log(VERBOSE_BASIC, "DONE DELETING TTF");
 	SDL_Quit();
+	log(VERBOSE_BASIC, "DONE DELETING SDL");
 }
 
 bool Zurvival::running() {
@@ -101,7 +108,8 @@ void Zurvival::update() {
 			break;
 		case DEATHPIT:
 			deathPit->listen(stop,pause, order, value);
-			if (!pause) deathPit->update(delta);
+			// keep training even if paused
+			deathPit->update(delta);
 			deathPit->draw();
 			break;
 		case OPTIONS:

@@ -19,6 +19,7 @@ private:
 	int kills;
 	int hp;
 	int begin;
+	std::vector<float> output,input;
 public:
 	Zombie(int x, int y, int timestamp, std::string mode);
 	~Zombie();
@@ -32,6 +33,7 @@ public:
 	void setBrain(Brain *brain);
 	void addKills(int k) { kills += k; hp += k * 100000; };
 	int getKills() { return kills; };
-	void save(int timestamp);
+	void save(const char *);
+	double capability(int timestamp);
 };
 

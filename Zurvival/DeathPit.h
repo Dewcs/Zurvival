@@ -1,5 +1,6 @@
 #pragma once
 #include <SDL.h>
+#include <vector>
 #include "SpriteManager.h"
 #include "Const.h"
 #include "Zombie.h"
@@ -15,10 +16,8 @@ private:
 
 	
 	Radar *sounds, *smells;
-	Zombie **zombies;
-	humanDummy **humans;
-	int hcount;
-	int zcount;
+	std::vector<Zombie*> zombies;
+	std::vector<humanDummy*> humans;
 	int width, height;
 	Trainer *zTrainer;
 

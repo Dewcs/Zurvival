@@ -25,6 +25,9 @@ Game::~Game()
 	delete [] zombies;
 	delete smells;
 	delete sounds;
+
+	renderer = NULL;
+	sprMngr = NULL;
 }
 
 void Game::update(unsigned delta) {

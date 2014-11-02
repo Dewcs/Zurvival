@@ -1,10 +1,10 @@
 #pragma once
-#include <SDL.h>
 #include <math.h>
+#include <vector>
 #include <algorithm>
+#include <new>
 #include "tinyxml2.h"
-#define OUTF_SIZE 11
-#define INF_SIZE 9
+#include "Functions.h"
 static unsigned int g_seed = 0;
 
 //Used to seed the generator.
@@ -22,23 +22,23 @@ inline unsigned fastrand() {
 
 // input functions
 
-float isum_all(float* values, unsigned* ids, unsigned size);
+float isum_all(const std::vector<float> &values, const std::vector<unsigned> &ids, unsigned size);
 
-float irest(float* values, unsigned* ids, unsigned size);
+float irest(const std::vector<float> &values, const std::vector<unsigned> &ids, unsigned size);
 
-float irest2(float* values, unsigned* ids, unsigned size);
+float irest2(const std::vector<float> &values, const std::vector<unsigned> &ids, unsigned size);
 
-float imul(float* values, unsigned* ids, unsigned size);
+float imul(const std::vector<float> &values, const std::vector<unsigned> &ids, unsigned size);
 
-float idiv(float* values, unsigned* ids, unsigned size);
+float idiv(const std::vector<float> &values, const std::vector<unsigned> &ids, unsigned size);
 
-float imin(float* values, unsigned* ids, unsigned size);
+float imin(const std::vector<float> &values, const std::vector<unsigned> &ids, unsigned size);
 
-float imax(float* values, unsigned* ids, unsigned size);
+float imax(const std::vector<float> &values, const std::vector<unsigned> &ids, unsigned size);
 
-float imed(float* values, unsigned* ids, unsigned size);
+float imed(const std::vector<float> &values, const std::vector<unsigned> &ids, unsigned size);
 
-float iavg(float* values, unsigned* ids, unsigned size);
+float iavg(const std::vector<float> &values, const std::vector<unsigned> &ids, unsigned size);
 
 // output functions 
 
@@ -64,8 +64,35 @@ float osin(float value);
 
 float ocos(float value);
 
+enum infunc {
+	SUM_ALL,
+	REST,
+	REST2,
+	MUL,
+	DIV,
+	MIN,
+	MAX,
+	MED,
+	AVG,
+	INF_SIZE
+};
 
-static float(*in_f[INF_SIZE])(float* values, unsigned* ids, unsigned size) = {
+enum outfunc {
+	NONE,
+	SQRT,
+	NEG,
+	ZERO,
+	CEIL,
+	ROUND,
+	FLOOR,
+	ABS,
+	SGN,
+	SIN,
+	COS,
+	OUTF_SIZE
+};
+
+static float(*in_f[INF_SIZE])(const std::vector<float> &values, const std::vector<unsigned> &ids, unsigned size) = {
 	isum_all,
 	irest,
 	irest2,
@@ -88,33 +115,7 @@ static float(*out_f[OUTF_SIZE])(float value) = {
 	oabs,
 	osgn,
 	ocos,
-	osin
-};
-
-enum infunc {
-	SUM_ALL,
-	REST,
-	REST2,
-	MUL,
-	DIV,
-	MIN,
-	MAX,
-	MED,
-	AVG
-};
-
-enum outfunc {
-	NONE,
-	SQRT,
-	NEG,
-	ZERO,
-	CEIL,
-	ROUND,
-	FLOOR,
-	ABS,
-	SGN,
-	SIN,
-	COS
+	osin,
 };
 
 enum changes_t {
@@ -134,7 +135,7 @@ struct Node{
 	infunc in;
 	outfunc out;
 	unsigned size;
-	unsigned *ids;
+	std::vector<unsigned> ids;
 };
 
 class Brain {
@@ -143,18 +144,18 @@ private:
 	unsigned output;
 	unsigned hidden;
 	unsigned size;
-	float *values;
-	Node *nodes;
+	std::vector<float> values;
+	std::vector<Node> nodes;
 public:
-	Brain(unsigned, unsigned);
+	Brain(unsigned input, unsigned output);
 	~Brain();
 	Brain* copy();
 	void tweak();
 	void randomize();
-	void setInput(float*);
-	void setValues(unsigned, float*, Node*);
+	void setInput(const std::vector<float> &input);
+	void setValues(unsigned hidden, const std::vector<float> &values, const std::vector<Node> &nodes);
 	void evaluate();
-	void getResult(float*&, unsigned&);
+	void getResult(std::vector<float> &output);
 	void store(const char* fname);
 	void load(const char* fname);
 };

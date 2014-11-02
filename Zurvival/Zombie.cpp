@@ -23,12 +23,16 @@ Zombie::Zombie(int x, int y, int timestamp, std::string mode)
 	kills = 0;
 	hp = 120000;
 	begin = timestamp;
+	output = std::vector<float>(2,0);
+	input = std::vector<float>(8);
 }
 
 
 Zombie::~Zombie()
 {
-	delete ia;
+	if (ia!=NULL) delete ia;
+	input.clear();
+	output.clear();
 }
 
 bool Zombie::isDead() {
@@ -50,15 +54,20 @@ void Zombie::update(unsigned delta, Radar *smells, Radar * sounds) {
 		v2x = sox - x;
 		v2y = soy - y;
 	}
-	float input[] = { lx,ly,x,y,v1x, v1y, v2x, v2y };
+	std::vector<float> input(8);
+	input[0] = output[0];
+	input[1] = output[1];
+	input[2] = x;
+	input[3] = y;
+	input[4] = v1x;
+	input[5] = v1y;
+	input[6] = v2x;
+	input[7] = v2y;
 	ia->setInput(input);
 	ia->evaluate();
-	float *output;
-	unsigned size;
-	ia->getResult(output, size);
-	float rx = output[0];
-	float ry = output[1];
-	viewAngle = angleP2P(0, 0, rx, ry);
+	ia->getResult(output);
+	log(VERBOSE_BRAIN, "ZDATA OUTPUT %f %f", output[0], output[1]);
+	viewAngle = angleP2P(0, 0, output[0], output[1]);
 	//viewAngle = angleP2P(0, 0, v1x+v2x, v1y+v2y);
 	x += cos(viewAngle) * 2 * delta / 1000.0;
 	y += sin(viewAngle) * 2 * delta / 1000.0;
@@ -88,14 +97,22 @@ void Zombie::setBrain(Brain *brain) {
 
 Zombie* Zombie::clone(int x, int y, int timestamp) {
 	Zombie *ret = new Zombie(x, y, timestamp,"empty");
-	ret->setBrain(ia->copy());
-	ia->tweak();
+	Brain *cpy = ia->copy();
+	cpy->tweak();
+	ret->setBrain(cpy);
 	return ret;
 }
 
-void Zombie::save(int timestamp) {
-	if (kills > 0) {
+void Zombie::save(const char * fname) {
+	/*if (kills > 0) {
 		double kps = (double)kills / (timestamp - begin);
 		ia->store(("data/zombies/" + to_string_with_precision(kps,15) + ".xml").c_str());
-	}
+	}*/
+	ia->store(fname);
+}
+
+double Zombie::capability(int timestamp) {
+	double kps = 0;
+	if (kills > 0) kps = (double)kills / (timestamp - begin);
+	return kps;
 }

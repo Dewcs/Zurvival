@@ -5,6 +5,7 @@
 
 int main(int argc, char* argv[]){
 	// main loop of the program
+	log(VERBOSE_BASIC, "VERBOSE LEVEL %d",VERBOSE_LEVEL);
 	log(VERBOSE_BASIC, "BEGIN GAME");
 	Zurvival *game=new Zurvival();
 	log(VERBOSE_DATA_CREATION, "CREATED ZURVIVAL");
