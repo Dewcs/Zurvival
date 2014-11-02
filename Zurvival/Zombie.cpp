@@ -6,25 +6,24 @@ Zombie::Zombie(int x, int y, int timestamp, std::string mode)
 	this->x = x;
 	this->y = y;
 	viewAngle = 0;
-	lx = 0;
-	ly = 0;
+
 	if (mode == "random") {
-		ia = new Brain(8, 2);
+		ia = new Brain(10, 4);
 		ia->randomize();
 	}
 	else if (mode == "empty") {
 		ia = NULL;
 	}
 	else {
-		ia = new Brain(8,2);
+		ia = new Brain(10,4);
 		ia->load(mode.c_str());
 		ia->tweak();
 	}
 	kills = 0;
 	hp = 120000;
 	begin = timestamp;
-	output = std::vector<float>(2,0);
-	input = std::vector<float>(8);
+	output = std::vector<float>(4,0);
+	input = std::vector<float>(10);
 }
 
 
@@ -39,7 +38,7 @@ bool Zombie::isDead() {
 	return hp<=0;
 }
 
-void Zombie::update(unsigned delta, Radar *smells, Radar * sounds) {
+void Zombie::update(unsigned delta, double cx, double cy, Radar *smells, Radar * sounds) {
 	double smx, smy, sox, soy;
 	bool smv, sov;
 	smells->getValue(x, y, smx, smy, smv);
@@ -54,24 +53,32 @@ void Zombie::update(unsigned delta, Radar *smells, Radar * sounds) {
 		v2x = sox - x;
 		v2y = soy - y;
 	}
-	std::vector<float> input(8);
-	input[0] = output[0];
-	input[1] = output[1];
-	input[2] = x;
-	input[3] = y;
-	input[4] = v1x;
-	input[5] = v1y;
-	input[6] = v2x;
-	input[7] = v2y;
+	for (int i = 0; i < output.size(); ++i) {
+		input[i] = output[i];
+	}
+	input[4] = x -cx;
+	input[5] = y -cy;
+	input[6] = v1x;
+	input[7] = v1y;
+	input[8] = v2x;
+	input[9] = v2y;
+	for (int i = 0; i < input.size(); ++i) {
+		if (!std::isfinite(input[i])) log(VERBOSE_ERRORS, "BAD INPUT %d", i);
+	}
 	ia->setInput(input);
 	ia->evaluate();
 	ia->getResult(output);
 	log(VERBOSE_BRAIN, "ZDATA OUTPUT %f %f", output[0], output[1]);
-	viewAngle = angleP2P(0, 0, output[0], output[1]);
-	//viewAngle = angleP2P(0, 0, v1x+v2x, v1y+v2y);
-	x += cos(viewAngle) * 2 * delta / 1000.0;
-	y += sin(viewAngle) * 2 * delta / 1000.0;
-	hp -= delta;
+	if (output[0] + output[1] != 0) {
+		viewAngle = angleP2P(0, 0, output[0], output[1]);
+		//viewAngle = angleP2P(0, 0, v1x+v2x, v1y+v2y);
+		x += cos(viewAngle) * 2 * delta / 1000.0;
+		y += sin(viewAngle) * 2 * delta / 1000.0;
+		hp -= delta;
+	}
+	else {
+		hp -= delta * 2;
+	}
 }
 
 double Zombie::getAngle() {

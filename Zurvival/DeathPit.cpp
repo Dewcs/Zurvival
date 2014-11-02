@@ -9,12 +9,13 @@ DeathPit::DeathPit(SDL_Renderer* renderer, SpriteManager* sprMngr, int width, in
 	this->height = height;
 	zombies = std::vector<Zombie*>(0);
 
-	humans = std::vector<humanDummy*>(0);
+	humans = std::vector<Human*>(0);
 
 	sounds = new Radar(453, 0.5, 750);
 	smells = new Radar(5, 0, 5000);
 
-	zTrainer = new Trainer("data/zombies", MAX_ZOMBIE_STORAGE);
+	zTrainer = new Trainer("data/zombies", MAX_ZOMBIE_STORAGE, DP_RANDOM_ZOMBIE_CHANCES);
+	hTrainer = new Trainer("data/humans", MAX_HUMAN_STORAGE, DP_RANDOM_HUMAN_CHANCES);
 	log(VERBOSE_DATA_CREATION, "CREATED DEATHPIT");
 }
 
@@ -28,7 +29,6 @@ DeathPit::~DeathPit()
 		double zombieScore = zombies[i]->capability(SDL_GetTicks());
 		if (zTrainer->is_good(zombieScore)) {
 			std::string fname = zTrainer->mkFName(zombieScore);
-			log(1, "STORE ZOMBIE %s",fname.c_str());
 			zombies[i]->save(fname.c_str());
 			zTrainer->insert(fname, zombieScore);
 		}
@@ -36,6 +36,12 @@ DeathPit::~DeathPit()
 	}
 	zombies.clear();
 	for (unsigned i = 0; i < humans.size(); ++i) {
+		double humanScore = humans[i]->capability();
+		if (hTrainer->is_good(humanScore)) {
+			std::string fname = hTrainer->mkFName(humanScore);
+			humans[i]->save(fname.c_str());
+			hTrainer->insert(fname, humanScore);
+		}
 		delete humans[i];
 	}
 	humans.clear();
@@ -49,15 +55,18 @@ void DeathPit::update(unsigned delta) {
 	// update humans
 	// spawn
 	if (humans.size() < DP_HUMAN_AMOUNT && rand() % 10 == 0) {
-		int x = rand()%(width/DP_RATIO);
-		int y = rand() % (height / DP_RATIO);
-		humans.push_back(new humanDummy(x, y));
+		int x = rand() % (width / DP_RATIO) - (width / DP_RATIO /2);
+		int y = rand() % (height / DP_RATIO) - (height / DP_RATIO / 2);
+		//int x = (width / DP_RATIO) / 2;
+		//int y = (height / DP_RATIO) / 2;
+		std::string mode = hTrainer->random();
+		humans.push_back(new Human(x, y, SDL_GetTicks(), mode));
 	}
 	
 	// update
 	for (unsigned i = 0; i < humans.size(); ++i) {
 		// update position
-		humans[i]->update(delta);
+		humans[i]->update(delta,0,0,zombies,smells);
 		// update smell map
 		if (rand()%10==1) smells->addPoint(humans[i]->getX(), humans[i]->getY(), 1, SDL_GetTicks());
 		// update sounds map
@@ -65,8 +74,13 @@ void DeathPit::update(unsigned delta) {
 	}
 	// remove out of screen
 	for (int i = humans.size() - 1; i >= 0; --i) {
-		if (humans[i]->isDead() || !pointInsideRect(humans[i]->getX(), humans[i]->getY(), 0, 0, width / DP_RATIO, height / DP_RATIO)) {
-			delete humans[i];
+		if (humans[i]->isDead() || !pointInsideRect(humans[i]->getX(), humans[i]->getY(), -width / DP_RATIO / 2, -height / DP_RATIO / 2, width / DP_RATIO, height / DP_RATIO)) {
+			double humanScore = humans[i]->capability();
+			if (hTrainer->is_good(humanScore)) {
+				std::string fname = hTrainer->mkFName(humanScore);
+				humans[i]->save(fname.c_str());
+				hTrainer->insert(fname, humanScore);
+			}
 			humans.erase(humans.begin() + i);
 		}
 	}
@@ -76,23 +90,23 @@ void DeathPit::update(unsigned delta) {
 	// update zombies
 	// create new zombies??
 	if (zombies.size() < DP_ZOMBIE_AMOUNT && rand() % 10 == 0) {
-		int x = (width / DP_RATIO) / 2 - 10;
-		int y = (height / DP_RATIO) / 2 - 10;
+		//int x = (width / DP_RATIO) / 2 - 10;
+		//int y = (height / DP_RATIO) / 2 - 10;
+		int x = rand() % (width / DP_RATIO) - (width / DP_RATIO / 2);
+		int y = rand() % (height / DP_RATIO) - (height / DP_RATIO / 2);
 		std::string mode = zTrainer->random();
-		log(1, "NEW ZOMBIE USING %s",mode.c_str());
 		zombies.push_back(new Zombie(x, y , SDL_GetTicks(), mode));
 	}
 	// update zombies
 	for (unsigned i = 0; i < zombies.size(); ++i) {
-		zombies[i]->update(delta, smells, sounds);
+		zombies[i]->update(delta,0,0, smells, sounds);
 	}
 	// delete zombies
 	for (int i = zombies.size() - 1; i >= 0; --i) {
-		if (zombies[i]->isDead() || !pointInsideRect(zombies[i]->getX(), zombies[i]->getY(), 0, 0, width / DP_RATIO, height / DP_RATIO)) {
+		if (zombies[i]->isDead() || !pointInsideRect(zombies[i]->getX(), zombies[i]->getY(), -width / DP_RATIO / 2, -height / DP_RATIO / 2, width / DP_RATIO, height / DP_RATIO)) {
 			double zombieScore = zombies[i]->capability(SDL_GetTicks());
 			if (zTrainer->is_good(zombieScore)) {
 				std::string fname = zTrainer->mkFName(zombieScore);
-				log(1, "STORE ZOMBIE %s", fname.c_str());
 				zombies[i]->save(fname.c_str());
 				zTrainer->insert(fname, zombieScore);
 			}
@@ -121,11 +135,11 @@ void DeathPit::update(unsigned delta) {
 
 void DeathPit::draw() {
 	for (unsigned i = 0; i < humans.size(); ++i) {
-		SDL_Rect zombieRect = { round(humans[i]->getX()*DP_RATIO), round(humans[i]->getY()*DP_RATIO), DP_RATIO, DP_RATIO };
-		SDL_RenderCopy(renderer, sprMngr->getTexture("pred"), NULL, &zombieRect);
+		SDL_Rect humanRect = { round((humans[i]->getX() + width / DP_RATIO / 2)*DP_RATIO), round((humans[i]->getY() + height / DP_RATIO / 2)*DP_RATIO), DP_RATIO + humans[i]->minutes(SDL_GetTicks()), DP_RATIO + humans[i]->minutes(SDL_GetTicks()) };
+		SDL_RenderCopy(renderer, sprMngr->getTexture("pred"), NULL, &humanRect);
 	}
 	for (unsigned i = 0; i < zombies.size(); ++i) {
-		SDL_Rect zombieRect = { round(zombies[i]->getX()*DP_RATIO), round(zombies[i]->getY()*DP_RATIO), DP_RATIO + zombies[i]->getKills(), DP_RATIO + zombies[i]->getKills() };
+		SDL_Rect zombieRect = { round((zombies[i]->getX() + width / DP_RATIO / 2)* DP_RATIO), round((zombies[i]->getY() + height / DP_RATIO / 2)* DP_RATIO), DP_RATIO + zombies[i]->getKills(), DP_RATIO + zombies[i]->getKills() };
 		SDL_RenderCopy(renderer, sprMngr->getTexture("pgreen"), NULL, &zombieRect);
 	}
 }

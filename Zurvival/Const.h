@@ -82,8 +82,8 @@ const int yval[] = { 1, 0, -1, 0 };
 #define DP_RATIO 4
 #define DP_TIME_SPEED 4
 
-#define DP_RANDOM_ZOMBIE_CHANCES 50 // [0-99]
+#define DP_RANDOM_ZOMBIE_CHANCES 20 // [0-99]
+#define DP_RANDOM_HUMAN_CHANCES 20
 
 #define MAX_ZOMBIE_STORAGE 200
-
-#define MAX_HUMAN_STORAGE 1000
+#define MAX_HUMAN_STORAGE 200

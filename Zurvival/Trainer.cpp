@@ -1,9 +1,10 @@
 #include "Trainer.h"
 
 
-Trainer::Trainer(const char * folder, unsigned size) {
+Trainer::Trainer(const char * folder, unsigned size, unsigned chances) {
 	this->folder = folder;
 	this->size = size;
+	this->chances = chances;
 	count = 0;
 	double sum = 0;
 	data = std::vector<fdata> (size);
@@ -48,7 +49,7 @@ Trainer::~Trainer()
 
 std::string Trainer::random() {
 	int r = rand() % 100;
-	if (r <= DP_RANDOM_ZOMBIE_CHANCES || count==0) {
+	if (r <= chances || count==0) {
 		return "random";
 	}
 	else {

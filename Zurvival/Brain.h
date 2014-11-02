@@ -2,11 +2,13 @@
 #include <math.h>
 #include <vector>
 #include <algorithm>
+#include <cmath>
 #include <new>
 #include "tinyxml2.h"
 #include "Functions.h"
 static unsigned int g_seed = 0;
-
+#define MAX_VALUE 1000000
+#define MIN_VALUE 0.000001
 //Used to seed the generator.
 
 inline void fast_srand(int seed) {
@@ -134,7 +136,7 @@ enum changes_t {
 struct Node{
 	infunc in;
 	outfunc out;
-	unsigned size;
+	//unsigned size;
 	std::vector<unsigned> ids;
 };
 
@@ -158,5 +160,6 @@ public:
 	void getResult(std::vector<float> &output);
 	void store(const char* fname);
 	void load(const char* fname);
+	void print();
 };
 

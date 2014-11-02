@@ -28,7 +28,7 @@ void Brain::tweak() {
 	changes_t change = (changes_t)(fastrand() % CHANGES_MAX);
 	log(VERBOSE_BRAIN, "BRAIN TWEAKED %d", change);
 	unsigned nodeid = fastrand() % (output + hidden);
-	unsigned linkid = fastrand() % (nodes[nodeid].size);
+	unsigned linkid = fastrand() % (nodes[nodeid].ids.size());
 	unsigned next = 0;
 	unsigned a, b, tmp;
 	Node node;
@@ -43,7 +43,7 @@ void Brain::tweak() {
 		nodes[nodeid].out = outfunc(fastrand() % OUTF_SIZE);
 		break;
 	case CHANGE_LINK:
-		nodes[nodeid].ids[linkid] = fastrand() % (input + 5 + linkid);
+		nodes[nodeid].ids[linkid] = fastrand() % (input + 5 + nodeid);
 		break;
 	case REMOVE_NODE:
 		if (hidden > 0) {
@@ -53,18 +53,16 @@ void Brain::tweak() {
 			values.erase(values.begin() + nodeid);
 			nodes.erase(nodes.begin() + nodeid);
 			for (unsigned i = nodeid; i < output + hidden; ++i) {
-				for (unsigned j = 0; j < nodes[i].size; ++j) {
-					if (nodes[i].ids[j]>nodeid) --nodes[i].ids[j]; // no problem
-					else if (nodes[i].ids[j] == nodeid) {
+				for (int j = nodes[i].ids.size()-1; j >= 0; --j) {
+					if (nodes[i].ids[j]>nodeid + input + 5) --nodes[i].ids[j]; // no problem
+					else if (nodes[i].ids[j] == nodeid + input + 5) {
 						// remove link
-						--nodes[i].size;
 						nodes[i].ids.erase(nodes[i].ids.begin() + j);
 					}
 				}
-				if (nodes[i].size == 0) {
-					nodes[i].size = fastrand() % (input + 4 + nodeid) + 1;
-					nodes[i].ids = std::vector<unsigned>(node.size);
-					for (unsigned j = 0; j < node.size; ++j) {
+				if (nodes[i].ids.size() == 0) {
+					nodes[i].ids = std::vector<unsigned>(fastrand() % (input + 4 + i) + 1);
+					for (unsigned j = 0; j < nodes[i].ids.size(); ++j) {
 						nodes[i].ids[j] = fastrand() % (input + 5 + i);
 					}
 				}
@@ -72,8 +70,7 @@ void Brain::tweak() {
 		}
 		break;
 	case REMOVE_LINK:
-		if (nodes[nodeid].size > 1) {
-			nodes[nodeid].size -= 1;
+		if (nodes[nodeid].ids.size() > 1) {
 			nodes[nodeid].ids.erase(nodes[nodeid].ids.begin() + linkid);
 		}
 		break;
@@ -83,33 +80,30 @@ void Brain::tweak() {
 		values.insert(values.begin() + nodeid, 0);
 		node.in = infunc(fastrand() % INF_SIZE);
 		node.out = outfunc(fastrand() % OUTF_SIZE);
-		node.size = fastrand() % (input + 4 + nodeid) + 1;
-		node.ids = std::vector<unsigned> (node.size);
-		for (unsigned j = 0; j < node.size; ++j) {
+		node.ids = std::vector<unsigned>(fastrand() % (input + 4 + nodeid) + 1);
+		for (unsigned j = 0; j < node.ids.size(); ++j) {
 			node.ids[j] = fastrand() % (input + 5 + nodeid);
 		}
 		nodes.insert(nodes.begin() + nodeid, node);
 		// fix post nodes
 		for (unsigned i = nodeid+1; i < nodes.size(); ++i) {
-			for (unsigned j = 0; j < nodes[i].size; ++j) {
-				if (nodes[i].ids[j]>=nodeid) ++nodes[i].ids[j]; // no problem
+			for (unsigned j = 0; j < nodes[i].ids.size(); ++j) {
+				if (nodes[i].ids[j] >= nodeid + input + 5) ++nodes[i].ids[j]; // no problem
 			}
 			// copy after nodeid values
 			// lets link
 			if (fastrand() % (input + 5 + nodeid) == 0) {
-				nodes[i].ids.insert(nodes[i].ids.begin() + (rand() % nodes[i].size), nodeid);
-				++nodes[i].size;
+				nodes[i].ids.insert(nodes[i].ids.begin() + (rand() % nodes[i].ids.size()), nodeid);
 			}
 		}
 		break;
 	case ADD_LINK:
 		nodes[nodeid].ids.insert(nodes[nodeid].ids.begin() + linkid, fastrand() % (input + 5 + nodeid));
-		nodes[nodeid].size += 1;
 		break;
 	case SHUFFLE_LINKS:
-		for (unsigned j = 0; j < nodes[nodeid].size; ++j) {
-			a = fastrand() % nodes[nodeid].size;
-			b = fastrand() % nodes[nodeid].size;
+		for (unsigned j = 0; j < nodes[nodeid].ids.size(); ++j) {
+			a = fastrand() % nodes[nodeid].ids.size();
+			b = fastrand() % nodes[nodeid].ids.size();
 			// swap
 			tmp = nodes[nodeid].ids[a];
 			nodes[nodeid].ids[a] = nodes[nodeid].ids[b];
@@ -118,6 +112,14 @@ void Brain::tweak() {
 		break;
 	default:
 		break;
+	}
+	// check for errors
+	for (unsigned i = 0; i < output + hidden; ++i) {
+		for (unsigned j = 0; j < nodes[i].ids.size(); ++j) {
+			if (nodes[i].ids[j] >= i + input + 5) {
+				log(VERBOSE_ERRORS, "BAD TWEAK: %d NODE: %d LINK: %d VALUE: %d", change, i, j, nodes[i].ids[j]);
+			}
+		}
 	}
 }
 
@@ -130,7 +132,6 @@ void Brain::randomize() {
 		nodes[i].in = infunc(fastrand() % INF_SIZE);
 		nodes[i].out = outfunc(fastrand() % OUTF_SIZE);
 		unsigned size2 = fastrand() % (input + 4 + i) + 1;
-		nodes[i].size = size2;
 		nodes[i].ids = std::vector<unsigned> (size2);
 		for (unsigned j = 0; j < size2; ++j) {
 			nodes[i].ids[j] = fastrand() % (input + 5 + i);
@@ -155,9 +156,8 @@ void Brain::setValues(unsigned hidden, const std::vector<float> &values, const s
 	for (unsigned i = 0; i < output + hidden; ++i) {
 		this->nodes[i].in = nodes[i].in;
 		this->nodes[i].out = nodes[i].out;
-		this->nodes[i].size = nodes[i].size;
-		this->nodes[i].ids = std::vector<unsigned> (nodes[i].size);
-		for (unsigned j = 0; j < nodes[i].size; ++j) {
+		this->nodes[i].ids = std::vector<unsigned> (nodes[i].ids.size());
+		for (unsigned j = 0; j < nodes[i].ids.size(); ++j) {
 			this->nodes[i].ids[j] = nodes[i].ids[j];
 		}
 	}
@@ -165,8 +165,24 @@ void Brain::setValues(unsigned hidden, const std::vector<float> &values, const s
 void Brain::evaluate() {
 	log(VERBOSE_BRAIN, "EVAL %d NODES", output + hidden);
 	for (unsigned i = 0; i < output + hidden; ++i) {
-		log(VERBOSE_BRAIN, "EVAL NODE %d IN: %d OUT: %d SIZE: %d", i, nodes[i].in, nodes[i].in, nodes[i].size);
-		values[i + 5 + input] = out_f[nodes[i].out](in_f[nodes[i].in](values, nodes[i].ids, nodes[i].size));
+		for (int j = 0; j < nodes[i].ids.size(); ++j) {
+			if (nodes[i].ids[j] >= i + 5 + input) log(VERBOSE_ERRORS, "BAD LINK IN: %d OUT: %d SIZE: %d VALUE: %d", nodes[i].in, nodes[i].in, nodes[i].ids.size(), nodes[i].ids[j]);
+		}
+		log(VERBOSE_BRAIN, "EVAL NODE %d IN: %d OUT: %d SIZE: %d", i, nodes[i].in, nodes[i].in, nodes[i].ids.size());
+		values[i + 5 + input] = out_f[nodes[i].out](in_f[nodes[i].in](values, nodes[i].ids, nodes[i].ids.size()));
+		// fix min and max
+		if (values[i + 5 + input] < -MAX_VALUE) values[i + 5 + input] = -MAX_VALUE;
+		else if (values[i + 5 + input] > MAX_VALUE) values[i + 5 + input] = MAX_VALUE;
+		else if (values[i + 5 + input]>0 && values[i + 5 + input]<MIN_VALUE) values[i + 5 + input] = 0;
+		else if (values[i + 5 + input]<0 && values[i + 5 + input]>-MIN_VALUE) values[i + 5 + input] = 0;
+		// check bad values
+		if (!std::isfinite(values[i + 5 + input])) {
+			log(VERBOSE_ERRORS, "NON FINITE VALUE IN: %d OUT: %d SIZE: %d", nodes[i].in, nodes[i].in, nodes[i].ids.size());
+			for (int j = 0; j < nodes[i].ids.size(); ++j) {
+				log(VERBOSE_ERRORS, "INVAL %d -> %d = %f", j, nodes[i].ids[j], values[nodes[i].ids[j]]);
+			}
+			values[i + 5 + input] = 0;
+		}
 		log(VERBOSE_BRAIN, "EVAL NODE %d RESULT: %f", i, values[i + 5 + input]);
 	}
 }
@@ -195,8 +211,8 @@ void Brain::store(const char* fname) {
 		printer.OpenElement("node");
 		printer.PushAttribute("inf", nodes[i].in);
 		printer.PushAttribute("outf", nodes[i].out);
-		printer.PushAttribute("size", nodes[i].size);
-		for (unsigned j = 0; j < nodes[i].size; ++j) {
+		printer.PushAttribute("size", nodes[i].ids.size());
+		for (unsigned j = 0; j < nodes[i].ids.size(); ++j) {
 			printer.OpenElement("link");
 			printer.PushText(nodes[i].ids[j]);
 			printer.CloseElement();
@@ -226,16 +242,31 @@ void Brain::load(const char* fname) {
 		const tinyxml2::XMLElement *element = nodesNode->ToElement();
 		element->QueryIntAttribute("inf", (int*)&nodes[i].in);
 		element->QueryIntAttribute("outf", (int*)&nodes[i].out);
-		element->QueryIntAttribute("size", (int*)&nodes[i].size);
-		log(VERBOSE_BRAIN, "NODE: %d INF: %d OUTF: %d SIZE: %d", i, nodes[i].in, nodes[i].out,nodes[i].size);
-		nodes[i].ids = std::vector<unsigned>(nodes[i].size);
+		int size;
+		element->QueryIntAttribute("size", &size);
+
+		log(VERBOSE_BRAIN, "NODE: %d INF: %d OUTF: %d SIZE: %d", i, nodes[i].in, nodes[i].out,size);
+		nodes[i].ids = std::vector<unsigned>(size);
 		tinyxml2::XMLNode *linksNode = nodesNode->FirstChildElement("link");
-		for (unsigned j = 0; j < nodes[i].size; ++j) {
+		for (unsigned j = 0; j < nodes[i].ids.size(); ++j) {
 			linksNode->ToElement()->QueryIntText((int*)&nodes[i].ids[j]);
 			log(VERBOSE_BRAIN, "LINK: %d ID: %d", j, nodes[i].ids[j]);
+			if (nodes[i].ids[j] >= i + input + 5) {
+				log(VERBOSE_ERRORS, "BAD READ FILE: %s NODE: %d LINK: %d VALUE: %d", fname,i,j,nodes[i].ids[j]);
+			}
 			linksNode = linksNode->NextSibling();
 		}
 		nodesNode = nodesNode->NextSibling();
+	}
+}
+
+void Brain::print() {
+	log(1, "BRAIN %d %d %d", input, hidden, output);
+	for (unsigned i = 0; i < output + hidden; ++i) {
+		log(1, "NODE %d IN: %d OUT: %d", i + input + 5, nodes[i].in, nodes[i].out);
+		for (unsigned j = 0; j < nodes[i].ids.size(); ++j) {
+			log(1, "LINK %d TO: %d", j, nodes[i].ids[j]);
+		}
 	}
 }
 

@@ -13,7 +13,6 @@
 class Zombie {
 private:
 	double x, y;
-	double lx, ly;
 	double viewAngle;
 	Brain *ia;
 	int kills;
@@ -24,7 +23,7 @@ public:
 	Zombie(int x, int y, int timestamp, std::string mode);
 	~Zombie();
 	bool isDead();
-	void update(unsigned delta,Radar *smells,Radar * sounds);
+	void update(unsigned delta, double cx, double cy, Radar *smells, Radar * sounds);
 	double getAngle();
 	double getRawAngle();
 	double getX();

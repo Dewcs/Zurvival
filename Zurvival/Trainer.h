@@ -17,10 +17,11 @@ class Trainer {
 	private:
 		const char * folder;
 		int size,count;
+		unsigned chances;
 		std::vector<fdata> data;
 		double init;
 	public:
-		Trainer(const char * folder, unsigned size);
+		Trainer(const char * folder, unsigned size, unsigned chances);
 		~Trainer();
 		std::string random();
 		bool is_good(double value);

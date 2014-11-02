@@ -7,6 +7,7 @@
 #include "humanDummy.h"
 #include "Radar.h"
 #include "Trainer.h"
+#include "Human.h"
 
 class DeathPit
 {
@@ -17,9 +18,9 @@ private:
 	
 	Radar *sounds, *smells;
 	std::vector<Zombie*> zombies;
-	std::vector<humanDummy*> humans;
+	std::vector<Human*> humans;
 	int width, height;
-	Trainer *zTrainer;
+	Trainer *zTrainer,*hTrainer;
 
 public:
 	DeathPit(SDL_Renderer* renderer, SpriteManager* sprMngr, int width, int height);
