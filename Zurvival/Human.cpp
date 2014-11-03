@@ -3,26 +3,30 @@
 
 Human::Human(int x, int y, int timestamp, std::string mode)
 {
-	this->x = x;
-	this->y = y;
+	this->x = hx = x;
+	this->y = hy = y;
 	viewAngle = 0;
 	steps = 0;
 	alive = true;
 	if (mode == "random") {
-		ia = new Brain(14, 4);
+		ia = new Brain(16, 4);
 		ia->randomize();
 	}
 	else if (mode == "empty") {
 		ia = NULL;
 	}
 	else {
-		ia = new Brain(14, 4);
+		ia = new Brain(16, 4);
 		ia->load(mode.c_str());
 		ia->tweak();
 	}
 	begin = timestamp;
 	output = std::vector<float>(4, 0);
-	input = std::vector<float>(14);
+	input = std::vector<float>(16);
+	Point p;
+	p.x = x;
+	p.y = y;
+	pq.push(p);
 }
 
 
@@ -116,6 +120,8 @@ void Human::update(unsigned delta, double cx, double cy, std::vector<Zombie*> zo
 		input[12] = sox - x;
 		input[13] = soy - y;
 	}
+	input[14] = hx - x;
+	input[15] = hy - y;
 	for (int i = 0; i < input.size(); ++i) {
 		if (!std::isfinite(input[i])) log(VERBOSE_ERRORS, "BAD INPUT %d", i);
 	}
@@ -128,7 +134,19 @@ void Human::update(unsigned delta, double cx, double cy, std::vector<Zombie*> zo
 		//viewAngle = angleP2P(0, 0, v1x+v2x, v1y+v2y);
 		x += cos(viewAngle) * 2 * delta / 1000.0;
 		y += sin(viewAngle) * 2 * delta / 1000.0;
-		if (b1 != -1) steps += 1 / bd1;
+		Point p;
+		p.x = x;
+		p.y = y;
+		pq.push(p);
+		if (pq.size()>10) {
+			Point front = pq.front();
+			float travel = distP2P(x, y, front.x, front.y);
+			if (travel > 2) {
+				float dist = distP2P(x, y, hx, hy);
+				if (dist<100) steps += (1.0 / max(dist, 20))*travel;
+			}
+			pq.pop();
+		}
 	}
 }
 double Human::getAngle() {

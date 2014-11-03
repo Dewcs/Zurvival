@@ -56,8 +56,8 @@ void Zombie::update(unsigned delta, double cx, double cy, Radar *smells, Radar *
 	for (int i = 0; i < output.size(); ++i) {
 		input[i] = output[i];
 	}
-	input[4] = x -cx;
-	input[5] = y -cy;
+	input[4] = x - cx;
+	input[5] = y - cy;
 	input[6] = v1x;
 	input[7] = v1y;
 	input[8] = v2x;
@@ -72,8 +72,8 @@ void Zombie::update(unsigned delta, double cx, double cy, Radar *smells, Radar *
 	if (output[0] + output[1] != 0) {
 		viewAngle = angleP2P(0, 0, output[0], output[1]);
 		//viewAngle = angleP2P(0, 0, v1x+v2x, v1y+v2y);
-		x += cos(viewAngle) * 2 * delta / 1000.0;
-		y += sin(viewAngle) * 2 * delta / 1000.0;
+		x += cos(viewAngle) * 1.9 * delta / 1000.0;
+		y += sin(viewAngle) * 1.9 * delta / 1000.0;
 		hp -= delta;
 	}
 	else {

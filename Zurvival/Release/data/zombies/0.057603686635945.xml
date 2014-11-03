@@ -1,0 +1,34 @@
+<brain>
+    <input>10</input>
+    <hidden>1</hidden>
+    <output>4</output>
+    <node inf="4" outf="2" size="3">
+        <link>7</link>
+        <link>10</link>
+        <link>14</link>
+    </node>
+    <node inf="0" outf="0" size="1">
+        <link>6</link>
+    </node>
+    <node inf="8" outf="8" size="2">
+        <link>10</link>
+        <link>11</link>
+    </node>
+    <node inf="8" outf="9" size="10">
+        <link>4</link>
+        <link>13</link>
+        <link>3</link>
+        <link>17</link>
+        <link>5</link>
+        <link>12</link>
+        <link>15</link>
+        <link>2</link>
+        <link>13</link>
+        <link>2</link>
+    </node>
+    <node inf="6" outf="0" size="3">
+        <link>1</link>
+        <link>13</link>
+        <link>12</link>
+    </node>
+</brain>

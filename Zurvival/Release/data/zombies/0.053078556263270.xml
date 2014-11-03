@@ -1,0 +1,32 @@
+<brain>
+    <input>10</input>
+    <hidden>0</hidden>
+    <output>4</output>
+    <node inf="4" outf="4" size="1">
+        <link>6</link>
+    </node>
+    <node inf="0" outf="0" size="2">
+        <link>11</link>
+        <link>7</link>
+    </node>
+    <node inf="6" outf="3" size="11">
+        <link>9</link>
+        <link>2</link>
+        <link>13</link>
+        <link>4</link>
+        <link>2</link>
+        <link>12</link>
+        <link>16</link>
+        <link>13</link>
+        <link>13</link>
+        <link>5</link>
+        <link>6</link>
+    </node>
+    <node inf="7" outf="0" size="5">
+        <link>8</link>
+        <link>0</link>
+        <link>4</link>
+        <link>16</link>
+        <link>15</link>
+    </node>
+</brain>

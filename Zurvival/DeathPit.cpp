@@ -54,9 +54,9 @@ void DeathPit::update(unsigned delta) {
 	delta *= DP_TIME_SPEED;
 	// update humans
 	// spawn
-	if (humans.size() < DP_HUMAN_AMOUNT && rand() % 2 == 0) {
-		int x = rand() % (width / DP_RATIO) - (width / DP_RATIO /2);
-		int y = rand() % (height / DP_RATIO) - (height / DP_RATIO / 2);
+	if (humans.size() < DP_HUMAN_AMOUNT && rand() % (humans.size() + 1) == 0) {
+		int x = rand() % (width / DP_RATIO / 2) - (width / DP_RATIO / 4);
+		int y = rand() % (height / DP_RATIO / 2) - (height / DP_RATIO / 4);
 		//int x = (width / DP_RATIO) / 2;
 		//int y = (height / DP_RATIO) / 2;
 		std::string mode = hTrainer->random();
@@ -89,11 +89,11 @@ void DeathPit::update(unsigned delta) {
 	sounds->update(delta);
 	// update zombies
 	// create new zombies??
-	if (zombies.size() < DP_ZOMBIE_AMOUNT && rand() % 10 == 0) {
+	if (zombies.size() < DP_ZOMBIE_AMOUNT && rand() % (zombies.size()+1) == 0) {
 		//int x = (width / DP_RATIO) / 2 - 10;
 		//int y = (height / DP_RATIO) / 2 - 10;
-		int x = rand() % (width / DP_RATIO) - (width / DP_RATIO / 2);
-		int y = rand() % (height / DP_RATIO) - (height / DP_RATIO / 2);
+		int x = rand() % (width / DP_RATIO / 2) - (width / DP_RATIO / 4);
+		int y = rand() % (height / DP_RATIO / 2) - (height / DP_RATIO / 4);
 		std::string mode = zTrainer->random();
 		zombies.push_back(new Zombie(x, y , SDL_GetTicks(), mode));
 	}

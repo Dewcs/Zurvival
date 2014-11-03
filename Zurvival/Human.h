@@ -1,19 +1,25 @@
 #pragma once
 #include <vector>
+#include <queue> 
 #include "Brain.h"
 #include "Radar.h"
 #include "Zombie.h"
 #include "Functions.h"
 
+struct Point {
+	double x, y;
+};
+
 class Human
 {
-	double x, y;
+	double x, y,hx,hy;
 	double viewAngle;
 	Brain *ia;
 	double steps;
 	bool alive;
 	int begin;
 	std::vector<float> output, input;
+	std::queue<Point> pq;
 public:
 	Human(int x, int y, int timestamp, std::string mode);
 	~Human();
@@ -28,6 +34,6 @@ public:
 	void save(const char *);
 	double capability(int timestamp);
 	void kill();
-	unsigned minutes(unsigned timestamp) { return (timestamp-begin)/60000; };
+	unsigned minutes(unsigned timestamp) { return capability(timestamp)*100; };
 };
 

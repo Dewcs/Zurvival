@@ -113,6 +113,7 @@ void Brain::tweak() {
 	default:
 		break;
 	}
+	optimize();
 	// check for errors
 	for (unsigned i = 0; i < output + hidden; ++i) {
 		for (unsigned j = 0; j < nodes[i].ids.size(); ++j) {
@@ -137,6 +138,7 @@ void Brain::randomize() {
 			nodes[i].ids[j] = fastrand() % (input + 5 + i);
 		}
 	}
+	optimize();
 }
 void Brain::setInput(const std::vector<float> &input) {
 	for (unsigned i = 0; i < this->input; ++i) {
@@ -163,6 +165,7 @@ void Brain::setValues(unsigned hidden, const std::vector<float> &values, const s
 	}
 }
 void Brain::evaluate() {
+	bool errors = false;
 	log(VERBOSE_BRAIN, "EVAL %d NODES", output + hidden);
 	for (unsigned i = 0; i < output + hidden; ++i) {
 		for (int j = 0; j < nodes[i].ids.size(); ++j) {
@@ -177,6 +180,7 @@ void Brain::evaluate() {
 		else if (values[i + 5 + input]<0 && values[i + 5 + input]>-MIN_VALUE) values[i + 5 + input] = 0;
 		// check bad values
 		if (!std::isfinite(values[i + 5 + input])) {
+			errors = true;
 			log(VERBOSE_ERRORS, "NON FINITE VALUE IN: %d OUT: %d SIZE: %d", nodes[i].in, nodes[i].in, nodes[i].ids.size());
 			for (int j = 0; j < nodes[i].ids.size(); ++j) {
 				log(VERBOSE_ERRORS, "INVAL %d -> %d = %f", j, nodes[i].ids[j], values[nodes[i].ids[j]]);
@@ -184,6 +188,9 @@ void Brain::evaluate() {
 			values[i + 5 + input] = 0;
 		}
 		log(VERBOSE_BRAIN, "EVAL NODE %d RESULT: %f", i, values[i + 5 + input]);
+	}
+	if (errors) {
+		randomize();
 	}
 }
 void Brain::getResult(std::vector<float> &output) {
@@ -271,7 +278,33 @@ void Brain::print() {
 }
 
 void Brain::optimize() {
-
+	std::vector<bool> used(hidden + output,false);
+	// search on output nodes for links
+	for (int i = hidden; i < output + hidden; ++i) {
+		used[i] = true;
+		for (int j = 0; j < nodes[i].ids.size(); ++j) {
+			if (nodes[i].ids[j]>=5+input) used[nodes[i].ids[j] - 5 - input] = true;
+		}
+	}
+	for (int i = hidden-1; i >=0; --i) {
+		if (used[i]) {
+			for (int j = 0; j < nodes[i].ids.size(); ++j) {
+				if (nodes[i].ids[j] >= 5 + input && !used[nodes[i].ids[j] - 5 - input]) used[nodes[i].ids[j] - 5 - input] = true;
+			}
+		}
+		else {
+			--hidden;
+			size = input + 5 + output + hidden;
+			// remove value
+			values.erase(values.begin() + i);
+			nodes.erase(nodes.begin() + i);
+			for (unsigned k = i; k < output + hidden; ++k) {
+				for (int j = nodes[k].ids.size() - 1; j >= 0; --j) {
+					if (nodes[k].ids[j]>i + input + 5) --nodes[k].ids[j]; // no problem
+				}
+			}
+		}
+	}
 }
 
 float isum_all(const std::vector<float> &values, const std::vector<unsigned> &ids, unsigned size) {

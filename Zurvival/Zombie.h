@@ -30,7 +30,7 @@ public:
 	double getY();
 	Zombie* clone(int x, int y, int timestamp);
 	void setBrain(Brain *brain);
-	void addKills(int k) { kills += k; hp += k * 10000; };
+	void addKills(int k) { kills += k; hp += k * 20000; };
 	int getKills() { return kills; };
 	void save(const char *);
 	double capability(int timestamp);

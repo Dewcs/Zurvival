@@ -111,6 +111,10 @@ void Zurvival::update() {
 			// keep training even if paused
 			deathPit->update(delta);
 			deathPit->draw();
+			// speed up train
+			while (SDL_GetTicks() - now<95 / 6 && DP_TIME_SPEED!=1) {
+				deathPit->update(delta);
+			}
 			break;
 		case OPTIONS:
 			options->listen(stop,pause, order, value);
