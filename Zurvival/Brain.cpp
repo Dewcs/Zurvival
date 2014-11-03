@@ -1,4 +1,4 @@
-#include "Brain.h"
+ #include "Brain.h"
 
 Brain::Brain(unsigned input, unsigned output) {
 	this->input = input;
