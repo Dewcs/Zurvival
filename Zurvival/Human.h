@@ -26,7 +26,7 @@ public:
 	Human* clone(int x, int y, int timestamp);
 	void setBrain(Brain *brain);
 	void save(const char *);
-	double capability();
+	double capability(int timestamp);
 	void kill();
 	unsigned minutes(unsigned timestamp) { return (timestamp-begin)/60000; };
 };

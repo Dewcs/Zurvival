@@ -270,6 +270,10 @@ void Brain::print() {
 	}
 }
 
+void Brain::optimize() {
+
+}
+
 float isum_all(const std::vector<float> &values, const std::vector<unsigned> &ids, unsigned size) {
 	float sum = 0;
 	for (unsigned i = 0; i < size; ++i) sum += values[ids[i]];

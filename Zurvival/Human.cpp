@@ -157,11 +157,11 @@ void Human::setBrain(Brain *brain) {
 void Human::save(const char * fname) {
 	ia->store(fname);
 }
-double Human::capability() {
+double Human::capability(int timestamp) {
 	if (steps == 0) return 0;
 	double loga = log(steps);
 	if (loga < 2) return 0;
-	return 1.0 - 2 / loga;
+	return (1.0 - 2 / loga)*(timestamp-begin) / 60000.0;
 }
 
 void Human::kill() {

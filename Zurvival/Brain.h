@@ -161,5 +161,6 @@ public:
 	void store(const char* fname);
 	void load(const char* fname);
 	void print();
+	void optimize();
 };
 

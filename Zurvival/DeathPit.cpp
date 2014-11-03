@@ -36,7 +36,7 @@ DeathPit::~DeathPit()
 	}
 	zombies.clear();
 	for (unsigned i = 0; i < humans.size(); ++i) {
-		double humanScore = humans[i]->capability();
+		double humanScore = humans[i]->capability(SDL_GetTicks());
 		if (hTrainer->is_good(humanScore)) {
 			std::string fname = hTrainer->mkFName(humanScore);
 			humans[i]->save(fname.c_str());
@@ -54,7 +54,7 @@ void DeathPit::update(unsigned delta) {
 	delta *= DP_TIME_SPEED;
 	// update humans
 	// spawn
-	if (humans.size() < DP_HUMAN_AMOUNT && rand() % 10 == 0) {
+	if (humans.size() < DP_HUMAN_AMOUNT && rand() % 2 == 0) {
 		int x = rand() % (width / DP_RATIO) - (width / DP_RATIO /2);
 		int y = rand() % (height / DP_RATIO) - (height / DP_RATIO / 2);
 		//int x = (width / DP_RATIO) / 2;
@@ -75,7 +75,7 @@ void DeathPit::update(unsigned delta) {
 	// remove out of screen
 	for (int i = humans.size() - 1; i >= 0; --i) {
 		if (humans[i]->isDead() || !pointInsideRect(humans[i]->getX(), humans[i]->getY(), -width / DP_RATIO / 2, -height / DP_RATIO / 2, width / DP_RATIO, height / DP_RATIO)) {
-			double humanScore = humans[i]->capability();
+			double humanScore = humans[i]->capability(SDL_GetTicks());
 			if (hTrainer->is_good(humanScore)) {
 				std::string fname = hTrainer->mkFName(humanScore);
 				humans[i]->save(fname.c_str());

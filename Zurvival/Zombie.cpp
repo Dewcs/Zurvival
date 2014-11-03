@@ -121,5 +121,5 @@ void Zombie::save(const char * fname) {
 double Zombie::capability(int timestamp) {
 	double kps = 0;
 	if (kills > 0) kps = (double)kills / (timestamp - begin);
-	return kps;
+	return kps*kills;
 }
