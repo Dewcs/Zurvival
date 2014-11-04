@@ -41,6 +41,7 @@ bool Human::isDead() {
 	return !alive;
 }
 void Human::update(unsigned delta, double cx, double cy, std::vector<Zombie*> zombies, Radar *sounds) {
+	// closer zombies?
 	int b1, b2, b3, btmp;
 	float bd1, bd2, bd3, bdtmp;
 	b1 = -1;
@@ -82,9 +83,11 @@ void Human::update(unsigned delta, double cx, double cy, std::vector<Zombie*> zo
 			bd1 = bdtmp;
 		}
 	}
+	// copy previous outputs
 	for (int i = 0; i < output.size(); ++i) {
 		input[i] = output[i];
 	}
+	// current position
 	input[4] = x-cx;
 	input[5] = y-cx;
 	if (b1 != -1) {
@@ -113,6 +116,7 @@ void Human::update(unsigned delta, double cx, double cy, std::vector<Zombie*> zo
 	}
 	double sox, soy;
 	bool sov;
+	// closer sound
 	sounds->getValue(x, y, sox, soy, sov);
 	input[12] = 0;
 	input[13] = 0;
@@ -120,6 +124,7 @@ void Human::update(unsigned delta, double cx, double cy, std::vector<Zombie*> zo
 		input[12] = sox - x;
 		input[13] = soy - y;
 	}
+	// home point
 	input[14] = hx - x;
 	input[15] = hy - y;
 	for (int i = 0; i < input.size(); ++i) {
@@ -143,7 +148,7 @@ void Human::update(unsigned delta, double cx, double cy, std::vector<Zombie*> zo
 			float travel = distP2P(x, y, front.x, front.y);
 			if (travel > 2) {
 				float dist = distP2P(x, y, hx, hy);
-				if (dist<100) steps += (1.0 / max(dist, 20))*travel;
+				if (dist<50) steps += (1.0 / max(dist, 10))*travel;
 			}
 			pq.pop();
 		}

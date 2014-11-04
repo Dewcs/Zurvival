@@ -77,13 +77,14 @@ const int yval[] = { 1, 0, -1, 0 };
 // light color [0-0xffffff] BGR
 #define LIGHT_BASE_COLOR 0
 
-#define DP_ZOMBIE_AMOUNT 200
-#define DP_HUMAN_AMOUNT 100
-#define DP_RATIO 2
-#define DP_TIME_SPEED 4
+// DEAHT PIT
+#define DP_ZOMBIE_AMOUNT 10 // number of zombies
+#define DP_HUMAN_AMOUNT 10 // number of humans
+#define DP_RATIO 4 // size divider 
+#define DP_TIME_SPEED 4 // time multiplier
 
-#define DP_RANDOM_ZOMBIE_CHANCES 20 // [0-99]
-#define DP_RANDOM_HUMAN_CHANCES 20
+#define DP_RANDOM_ZOMBIE_CHANCES 20 // [0-99] chances to spawn a random zombie 
+#define DP_RANDOM_HUMAN_CHANCES 20 // [0-99] chances to spawn a random human
 
-#define MAX_ZOMBIE_STORAGE 200
-#define MAX_HUMAN_STORAGE 200
+#define MAX_ZOMBIE_STORAGE 200 // how many zombies ia to store
+#define MAX_HUMAN_STORAGE 200 // how many human ia to store

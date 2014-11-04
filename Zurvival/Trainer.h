@@ -20,6 +20,7 @@ class Trainer {
 		unsigned chances;
 		std::vector<fdata> data;
 		double init;
+		double sum,unit;
 	public:
 		Trainer(const char * folder, unsigned size, unsigned chances);
 		~Trainer();

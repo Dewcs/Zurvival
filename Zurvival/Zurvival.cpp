@@ -115,6 +115,10 @@ void Zurvival::update() {
 			while (SDL_GetTicks() - now<95 / 6 && DP_TIME_SPEED!=1) {
 				deathPit->update(delta);
 			}
+			while (pause && DP_TIME_SPEED != 1) {
+				deathPit->listen(stop, pause, order, value);
+				deathPit->update(delta);
+			}
 			break;
 		case OPTIONS:
 			options->listen(stop,pause, order, value);

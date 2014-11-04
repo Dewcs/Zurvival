@@ -6,7 +6,8 @@ Trainer::Trainer(const char * folder, unsigned size, unsigned chances) {
 	this->size = size;
 	this->chances = chances;
 	count = 0;
-	double sum = 0;
+	sum = 0;
+	unit = 0;
 	data = std::vector<fdata> (size);
 	// read dir
 	DIR *pdir = NULL;
@@ -23,7 +24,6 @@ Trainer::Trainer(const char * folder, unsigned size, unsigned chances) {
 			std::string fname = std::string(pent->d_name);
 			if (fname != "." && fname != "..") {
 				double value = atof(fname.substr(0, fname.length() - 4).c_str());
-				sum += value;
 				insert(std::string(folder) + "/" + std::string(pent->d_name), value);
 			}
 			
@@ -48,18 +48,29 @@ Trainer::~Trainer()
 }
 
 std::string Trainer::random() {
+	
 	int r = rand() % 100;
 	if (r <= chances || count==0) {
 		return "random";
 	}
 	else {
-		// select 1 giving the top one 1 more chances than the seconds and so on
+		int total = round(sum / unit);
+		int r2 = rand() % total;
+		double tmpsum = 0;
+		double final = r2*unit;
+		int pos = 0;
+		while (pos<size && tmpsum + data[pos].score < final) {
+			tmpsum += data[pos].score;
+			++pos;
+		}
+		return data[pos].fname;
+		/*// select 1 giving the top one 1 more chances than the seconds and so on
 		int max = (count*(count + 1)) >> 1; // sum 1-N
 		int r2 = rand() % max; // random pos
 		int begin = count; 
 		int acc = begin;
 		while (r2 > acc&&begin>0) acc += --begin;
-		return data[count - begin].fname;
+		return data[count - begin].fname;*/
 	}
 }
 
@@ -75,14 +86,18 @@ void Trainer::insert(std::string fname, double score) {
 		data[count].fname = fname;
 		data[count].score = score;
 		sort_from(count);
+		sum += score;
+		if (data.size() != 0) unit = data[count].score;
 		++count;
 	}
 	else {
 		if (score>data[size - 1].score) {
+			sum = sum - data[size - 1].score + score;
 			data[size - 1].score = score;
 			deleteFile(data[size - 1].fname.c_str());
 			data[size - 1].fname = fname;
 			sort_from(size - 1);
+			if (data.size() != 0) unit = data[size-1].score;
 		}
 		else {
 			deleteFile(fname.c_str());
