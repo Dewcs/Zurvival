@@ -88,6 +88,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Actor.cpp" />
     <ClCompile Include="ArrayBales.cpp" />
     <ClCompile Include="Brain.cpp" />
     <ClCompile Include="Chunk.cpp" />
@@ -111,6 +112,7 @@
     <ClCompile Include="Zurvival.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Actor.h" />
     <ClInclude Include="ArrayBales.h" />
     <ClInclude Include="Brain.h" />
     <ClInclude Include="Chunk.h" />
