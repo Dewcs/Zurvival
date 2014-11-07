@@ -50,27 +50,6 @@ enum actor_t {
 	ACTOR_HUMAN,
 };
 
-enum item_t {
-	ITEM_HEAL,
-	ITEM_BULLETS_1,
-	ITEM_BULLETS_2,
-	ITEM_BULLETS_3,
-	ITEM_WEAPON_1,
-	ITEM_WEAPON_2,
-	ITEM_WEAPON_3,
-	ITEM_MAX
-};
-
-static const int c_item[][] = {
-		{10,30},
-		{5,20},
-		{20,50},
-		{4,10},
-		{1,0},
-		{1,0},
-		{1,0}
-};
-
 // x and y offsets for chunk neighbors
 const int xval[] = { 0, 1, 0, -1 };
 const int yval[] = { 1, 0, -1, 0 };
@@ -114,3 +93,5 @@ const int yval[] = { 1, 0, -1, 0 };
 
 #define MAX_ZOMBIE_STORAGE 200 // how many zombies ia to store
 #define MAX_HUMAN_STORAGE 200 // how many human ia to store
+
+#define ITEMS_PER_SQM 0.005 // how many items per square meter

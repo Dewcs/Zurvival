@@ -18,12 +18,15 @@ Human::Human(int x, int y, int timestamp, std::string mode)
 		ia->load(mode.c_str());
 		ia->tweak();
 	}
+	hp = 100;
 	kills = 0;
 	speed = 2;
 	begin = timestamp;
 	output = std::vector<float>(4, 0);
 	input = std::vector<float>(16);
 	type = ACTOR_ZOMBIE;
+	now = timestamp;
+	last_smell = -1000;
 }
 
 
@@ -34,7 +37,7 @@ Human::~Human()
 	output.clear();
 }
 
-void Human::prepare(double cx, double cy, std::vector<Zombie*> zombies, Radar *sounds) {
+void Human::prepare(double cx, double cy, std::vector<Zombie*> zombies, Radar *sounds, item *closer) {
 	// closer zombies?
 	int b1, b2, b3, btmp;
 	float bd1, bd2, bd3, bdtmp;
@@ -126,6 +129,7 @@ void Human::prepare(double cx, double cy, std::vector<Zombie*> zombies, Radar *s
 }
 
 void Human::update(unsigned delta) {
+	now += delta;
 	if (output[0] != 0 || output[1] != 0) {
 		viewAngle = angleP2P(0, 0, output[0], output[1]);
 		x += cos(viewAngle) * 2 * delta / 1000.0;
@@ -139,6 +143,21 @@ Human* Human::clone(int x, int y, int timestamp) {
 	ret->setBrain(cpy);
 	return ret;
 }
-double Human::capability(int timestamp) {
-	return (timestamp-begin) / 60000.0;
+double Human::capability() {
+	return 0;
+}
+
+bool Human::moved() {
+	return output[0] != 0 || output[1] != 0;
+}
+
+bool Human::emitSmell() {
+	if (now - last_smell > 1000) {
+		last_smell = now;
+		return true;
+	} else return false;
+}
+
+void Human::doDamage(double damage) {
+	hp -= damage;
 }

@@ -163,6 +163,8 @@ void Zurvival::load_sprites() {
 	// death pit sprites
 	sprMngr->addImage("pred", "sprites/pred.png", { 0, 0, width, height });
 	sprMngr->addImage("pgreen", "sprites/pgreen.png", { 0, 0, width, height });
+	sprMngr->addImage("pblue", "sprites/pblue.png", { 0, 0, width, height });
+	sprMngr->addImage("pwhite", "sprites/pwhite.png", { 0, 0, width, height });
 }
 
 

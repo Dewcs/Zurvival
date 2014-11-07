@@ -13,14 +13,18 @@
 class DeathPit
 {
 private:
+	int width, height;
+
 	SDL_Renderer* renderer;
 	SpriteManager* sprMngr;
 
 	ItemMap *itemap;
+
 	Radar *sounds, *smells;
+
 	std::vector<Zombie*> zombies;
 	std::vector<Human*> humans;
-	int width, height;
+
 	Trainer *zTrainer,*hTrainer;
 
 public:
@@ -29,5 +33,8 @@ public:
 	void listen(bool &end, bool &pause, order_t &order, int &value);
 	void update(unsigned);
 	void draw();
+private:
+	void spawn(unsigned);
+	void cleanup();
 };
 

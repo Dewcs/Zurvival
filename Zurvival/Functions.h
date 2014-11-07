@@ -61,4 +61,5 @@ std::string to_string_with_precision(double a_value, const int n);
 OTHER FUNCTIONS
 **************************************************************************/
 
+double randomReal(double min, double max);
 unsigned chunkUID(int x, int y);

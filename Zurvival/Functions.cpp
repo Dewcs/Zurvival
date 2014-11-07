@@ -124,6 +124,10 @@ std::string to_string_with_precision(double a_value, const int n) {
 	return out.str();
 }
 
+double randomReal(double min, double max) {
+	return min + (max - min) * rand() / (double)RAND_MAX;
+}
+
 unsigned chunkUID(int x, int y) {
 	return (x + (MAX_CHUNK >> 1)) * MAX_CHUNK + (y + (MAX_CHUNK >> 1));
 }

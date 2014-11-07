@@ -56,7 +56,8 @@ void Game::update(unsigned delta) {
 	}
 	// update zombies
 	for (int i = 0; i < zcount; ++i) {
-		zombies[i]->update(delta, mc->getX(), mc->getY(),smells, sounds);
+		zombies[i]->prepare(mc->getX(), mc->getY(), smells, sounds);
+		zombies[i]->update(delta);
 	}
 	// delete zombies
 	for (int i = zcount - 1; i >= 0; --i) {

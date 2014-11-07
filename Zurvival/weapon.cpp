@@ -32,7 +32,7 @@ bool Weapon::pucDisparar(){
 }
 
 int Weapon::balesCarregades(){
-	
+	return 0;
 }
 
 void Weapon::dispararBala(){

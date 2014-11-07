@@ -26,6 +26,7 @@ Zombie::Zombie(int x, int y, int timestamp, std::string mode)
 	output = std::vector<float>(4,0);
 	input = std::vector<float>(10);
 	type = ACTOR_ZOMBIE;
+	damageDealt = 0;
 }
 
 
@@ -83,8 +84,16 @@ Zombie* Zombie::clone(int x, int y, int timestamp) {
 	return ret;
 }
 
-double Zombie::capability(int timestamp) {
+double Zombie::capability() {
 	double kps = 0;
-	if (kills > 0) kps = (double)kills / (timestamp - begin);
-	return kps*kills;
+	if (damageDealt> 0) kps = 1.0 - 1.0 / ((kills+1)*sqrt(damageDealt));
+	return kps;
+}
+
+double Zombie::getDamage() {
+	return max(10.0, hp / 10);
+}
+
+void Zombie::addDamageDealt(double damage) {
+	damageDealt += damage;
 }
