@@ -45,6 +45,11 @@ enum tile_t {
 	WATER
 };
 
+enum actor_t {
+	ZOMBIE,
+	HUMAN,
+};
+
 // x and y offsets for chunk neighbors
 const int xval[] = { 0, 1, 0, -1 };
 const int yval[] = { 1, 0, -1, 0 };

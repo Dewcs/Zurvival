@@ -1,8 +1,8 @@
-#include "wepon.h"
+#include "weapon.h"
 
 
 Weapon::Weapon(){
-	if (type == 0){
+	/*if (type == 0){
 		tempsRecarga = 20.0;
 		tamanyCarregador = 12;
 		shootsPerSecond = 0.8;
@@ -14,7 +14,7 @@ Weapon::Weapon(){
 		tempsRecarga = 20.0;
 		tamanyCarregador = 12;
 		shootsPerSecond = 0.8;
-	}
+	}*/
 }
  
 
@@ -23,7 +23,7 @@ Weapon::~Weapon(){
 }
 
 bool Weapon::pucDisparar(){
-	if (balesCarregades == 0){
+	if (balesCarregades2 == 0){
 		return false;
 	}
 	else{

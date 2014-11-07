@@ -4,7 +4,7 @@ class Weapon{
 protected:
 	float tempsRecarga;
 	int tamanyCarregador;
-	int balesCarregades;
+	int balesCarregades2;
 	float shootsPerSecond;
 
 public:

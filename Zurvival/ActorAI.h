@@ -6,10 +6,14 @@ class ActorAI:public Actor
 protected:
 	Brain *ia;
 	std::vector<float> output, input;
+	int kills;
 public:
 	ActorAI();
 	~ActorAI();
+	void think();
 	void setBrain(Brain *brain);
 	void save(const char *);
+	virtual void addKills(int k) { kills += k;  };
+	int getKills() { return kills; };
 };
 

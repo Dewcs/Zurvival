@@ -9,30 +9,16 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include "ActorAI.h"
 
-class Zombie {
-private:
-	double x, y;
-	double viewAngle;
-	Brain *ia;
-	int kills;
-	int hp;
-	int begin;
-	std::vector<float> output,input;
+class Zombie:public ActorAI {
 public:
 	Zombie(int x, int y, int timestamp, std::string mode);
 	~Zombie();
-	bool isDead();
-	void update(unsigned delta, double cx, double cy, Radar *smells, Radar * sounds);
-	double getAngle();
-	double getRawAngle();
-	double getX();
-	double getY();
+	void prepare(double cx, double cy, Radar *smells, Radar * sounds);
+	void update(unsigned delta);
 	Zombie* clone(int x, int y, int timestamp);
-	void setBrain(Brain *brain);
-	void addKills(int k) { kills += k; hp += k * 20000; };
-	int getKills() { return kills; };
-	void save(const char *);
+	void addKills(int k) { kills += k; hp += 60; };
 	double capability(int timestamp);
 };
 

@@ -26,3 +26,7 @@ double Actor::getX() {
 double Actor::getY() {
 	return y;
 }
+
+int Actor::getTime(int timestamp) {
+	return timestamp - begin;
+}

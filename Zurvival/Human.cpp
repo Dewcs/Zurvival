@@ -3,11 +3,9 @@
 
 Human::Human(int x, int y, int timestamp, std::string mode)
 {
-	this->x = hx = x;
-	this->y = hy = y;
+	this->x = x;
+	this->y = y;
 	viewAngle = 0;
-	steps = 0;
-	alive = true;
 	if (mode == "random") {
 		ia = new Brain(16, 4);
 		ia->randomize();
@@ -20,13 +18,11 @@ Human::Human(int x, int y, int timestamp, std::string mode)
 		ia->load(mode.c_str());
 		ia->tweak();
 	}
+	kills = 0;
+	speed = 2;
 	begin = timestamp;
 	output = std::vector<float>(4, 0);
 	input = std::vector<float>(16);
-	Point p;
-	p.x = x;
-	p.y = y;
-	pq.push(p);
 }
 
 
@@ -37,10 +33,7 @@ Human::~Human()
 	output.clear();
 }
 
-bool Human::isDead() {
-	return !alive;
-}
-void Human::update(unsigned delta, double cx, double cy, std::vector<Zombie*> zombies, Radar *sounds) {
+void Human::prepare(double cx, double cy, std::vector<Zombie*> zombies, Radar *sounds) {
 	// closer zombies?
 	int b1, b2, b3, btmp;
 	float bd1, bd2, bd3, bdtmp;
@@ -88,8 +81,8 @@ void Human::update(unsigned delta, double cx, double cy, std::vector<Zombie*> zo
 		input[i] = output[i];
 	}
 	// current position
-	input[4] = x-cx;
-	input[5] = y-cx;
+	input[4] = x - cx;
+	input[5] = y - cx;
 	if (b1 != -1) {
 		input[6] = zombies[b1]->getX() - x;
 		input[7] = zombies[b1]->getY() - y;
@@ -125,46 +118,18 @@ void Human::update(unsigned delta, double cx, double cy, std::vector<Zombie*> zo
 		input[13] = soy - y;
 	}
 	// home point
-	input[14] = hx - x;
-	input[15] = hy - y;
 	for (int i = 0; i < input.size(); ++i) {
 		if (!std::isfinite(input[i])) log(VERBOSE_ERRORS, "BAD INPUT %d", i);
 	}
-	ia->setInput(input);
-	ia->evaluate();
-	ia->getResult(output);
-	log(VERBOSE_BRAIN, "HDATA OUTPUT %f %f", output[0], output[1]);
-	if (output[0] + output[1] != 0) {
+	think();
+}
+
+void Human::update(unsigned delta) {
+	if (output[0] != 0 || output[1] != 0) {
 		viewAngle = angleP2P(0, 0, output[0], output[1]);
-		//viewAngle = angleP2P(0, 0, v1x+v2x, v1y+v2y);
 		x += cos(viewAngle) * 2 * delta / 1000.0;
 		y += sin(viewAngle) * 2 * delta / 1000.0;
-		Point p;
-		p.x = x;
-		p.y = y;
-		pq.push(p);
-		if (pq.size()>10) {
-			Point front = pq.front();
-			float travel = distP2P(x, y, front.x, front.y);
-			if (travel > 2) {
-				float dist = distP2P(x, y, hx, hy);
-				if (dist<50) steps += (1.0 / max(dist, 10))*travel;
-			}
-			pq.pop();
-		}
 	}
-}
-double Human::getAngle() {
-	return rad2deg(viewAngle);
-}
-double Human::getRawAngle() {
-	return viewAngle;
-}
-double Human::getX() {
-	return x;
-}
-double Human::getY() {
-	return y;
 }
 Human* Human::clone(int x, int y, int timestamp) {
 	Human *ret = new Human(x, y, timestamp, "empty");
@@ -173,20 +138,9 @@ Human* Human::clone(int x, int y, int timestamp) {
 	ret->setBrain(cpy);
 	return ret;
 }
-void Human::setBrain(Brain *brain) {
-	if (ia != NULL) delete ia;
-	ia = brain;
-}
-void Human::save(const char * fname) {
-	ia->store(fname);
-}
 double Human::capability(int timestamp) {
 	if (steps == 0) return 0;
 	double loga = log(steps);
 	if (loga < 2) return 0;
 	return (1.0 - 2 / loga)*(timestamp-begin) / 60000.0;
-}
-
-void Human::kill() {
-	alive = false;
 }
