@@ -99,6 +99,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Human.cpp" />
     <ClCompile Include="humanDummy.cpp" />
+    <ClCompile Include="ItemMap.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainCharacter.cpp" />
     <ClCompile Include="MainMenu.cpp" />
@@ -126,6 +127,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Human.h" />
     <ClInclude Include="humanDummy.h" />
+    <ClInclude Include="ItemMap.h" />
     <ClInclude Include="MainCharacter.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Map.h" />
