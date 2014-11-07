@@ -89,6 +89,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
+    <ClCompile Include="ActorAI.cpp" />
     <ClCompile Include="ArrayBales.cpp" />
     <ClCompile Include="Brain.cpp" />
     <ClCompile Include="Chunk.cpp" />
@@ -113,6 +114,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
+    <ClInclude Include="ActorAI.h" />
     <ClInclude Include="ArrayBales.h" />
     <ClInclude Include="Brain.h" />
     <ClInclude Include="Chunk.h" />
