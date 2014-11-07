@@ -9,6 +9,7 @@ ActorAI::ActorAI()
 
 ActorAI::~ActorAI()
 {
+
 }
 
 void ActorAI::setBrain(Brain *brain) {

@@ -25,6 +25,7 @@ Zombie::Zombie(int x, int y, int timestamp, std::string mode)
 	begin = timestamp;
 	output = std::vector<float>(4,0);
 	input = std::vector<float>(10);
+	type = ACTOR_ZOMBIE;
 }
 
 

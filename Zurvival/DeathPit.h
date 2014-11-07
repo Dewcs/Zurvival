@@ -8,6 +8,7 @@
 #include "Radar.h"
 #include "Trainer.h"
 #include "Human.h"
+#include "ItemMap.h"
 
 class DeathPit
 {
@@ -15,7 +16,7 @@ private:
 	SDL_Renderer* renderer;
 	SpriteManager* sprMngr;
 
-	
+	ItemMap *itemap;
 	Radar *sounds, *smells;
 	std::vector<Zombie*> zombies;
 	std::vector<Human*> humans;

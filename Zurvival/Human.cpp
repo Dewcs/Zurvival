@@ -23,6 +23,7 @@ Human::Human(int x, int y, int timestamp, std::string mode)
 	begin = timestamp;
 	output = std::vector<float>(4, 0);
 	input = std::vector<float>(16);
+	type = ACTOR_ZOMBIE;
 }
 
 
@@ -139,8 +140,5 @@ Human* Human::clone(int x, int y, int timestamp) {
 	return ret;
 }
 double Human::capability(int timestamp) {
-	if (steps == 0) return 0;
-	double loga = log(steps);
-	if (loga < 2) return 0;
-	return (1.0 - 2 / loga)*(timestamp-begin) / 60000.0;
+	return (timestamp-begin) / 60000.0;
 }
