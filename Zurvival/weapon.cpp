@@ -2,19 +2,7 @@
 
 
 Weapon::Weapon(){
-	/*if (type == 0){
-		tempsRecarga = 20.0;
-		tamanyCarregador = 12;
-		shootsPerSecond = 0.8;
-	}else if (type == 1){
-		tempsRecarga = 20.0;
-		tamanyCarregador = 5;
-		shootsPerSecond = 0.8;
-	}else {
-		tempsRecarga = 20.0;
-		tamanyCarregador = 12;
-		shootsPerSecond = 0.8;
-	}*/
+
 }
  
 
@@ -32,13 +20,28 @@ bool Weapon::pucDisparar(){
 }
 
 int Weapon::balesCarregades(){
-	return 0;
+	return balesCarregades2;
 }
 
-void Weapon::dispararBala(){
-
+void Weapon::dispararBala(float x, float y, double vd, ArrayBales ab){
+	balesCarregades2 = balesCarregades2 - 1;
+	for (int i = 0; i > quantOfBala; i++){
+		ab.createBala(firingRange, x, y, vd + deg2rad(randomReal(-5, 5)));
+	}
 }
 
-void Weapon::recarregarBales(){
-
+void Weapon::recarregarBales(int pacDeBales){
+	if (balesCarregades2 < tamanyCarregador){
+	
+	}
 }
+
+void Weapon::updateDelta(int ms){
+	if(tempo == 0){
+		tempo = tempsEntreBales;
+		tempo = tempo - ms;
+	}
+}
+
+
+

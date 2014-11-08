@@ -11,8 +11,9 @@ ArrayBales::~ArrayBales(){
 
 }
 
-void ArrayBales::createBala(float sp, float x, float y, float vd, Bala b){
-	b.shootSpeed = sp;
+void ArrayBales::createBala(float fr, float x, float y, double vd){
+	Bala b;
+	b.firingRange = fr;
 	b.x = x;
 	b.y = y;
 	b.directVector = vd;

@@ -1,19 +1,26 @@
 #pragma once
+#include "ArrayBales.h"
+#include "Functions.h"
 
 class Weapon{
 protected:
-	float tempsRecarga;
+	int tempsRecarga;
+	int tempsEntreBales;
 	int tamanyCarregador;
 	int balesCarregades2;
 	float shootsPerSecond;
+	int tempo;
+	int quantOfBala;
+	float firingRange;
 
 public:
 	Weapon();
 	~Weapon();
 	bool pucDisparar();
 	int balesCarregades();
-	void dispararBala();
-	void recarregarBales();
+	void dispararBala(float x, float y, double vd, ArrayBales b);
+	void recarregarBales(int pacDeBales);
+	void updateDelta(int ms);
 };
 
 class Pistol :public Weapon{

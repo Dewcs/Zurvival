@@ -8,10 +8,10 @@ enum weapon_t{
 
 struct Bala{
 	weapon_t parent;
-	float shootSpeed;
+	float firingRange;
 	float x;
 	float y;
-	float directVector;
+	double directVector;
 };
 
 class ArrayBales{
@@ -21,7 +21,7 @@ class ArrayBales{
 public:
 	ArrayBales(int numBales);
 	~ArrayBales();
-	void createBala(float shootSpeed, float x, float y, float directVector, Bala bala);
+	void createBala(float shootSpeed, float x, float y, double directVector);
 	void ompleCargador();
 };
 
