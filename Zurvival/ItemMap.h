@@ -38,6 +38,7 @@ public:
 	~ItemMap();
 	void addRandomItem(double x, double y, double w, double h);
 	item* closerToPoint(double x, double y);
+	item* closerToPoint(double x, double y, item_t type);
 	item* collectItem(double x, double y);
 	item* getItem(int id);
 	int size() { return items.size(); };

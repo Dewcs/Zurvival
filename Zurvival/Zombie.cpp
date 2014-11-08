@@ -74,6 +74,9 @@ void Zombie::update(unsigned delta) {
 		y += sin(viewAngle) * speed * delta / 1000.0;
 		hp -= delta / 1000.0;
 	}
+	else {
+		hp -= delta / 5000.0;
+	}
 }
 
 Zombie* Zombie::clone(int x, int y, int timestamp) {

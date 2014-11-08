@@ -36,6 +36,22 @@ item* ItemMap::closerToPoint(double x, double y) {
 	else return NULL;
 }
 
+item* ItemMap::closerToPoint(double x, double y, item_t type) {
+	int b = -1;
+	double bd;
+	for (int i = 0; i < items.size(); ++i) {
+		if (items[i]->type == type) {
+			double dist = distP2P(x, y, items[i]->x, items[i]->y);
+			if (b == -1 || bd>dist) {
+				bd = dist;
+				b = i;
+			}
+		}
+	}
+	if (b != -1) return items[b];
+	else return NULL;
+}
+
 item* ItemMap::collectItem(double x, double y) {
 	int b = -1;
 	double bd;

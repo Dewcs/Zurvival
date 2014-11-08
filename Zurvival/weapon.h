@@ -5,23 +5,27 @@
 class Weapon{
 protected:
 	int tempsRecarga;
-	int tempsEntreBales;
+	int tempsEntreDispars;
 	int tamanyCarregador;
-	int balesCarregades2;
-	float shootsPerSecond;
-	int tempo;
-	int quantOfBala;
-	float firingRange;
-	int balasDePoder;
+	int balesCarregador;
 
+	int tempsPerDisparar;
+	int tempsPerRecarregar;
+	int balesTotals;
+	
+	int balesPerDispar;
+	float distanciaDispar;
+	
 public:
 	Weapon();
 	~Weapon();
 	bool pucDisparar();
 	int balesCarregades();
-	void dispararBala(float x, float y, double vd, ArrayBales b);
+	void dispararBala(float x, float y, double vd, ArrayBales *b);
 	void recarregarBales();
 	void updateDelta(int ms);
+	int totalBales();
+	void afegirBales(int quantitat);
 };
 
 class Pistol :public Weapon{

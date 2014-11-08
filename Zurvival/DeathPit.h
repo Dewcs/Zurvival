@@ -9,6 +9,7 @@
 #include "Trainer.h"
 #include "Human.h"
 #include "ItemMap.h"
+#include "ArrayBales.h"
 
 class DeathPit
 {
@@ -21,6 +22,8 @@ private:
 	ItemMap *itemap;
 
 	Radar *sounds, *smells;
+
+	ArrayBales *bales;
 
 	std::vector<Zombie*> zombies;
 	std::vector<Human*> humans;

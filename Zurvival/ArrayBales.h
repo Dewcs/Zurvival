@@ -1,4 +1,8 @@
 #pragma once
+#include <vector>
+#include "Functions.h"
+
+#define BULLET_SPEED 10
 
 enum weapon_t{
 	WEAPON_PISTOL,
@@ -9,19 +13,19 @@ enum weapon_t{
 struct Bala{
 	weapon_t parent;
 	float firingRange;
-	float x;
-	float y;
+	float x,x0,x1;
+	float y,y0,y1;
 	double directVector;
 };
 
 class ArrayBales{
-	Bala *bales;
-	int numBales;
-
+	std::vector<Bala> bales;
 public:
-	ArrayBales(int numBales);
+	ArrayBales();
 	~ArrayBales();
 	void createBala(float shootSpeed, float x, float y, double directVector);
-	void ompleCargador();
+	void updateBales(unsigned delta);
+	void getDrawInfo(int i,float &x0,float &y0, float &dist, float &angle);
+	int size();
 };
 

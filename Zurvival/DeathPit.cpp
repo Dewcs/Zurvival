@@ -20,6 +20,8 @@ DeathPit::DeathPit(SDL_Renderer* renderer, SpriteManager* sprMngr, int width, in
 
 	itemap = new ItemMap();
 
+	bales = new ArrayBales();
+
 	log(VERBOSE_DATA_CREATION, "CREATED DEATHPIT");
 }
 
@@ -54,6 +56,8 @@ DeathPit::~DeathPit()
 	delete zTrainer;
 	delete hTrainer;
 	delete itemap;
+
+	delete bales;
 
 	renderer = NULL;
 	sprMngr = NULL;
@@ -118,23 +122,25 @@ void DeathPit::update(unsigned delta) {
 	spawn(delta);
 	// update humans
 	for (unsigned i = 0; i < humans.size(); ++i) {
-		humans[i]->prepare(0, 0, zombies, smells, itemap->closerToPoint(humans[i]->getX(), humans[i]->getY()));
-		humans[i]->update(delta);
+		humans[i]->prepare(0, 0, zombies, smells, itemap);
+		humans[i]->update(delta,bales);
 		if (humans[i]->emitSmell()) smells->addPoint(humans[i]->getX(), humans[i]->getY(), 1, SDL_GetTicks());
-		if (humans[i]->moved()) sounds->addPoint(humans[i]->getX(), humans[i]->getY(), 30, SDL_GetTicks());
-	}
+		if (humans[i]->fired()) sounds->addPoint(humans[i]->getX(), humans[i]->getY(), 100, SDL_GetTicks());
+		else if (humans[i]->moved()) sounds->addPoint(humans[i]->getX(), humans[i]->getY(), 20, SDL_GetTicks());
 
+	}
 	// update radars
 	smells->update(delta);
 	sounds->update(delta);
-
 	// update zombies
 	for (unsigned i = 0; i < zombies.size(); ++i) {
 		zombies[i]->prepare(0, 0, smells, sounds);
 		zombies[i]->update(delta);
 	}
-
+	// update bales
+	bales->updateBales(delta);
 	// update damages
+
 	// zombie attack human
 	for (unsigned i = 0; i < humans.size(); ++i) {
 		double hx = humans[i]->getX();
@@ -165,6 +171,13 @@ void DeathPit::draw() {
 		SDL_RenderCopy(renderer, sprMngr->getTexture("pblue"), NULL, &itemRect);
 	}
 	// draw bullets
+	for (unsigned i = 0; i < bales->size(); ++i) {
+		float x0, y0, dist, angle;
+		bales->getDrawInfo(i, x0, y0, dist, angle);
+		SDL_Rect bulletRect = { round(x0*DP_RATIO), round(y0*DP_RATIO), dist*DP_RATIO, 1 };
+		SDL_Point bulletPoint = { round(x0*DP_RATIO), round(y0*DP_RATIO) };
+		SDL_RenderCopyEx(renderer, sprMngr->getTexture("pwhite"), NULL, &bulletRect, rad2deg(angle), &bulletPoint, SDL_FLIP_NONE);
+	}
 	// draw humans
 	for (unsigned i = 0; i < humans.size(); ++i) {
 		SDL_Rect humanRect = { round((humans[i]->getX() + width / DP_RATIO / 2)*DP_RATIO), round((humans[i]->getY() + height / DP_RATIO / 2)*DP_RATIO), DP_RATIO + humans[i]->minutes(), DP_RATIO + humans[i]->minutes() };

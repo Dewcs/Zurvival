@@ -109,7 +109,7 @@
     <ClCompile Include="SpriteManager.cpp" />
     <ClCompile Include="tinyxml2.cpp" />
     <ClCompile Include="Trainer.cpp" />
-    <ClCompile Include="weapon.cpp" />
+    <ClCompile Include="Weapon.cpp" />
     <ClCompile Include="Zombie.cpp" />
     <ClCompile Include="Zurvival.cpp" />
   </ItemGroup>
@@ -136,7 +136,7 @@
     <ClInclude Include="SpriteManager.h" />
     <ClInclude Include="tinyxml2.h" />
     <ClInclude Include="Trainer.h" />
-    <ClInclude Include="weapon.h" />
+    <ClInclude Include="Weapon.h" />
     <ClInclude Include="Zombie.h" />
     <ClInclude Include="Zurvival.h" />
   </ItemGroup>
