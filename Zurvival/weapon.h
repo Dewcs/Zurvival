@@ -12,6 +12,7 @@ protected:
 	int tempo;
 	int quantOfBala;
 	float firingRange;
+	int balasDePoder;
 
 public:
 	Weapon();
@@ -19,7 +20,7 @@ public:
 	bool pucDisparar();
 	int balesCarregades();
 	void dispararBala(float x, float y, double vd, ArrayBales b);
-	void recarregarBales(int pacDeBales);
+	void recarregarBales();
 	void updateDelta(int ms);
 };
 

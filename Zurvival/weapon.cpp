@@ -28,12 +28,14 @@ void Weapon::dispararBala(float x, float y, double vd, ArrayBales ab){
 	for (int i = 0; i > quantOfBala; i++){
 		ab.createBala(firingRange, x, y, vd + deg2rad(randomReal(-5, 5)));
 	}
+	if (balesCarregades2 == 0){
+		recarregarBales();
+	}
 }
 
-void Weapon::recarregarBales(int pacDeBales){
-	if (balesCarregades2 < tamanyCarregador){
-	
-	}
+void Weapon::recarregarBales(){
+	balesCarregades2 = min(tamanyCarregador, balasDePoder);
+	balasDePoder = balasDePoder - balesCarregades2;
 }
 
 void Weapon::updateDelta(int ms){
