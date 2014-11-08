@@ -99,6 +99,7 @@ void DeathPit::cleanup() {
 				humans[i]->save(fname.c_str());
 				hTrainer->insert(fname, humanScore);
 			}
+			bales->unlinkOwner(humans[i]);
 			delete humans[i];
 			humans.erase(humans.begin() + i);
 		}
@@ -140,7 +141,26 @@ void DeathPit::update(unsigned delta) {
 	// update bales
 	bales->updateBales(delta);
 	// update damages
-
+	for (unsigned i = 0; i < bales->size(); ++i) {
+		Segment s = bales->getBalaSegment(i);
+		Human *h = (Human*)bales->getBalaOwner(i);
+		for (unsigned j = 0; j < zombies.size(); ++j) {
+			if (!zombies[j]->isDead()) {
+				Circle c = zombies[j]->getCircle();
+				if (collide(s, c)) {
+					double bulletDmg = 40;
+					zombies[j]->doDamage(bulletDmg);
+					if (h != NULL) {
+						h->addDamageDealt(bulletDmg);
+						if (zombies[j]->isDead()) {
+							h->addKills(1);
+							humans.push_back(h->clone(zombies[j]->getX(), zombies[j]->getY(), SDL_GetTicks()));
+						}
+					}
+				}
+			}
+		}
+	}
 	// zombie attack human
 	for (unsigned i = 0; i < humans.size(); ++i) {
 		double hx = humans[i]->getX();
@@ -174,9 +194,10 @@ void DeathPit::draw() {
 	for (unsigned i = 0; i < bales->size(); ++i) {
 		float x0, y0, dist, angle;
 		bales->getDrawInfo(i, x0, y0, dist, angle);
-		SDL_Rect bulletRect = { round(x0*DP_RATIO), round(y0*DP_RATIO), dist*DP_RATIO, 1 };
-		SDL_Point bulletPoint = { round(x0*DP_RATIO), round(y0*DP_RATIO) };
-		SDL_RenderCopyEx(renderer, sprMngr->getTexture("pwhite"), NULL, &bulletRect, rad2deg(angle), &bulletPoint, SDL_FLIP_NONE);
+		SDL_Point bulletPoint = { round((x0 + width / DP_RATIO / 2)*DP_RATIO), round((y0 + height / DP_RATIO / 2)*DP_RATIO) };
+		SDL_Point bulletPoint2 = { 0, 1 };
+		SDL_Rect bulletRect = { bulletPoint.x, bulletPoint.y, dist*DP_RATIO, 1 };
+		SDL_RenderCopyEx(renderer, sprMngr->getTexture("pwhite"), NULL, &bulletRect, rad2deg(angle), &bulletPoint2, SDL_FLIP_NONE); // &bulletPoint rad2deg(angle)
 	}
 	// draw humans
 	for (unsigned i = 0; i < humans.size(); ++i) {

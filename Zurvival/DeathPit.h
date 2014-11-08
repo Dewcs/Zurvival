@@ -10,6 +10,7 @@
 #include "Human.h"
 #include "ItemMap.h"
 #include "ArrayBales.h"
+#include "geometry.h"
 
 class DeathPit
 {

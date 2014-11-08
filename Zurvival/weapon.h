@@ -21,7 +21,7 @@ public:
 	~Weapon();
 	bool pucDisparar();
 	int balesCarregades();
-	void dispararBala(float x, float y, double vd, ArrayBales *b);
+	void dispararBala(float x, float y, double vd, ArrayBales *b, void *owner);
 	void recarregarBales();
 	void updateDelta(int ms);
 	int totalBales();

@@ -25,7 +25,6 @@ public:
 	bool fired();
 	bool moved();
 	bool emitSmell();
-	void doDamage(double damage);
 	int minutes() { return (now - begin) / 60000; };
 	void giveItem(item *i);
 };

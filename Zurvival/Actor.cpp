@@ -30,3 +30,13 @@ double Actor::getY() {
 int Actor::getTime(int timestamp) {
 	return timestamp - begin;
 }
+
+Circle Actor::getCircle() {
+	Point p(x, y);
+	Circle c(p, 0.5);
+	return c;
+}
+
+void Actor::doDamage(double damage) {
+	hp -= damage;
+}

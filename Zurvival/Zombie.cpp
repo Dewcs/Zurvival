@@ -89,14 +89,10 @@ Zombie* Zombie::clone(int x, int y, int timestamp) {
 
 double Zombie::capability() {
 	double kps = 0;
-	if (damageDealt> 0) kps = 1.0 - 1.0 / ((kills+1)*sqrt(damageDealt));
+	if (damageDealt> 0) kps = 1.0 - 1.0 / log((kills+1)*sqrt(damageDealt));
 	return kps;
 }
 
 double Zombie::getDamage() {
 	return max(10.0, hp / 10);
-}
-
-void Zombie::addDamageDealt(double damage) {
-	damageDealt += damage;
 }

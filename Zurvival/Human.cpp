@@ -1,6 +1,5 @@
 #include "Human.h"
 
-
 Human::Human(int x, int y, int timestamp, std::string mode)
 {
 	this->x = x;
@@ -136,8 +135,8 @@ void Human::prepare(double cx, double cy, std::vector<Zombie*> zombies, Radar *s
 	// closer heal
 	item* heal=itemap->closerToPoint(x, y, ITEM_HEAL);
 	if (heal != NULL) {
-		input[17] = heal->x;
-		input[18] = heal->y;
+		input[17] = heal->x - x;
+		input[18] = heal->y - y;
 	}
 	else {
 		input[17] = 0;
@@ -146,8 +145,8 @@ void Human::prepare(double cx, double cy, std::vector<Zombie*> zombies, Radar *s
 	// close ammo
 	item* bullets = itemap->closerToPoint(x, y, ITEM_BULLETS_2);
 	if (bullets != NULL) {
-		input[19] = bullets->x;
-		input[20] = bullets->y;
+		input[19] = bullets->x - x;
+		input[20] = bullets->y - y;
 	}
 	else {
 		input[19] = 0;
@@ -168,13 +167,13 @@ void Human::update(unsigned delta, ArrayBales *ab) {
 	}
 	// update position
 	if (output[2] != 0) {
-		x += cos(viewAngle) * 2 * delta / 1000.0;
-		y += sin(viewAngle) * 2 * delta / 1000.0;
+		x += cos(viewAngle) * speed * delta / 1000.0;
+		y += sin(viewAngle) * speed * delta / 1000.0;
 	}
 	// fire ??
 	if (output[3] != 0 && main->pucDisparar()) {
 		fire = true;
-		main->dispararBala(x, y, viewAngle, ab);
+		main->dispararBala(x, y, viewAngle, ab, this);
 	}
 	else {
 		fire = false;
@@ -188,7 +187,9 @@ Human* Human::clone(int x, int y, int timestamp) {
 	return ret;
 }
 double Human::capability() {
-	return 0;
+	double kps = 0;
+	if (damageDealt> 0) kps = 1.0 - 1.0 / log((kills + 1)*sqrt(damageDealt));
+	return kps;
 }
 
 bool Human::fired() {
@@ -203,10 +204,6 @@ bool Human::emitSmell() {
 		last_smell = now;
 		return true;
 	} else return false;
-}
-
-void Human::doDamage(double damage) {
-	hp -= damage;
 }
 
 void Human::giveItem(item *i) {

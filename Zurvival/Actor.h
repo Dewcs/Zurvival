@@ -1,5 +1,6 @@
 #pragma once
 #include "Functions.h"
+#include "geometry.h"
 
 class Actor
 {
@@ -19,5 +20,7 @@ public:
 	double getX();
 	double getY();
 	int getTime(int timestamp);
+	Circle getCircle();
+	void doDamage(double damage);
 };
 

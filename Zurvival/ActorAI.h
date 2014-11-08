@@ -7,6 +7,7 @@ protected:
 	Brain *ia;
 	std::vector<float> output, input;
 	int kills;
+	double damageDealt;
 public:
 	ActorAI();
 	~ActorAI();
@@ -15,5 +16,6 @@ public:
 	void save(const char *);
 	virtual void addKills(int k) { kills += k;  };
 	int getKills() { return kills; };
+	void addDamageDealt(double damage);
 };
 

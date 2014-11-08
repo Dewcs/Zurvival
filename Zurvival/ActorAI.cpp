@@ -26,3 +26,7 @@ void ActorAI::think() {
 	ia->evaluate();
 	ia->getResult(output);
 }
+
+void ActorAI::addDamageDealt(double damage) {
+	damageDealt += damage;
+}

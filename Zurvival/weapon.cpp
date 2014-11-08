@@ -23,11 +23,11 @@ int Weapon::balesCarregades(){
 	return balesCarregador;
 }
 
-void Weapon::dispararBala(float x, float y, double vd, ArrayBales *ab){
+void Weapon::dispararBala(float x, float y, double vd, ArrayBales *ab, void *owner){
 	--balesCarregador;
 	tempsPerDisparar = tempsEntreDispars;
 	for (int i = 0; i < balesPerDispar; i++){
-		ab->createBala(distanciaDispar, x, y, vd + deg2rad(randomReal(-5, 5)));
+		ab->createBala(distanciaDispar, x, y, vd + deg2rad(randomReal(-2, 2)),owner);
 	}
 	if (balesCarregador == 0 && balesTotals>0){
 		tempsPerRecarregar = tempsRecarga;
