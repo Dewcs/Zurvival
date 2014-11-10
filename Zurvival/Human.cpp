@@ -28,6 +28,10 @@ Human::Human(int x, int y, int timestamp, std::string mode)
 	last_smell = -1000;
 	fire = false;
 	main = new Pistol();
+	minx = maxx = this->x = x;
+	miny = maxy = this->y = y;
+	shooted = 0;
+	hitted = 0;
 }
 
 
@@ -169,10 +173,15 @@ void Human::update(unsigned delta, ArrayBales *ab) {
 	if (output[2] != 0) {
 		x += cos(viewAngle) * speed * delta / 1000.0;
 		y += sin(viewAngle) * speed * delta / 1000.0;
+		minx = min(minx, x);
+		maxx = max(maxx, x);
+		miny = min(minx, y);
+		maxy = max(maxx, y);
 	}
 	// fire ??
 	if (output[3] != 0 && main->pucDisparar()) {
 		fire = true;
+		++shooted;
 		main->dispararBala(x, y, viewAngle, ab, this);
 	}
 	else {
@@ -188,7 +197,13 @@ Human* Human::clone(int x, int y, int timestamp) {
 }
 double Human::capability() {
 	double kps = 0;
-	if (damageDealt> 0) kps = 1.0 - 1.0 / log((kills + 1)*sqrt(damageDealt));
+	double area = (maxx - minx)*(maxy - miny);
+	double af = 1.0 - 1000.0 / (1000.0 + area);
+	double kf = 1.0 - 10.0 / (11 + kills);
+	double df = 1.0 - 100.0 / (100.0 + damageDealt);
+	double hf = 0;
+	if (shooted>0) hf = hitted / shooted;
+	kps = af * kf * df * hf;
 	return kps;
 }
 
@@ -200,7 +215,7 @@ bool Human::moved() {
 }
 
 bool Human::emitSmell() {
-	if (now - last_smell > 1000) {
+	if (now - last_smell > 250) {
 		last_smell = now;
 		return true;
 	} else return false;

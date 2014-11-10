@@ -15,6 +15,7 @@ class Human: public ActorAI {
 	int last_smell;
 	Weapon *main;
 	bool fire;
+	int shooted, hitted;
 public:
 	Human(int x, int y, int timestamp, std::string mode);
 	~Human();
@@ -25,7 +26,7 @@ public:
 	bool fired();
 	bool moved();
 	bool emitSmell();
-	int minutes() { return (now - begin) / 60000; };
 	void giveItem(item *i);
+	void addHitted() { ++hitted; };
 };
 

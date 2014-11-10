@@ -3,8 +3,8 @@
 
 Zombie::Zombie(int x, int y, int timestamp, std::string mode)
 {
-	this->x = x;
-	this->y = y;
+	minx = maxx = this->x = x;
+	miny = maxy = this->y = y;
 	viewAngle = 0;
 
 	if (mode == "random") {
@@ -73,6 +73,10 @@ void Zombie::update(unsigned delta) {
 		x += cos(viewAngle) * speed * delta / 1000.0;
 		y += sin(viewAngle) * speed * delta / 1000.0;
 		hp -= delta / 1000.0;
+		minx = min(minx, x);
+		maxx = max(maxx, x);
+		miny = min(minx, y);
+		maxy = max(maxx, y);
 	}
 	else {
 		hp -= delta / 5000.0;
@@ -89,7 +93,11 @@ Zombie* Zombie::clone(int x, int y, int timestamp) {
 
 double Zombie::capability() {
 	double kps = 0;
-	if (damageDealt> 0) kps = 1.0 - 1.0 / log((kills+1)*sqrt(damageDealt));
+	double area = (maxx - minx)*(maxy - miny);
+	double af = 1.0 - 1000.0 / (1000.0 + area);
+	double kf = 1.0 - 10.0 / (11 + kills);
+	double df = 1.0 - 100.0 / (100.0 + damageDealt);
+	kps = af * kf * df;
 	return kps;
 }
 

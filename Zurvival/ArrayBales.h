@@ -33,5 +33,6 @@ public:
 	int size();
 	void* getBalaOwner(unsigned id);
 	void unlinkOwner(void *owner);
+	void remove(unsigned id);
 };
 

@@ -8,6 +8,7 @@ protected:
 	std::vector<float> output, input;
 	int kills;
 	double damageDealt;
+	double minx, miny, maxx, maxy;
 public:
 	ActorAI();
 	~ActorAI();

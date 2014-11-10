@@ -107,6 +107,7 @@ void Zurvival::update() {
 			mainMenu->draw();
 			break;
 		case DEATHPIT:
+			delta = 17;
 			deathPit->listen(stop,pause, order, value);
 			// keep training even if paused
 			deathPit->update(delta);

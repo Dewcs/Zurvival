@@ -60,3 +60,7 @@ void ArrayBales::unlinkOwner(void *owner) {
 		}
 	}
 }
+
+void ArrayBales::remove(unsigned id) {
+	bales.erase(bales.begin() + id);
+}
