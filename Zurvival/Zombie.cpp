@@ -23,6 +23,8 @@ Zombie::Zombie(int x, int y, int timestamp, std::string mode)
 	kills = 0;
 	hp = 240;
 	begin = timestamp;
+	now = timestamp;
+	dmg_time = timestamp;
 	output = std::vector<float>(4,0);
 	input = std::vector<float>(10);
 	type = ACTOR_ZOMBIE;
@@ -68,6 +70,7 @@ void Zombie::prepare(double cx, double cy, Radar *smells, Radar * sounds) {
 }
 
 void Zombie::update(unsigned delta) {
+	now += delta;
 	if (output[0] != 0 || output[1] != 0) {
 		viewAngle = angleP2P(0, 0, output[0], output[1]);
 		x += cos(viewAngle) * speed * delta / 1000.0;
@@ -81,6 +84,14 @@ void Zombie::update(unsigned delta) {
 	else {
 		hp -= delta / 5000.0;
 	}
+}
+
+bool Zombie::canAttack() {
+	if (dmg_time <= now) {
+		dmg_time = now + 300;
+		return true;
+	}
+	else return false;
 }
 
 Zombie* Zombie::clone(int x, int y, int timestamp) {

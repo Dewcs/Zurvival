@@ -5,10 +5,9 @@ Trainer::Trainer(const char * folder, unsigned size, unsigned chances) {
 	this->folder = folder;
 	this->size = size;
 	this->chances = chances;
-	count = 0;
 	sum = 0;
 	unit = 0;
-	data = std::vector<fdata> (size);
+	data = std::vector<fdata> (0);
 	// read dir
 	DIR *pdir = NULL;
 	struct dirent *pent = NULL;
@@ -28,7 +27,8 @@ Trainer::Trainer(const char * folder, unsigned size, unsigned chances) {
 			}
 			
 		}
-		init = sum / count;
+		init = 0;
+		if (data.size()!=0) init = sum / data.size();
 		log(VERBOSE_TRAIN, "TRAIN %s AVG: %f", folder , init);
 		closedir(pdir);
 
@@ -42,15 +42,15 @@ Trainer::Trainer(const char * folder, unsigned size, unsigned chances) {
 Trainer::~Trainer()
 {
 	double sum = 0;
-	for (int i = 0; i < count; ++i) sum += data[i].score;
-	log(VERBOSE_TRAIN, "TRAIN %s INCREASED BY %f", folder, (sum / count) - init);
+	for (int i = 0; i < data.size(); ++i) sum += data[i].score;
+	log(VERBOSE_TRAIN, "TRAIN %s INCREASED BY %f", folder, (sum / data.size()) - init);
 	data.clear();
 }
 
 std::string Trainer::random() {
 	
 	int r = rand() % 100;
-	if (r <= chances || count==0) {
+	if (r <= chances || data.size() == 0) {
 		return "random";
 	}
 	else {
@@ -59,7 +59,7 @@ std::string Trainer::random() {
 		double tmpsum = 0;
 		double final = r2*unit;
 		int pos = 0;
-		while (pos<size && tmpsum + data[pos].score < final) {
+		while (pos<data.size()-1 && tmpsum + data[pos].score < final) {
 			tmpsum += data[pos].score;
 			++pos;
 		}
@@ -77,27 +77,28 @@ std::string Trainer::random() {
 bool Trainer::is_good(double value) {
 	std::string fname = mkFName(value);
 	if (fileExists(fname.c_str())) return false;
-	else if (count < size) return true;
-	else return value>data[size - 1].score;
+	else if (data.size() < size) return true;
+	else return value>data[data.size() - 1].score;
 }
 
 void Trainer::insert(std::string fname, double score) {
-	if (count < size) {
-		data[count].fname = fname;
-		data[count].score = score;
-		sort_from(count);
+	if (data.size() < size) {
+		fdata tmp;
+		tmp.fname = fname;
+		tmp.score = score;
+		data.push_back(tmp);
+		sort_from(data.size()-1);
 		sum += score;
-		if (data.size() != 0) unit = data[count].score;
-		++count;
+		if (data.size() != 0) unit = data[data.size() - 1].score;
 	}
 	else {
-		if (score>data[size - 1].score) {
-			sum = sum - data[size - 1].score + score;
-			data[size - 1].score = score;
-			deleteFile(data[size - 1].fname.c_str());
-			data[size - 1].fname = fname;
-			sort_from(size - 1);
-			if (data.size() != 0) unit = data[size-1].score;
+		if (score>data[data.size() - 1].score) {
+			sum = sum - data[data.size() - 1].score + score;
+			data[data.size() - 1].score = score;
+			deleteFile(data[data.size() - 1].fname.c_str());
+			data[data.size() - 1].fname = fname;
+			sort_from(data.size() - 1);
+			if (data.size() != 0) unit = data[data.size() - 1].score;
 		}
 		else {
 			deleteFile(fname.c_str());
@@ -120,6 +121,19 @@ void Trainer::sort_from(int pos) {
 		data[pos-1].fname = tmp.fname;
 		data[pos-1].score = tmp.score;
 		--pos;
+	}
+}
+
+void Trainer::remove(std::string fname) {
+	bool exists = false;
+	for (int i = 0; i < data.size(); ++i) {
+		if (data[i].fname == fname) {
+			sum -= data[i].score;
+			data.erase(data.begin() + i);
+			deleteFile(fname.c_str());
+			exists = true;
+			break;
+		}
 	}
 }
 

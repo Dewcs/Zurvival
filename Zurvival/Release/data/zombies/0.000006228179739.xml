@@ -1,0 +1,84 @@
+<brain>
+    <input>10</input>
+    <hidden>2</hidden>
+    <output>4</output>
+    <node inf="3" outf="7" size="13">
+        <link>13</link>
+        <link>13</link>
+        <link>13</link>
+        <link>8</link>
+        <link>13</link>
+        <link>11</link>
+        <link>4</link>
+        <link>4</link>
+        <link>12</link>
+        <link>6</link>
+        <link>1</link>
+        <link>8</link>
+        <link>11</link>
+    </node>
+    <node inf="6" outf="6" size="9">
+        <link>2</link>
+        <link>12</link>
+        <link>1</link>
+        <link>2</link>
+        <link>6</link>
+        <link>5</link>
+        <link>5</link>
+        <link>6</link>
+        <link>11</link>
+    </node>
+    <node inf="2" outf="8" size="6">
+        <link>3</link>
+        <link>14</link>
+        <link>0</link>
+        <link>5</link>
+        <link>2</link>
+        <link>15</link>
+    </node>
+    <node inf="6" outf="6" size="12">
+        <link>10</link>
+        <link>4</link>
+        <link>4</link>
+        <link>7</link>
+        <link>15</link>
+        <link>17</link>
+        <link>8</link>
+        <link>4</link>
+        <link>11</link>
+        <link>2</link>
+        <link>9</link>
+        <link>8</link>
+    </node>
+    <node inf="4" outf="0" size="10">
+        <link>2</link>
+        <link>9</link>
+        <link>4</link>
+        <link>4</link>
+        <link>8</link>
+        <link>17</link>
+        <link>5</link>
+        <link>9</link>
+        <link>2</link>
+        <link>8</link>
+    </node>
+    <node inf="3" outf="9" size="17">
+        <link>14</link>
+        <link>13</link>
+        <link>0</link>
+        <link>4</link>
+        <link>19</link>
+        <link>4</link>
+        <link>17</link>
+        <link>16</link>
+        <link>4</link>
+        <link>9</link>
+        <link>16</link>
+        <link>0</link>
+        <link>15</link>
+        <link>14</link>
+        <link>0</link>
+        <link>0</link>
+        <link>19</link>
+    </node>
+</brain>

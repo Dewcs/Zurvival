@@ -12,7 +12,8 @@
 #include "ActorAI.h"
 
 class Zombie:public ActorAI {
-	
+	int now;
+	int dmg_time;
 public:
 	Zombie(int x, int y, int timestamp, std::string mode);
 	~Zombie();
@@ -22,5 +23,6 @@ public:
 	void addKills(int k) { kills += k; hp += 60; };
 	double capability();
 	double getDamage();
+	bool canAttack();
 };
 

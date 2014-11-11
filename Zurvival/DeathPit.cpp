@@ -75,6 +75,7 @@ void DeathPit::spawn(unsigned delta) {
 		int y = rand() % (total_height) + begin_y;
 		std::string mode = hTrainer->random();
 		humans.push_back(new Human(x, y, SDL_GetTicks(), mode));
+		if (mode != "random") hTrainer->remove(mode);
 	}
 	// zombies
 	if (zombies.size() < DP_ZOMBIE_AMOUNT && rand() % (zombies.size() + 1) == 0) {
@@ -82,6 +83,7 @@ void DeathPit::spawn(unsigned delta) {
 		int y = rand() % (total_height)+begin_y;
 		std::string mode = zTrainer->random();
 		zombies.push_back(new Zombie(x, y, SDL_GetTicks(), mode));
+		if (mode != "random") zTrainer->remove(mode);
 	}
 	// items
 	if (itemap->size() / double(total_width * total_height) < ITEMS_PER_SQM && rand() % (itemap->size() + 1) == 0) {
@@ -173,7 +175,7 @@ void DeathPit::update(unsigned delta) {
 		for (unsigned j = 0; j < zombies.size() && !humans[i]->isDead(); ++j) {
 			double zx = zombies[j]->getX();
 			double zy = zombies[j]->getY();
-			if (abs(hx - zx) < 3 && abs(hy - zy) < 3 && distP2P(hx, hy, zx, zy) <= 1.2) {
+			if (abs(hx - zx) < 3 && abs(hy - zy) < 3 && distP2P(hx, hy, zx, zy) <= 1.2 && zombies[j]->canAttack()) {
 				double zombieDmg = zombies[j]->getDamage();
 				zombies[j]->addDamageDealt(zombieDmg);
 				humans[i]->doDamage(zombieDmg);

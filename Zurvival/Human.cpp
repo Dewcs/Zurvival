@@ -200,9 +200,9 @@ double Human::capability() {
 	double area = (maxx - minx)*(maxy - miny);
 	double af = 1.0 - 1000.0 / (1000.0 + area);
 	double kf = 1.0 - 10.0 / (11 + kills);
-	double df = 1.0 - 100.0 / (100.0 + damageDealt);
-	double hf = 0;
-	if (shooted>0) hf = hitted / shooted;
+	double df = 1.0 - 100.0 / (101.0 + damageDealt);
+	double hf = 1.0 - 10.0 / (11 + hitted);
+	double tf = 1.0 - 100000.0 / (100001 + (now - begin));
 	kps = af * kf * df * hf;
 	return kps;
 }

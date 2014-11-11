@@ -28,6 +28,7 @@ class Trainer {
 		bool is_good(double value);
 		void insert(std::string fname, double score);
 		std::string mkFName(double score);
+		void remove(std::string fname);
 	private:
 		void sort_from(int pos);
 };
