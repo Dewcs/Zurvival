@@ -17,7 +17,7 @@ Zombie::Zombie(int x, int y, int timestamp, std::string mode)
 	else {
 		ia = new Brain(10,4);
 		ia->load(mode.c_str());
-		ia->tweak();
+		//ia->tweak();
 	}
 	speed = 1.5;
 	kills = 0;

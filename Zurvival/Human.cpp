@@ -15,7 +15,7 @@ Human::Human(int x, int y, int timestamp, std::string mode)
 	else {
 		ia = new Brain(21, 6);
 		ia->load(mode.c_str());
-		ia->tweak();
+		//ia->tweak();
 	}
 	hp = 100;
 	kills = 0;

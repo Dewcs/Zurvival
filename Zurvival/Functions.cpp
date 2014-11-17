@@ -17,6 +17,18 @@ bool deleteFile(const char *fname) {
 	return false;
 }
 
+void copyFile(const char *src, const char *dst) {
+	FILE *srcp = fopen(src, "rb");
+	FILE *dstp = fopen(dst, "wb");
+	int i;
+	for (i = getc(srcp); i != EOF; i = getc(srcp))
+	{
+		putc(i, dstp);
+	}
+	fclose(dstp);
+	fclose(srcp);
+}
+
 int log(int level, const char *format, ...) {
 	if ((level & VERBOSE_LEVEL)!=0) {
 		va_list arg;

@@ -19,6 +19,8 @@ FILE FUNCTIONS
 bool fileExists(const char *fname);
 // deletes a file
 bool deleteFile(const char *fname);
+// copy a file
+void copyFile(const char *src, const char *dst);
 
 /*LOG*/
 int log(int level, const char *format, ...);

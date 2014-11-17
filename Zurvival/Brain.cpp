@@ -127,7 +127,7 @@ void Brain::tweak() {
 void Brain::randomize() {
 	hidden = fastrand() % ((input + output) / 2) + 1;
 	size = input + 5 + output + hidden;
-	values = std::vector<float> (size);
+	values = std::vector<float> (size,0);
 	nodes = std::vector<Node> (output + hidden);
 	for (unsigned i = 0; i < nodes.size(); ++i) {
 		nodes[i].in = infunc(fastrand() % INF_SIZE);
@@ -182,9 +182,6 @@ void Brain::evaluate() {
 		if (!std::isfinite(values[i + 5 + input])) {
 			errors = true;
 			log(VERBOSE_ERRORS, "NON FINITE VALUE IN: %d OUT: %d SIZE: %d", nodes[i].in, nodes[i].in, nodes[i].ids.size());
-			for (int j = 0; j < nodes[i].ids.size(); ++j) {
-				log(VERBOSE_ERRORS, "INVAL %d -> %d = %f", j, nodes[i].ids[j], values[nodes[i].ids[j]]);
-			}
 			values[i + 5 + input] = 0;
 		}
 		log(VERBOSE_BRAIN, "EVAL NODE %d RESULT: %f", i, values[i + 5 + input]);

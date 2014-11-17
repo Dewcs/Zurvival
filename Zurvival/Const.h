@@ -83,7 +83,7 @@ const int yval[] = { 1, 0, -1, 0 };
 #define LIGHT_BASE_COLOR 0
 
 // DEAHT PIT
-#define DP_ZOMBIE_AMOUNT 20// number of zombies
+#define DP_ZOMBIE_AMOUNT 80// number of zombies
 #define DP_HUMAN_AMOUNT 20 // number of humans
 #define DP_RATIO 4 // size divider 
 #define DP_TIME_SPEED 2 // time multiplier

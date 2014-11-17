@@ -1,0 +1,25 @@
+<brain>
+    <input>10</input>
+    <hidden>0</hidden>
+    <output>4</output>
+    <node inf="6" outf="0" size="1">
+        <link>6</link>
+    </node>
+    <node inf="3" outf="0" size="1">
+        <link>7</link>
+    </node>
+    <node inf="3" outf="5" size="6">
+        <link>8</link>
+        <link>8</link>
+        <link>11</link>
+        <link>4</link>
+        <link>9</link>
+        <link>2</link>
+    </node>
+    <node inf="1" outf="2" size="4">
+        <link>1</link>
+        <link>0</link>
+        <link>7</link>
+        <link>9</link>
+    </node>
+</brain>

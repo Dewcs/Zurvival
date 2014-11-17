@@ -1,0 +1,53 @@
+<brain>
+    <input>21</input>
+    <hidden>0</hidden>
+    <output>6</output>
+    <node inf="6" outf="5" size="1">
+        <link>10</link>
+    </node>
+    <node inf="6" outf="0" size="1">
+        <link>11</link>
+    </node>
+    <node inf="1" outf="6" size="3">
+        <link>5</link>
+        <link>22</link>
+        <link>13</link>
+    </node>
+    <node inf="0" outf="7" size="17">
+        <link>26</link>
+        <link>16</link>
+        <link>10</link>
+        <link>20</link>
+        <link>19</link>
+        <link>5</link>
+        <link>0</link>
+        <link>24</link>
+        <link>8</link>
+        <link>26</link>
+        <link>25</link>
+        <link>18</link>
+        <link>11</link>
+        <link>14</link>
+        <link>25</link>
+        <link>6</link>
+        <link>15</link>
+    </node>
+    <node inf="3" outf="5" size="10">
+        <link>12</link>
+        <link>21</link>
+        <link>26</link>
+        <link>12</link>
+        <link>17</link>
+        <link>29</link>
+        <link>5</link>
+        <link>17</link>
+        <link>29</link>
+        <link>24</link>
+    </node>
+    <node inf="1" outf="0" size="4">
+        <link>12</link>
+        <link>12</link>
+        <link>19</link>
+        <link>6</link>
+    </node>
+</brain>

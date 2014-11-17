@@ -160,7 +160,7 @@ void DeathPit::update(unsigned delta) {
 						h->addDamageDealt(bulletDmg);
 						if (zombies[j]->isDead()) {
 							h->addKills(1);
-							humans.push_back(h->clone(zombies[j]->getX(), zombies[j]->getY(), SDL_GetTicks()));
+							if (humans.size()< DP_HUMAN_AMOUNT * 2) humans.push_back(h->clone(zombies[j]->getX(), zombies[j]->getY(), SDL_GetTicks()));
 						}
 					}
 					break;
@@ -181,7 +181,7 @@ void DeathPit::update(unsigned delta) {
 				humans[i]->doDamage(zombieDmg);
 				if (humans[i]->isDead()) {
 					zombies[j]->addKills(1);
-					zombies.push_back(zombies[j]->clone(hx, hy, SDL_GetTicks()));
+					if (zombies.size()< DP_ZOMBIE_AMOUNT*2) zombies.push_back(zombies[j]->clone(hx, hy, SDL_GetTicks()));
 				}
 			}
 		}

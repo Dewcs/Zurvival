@@ -125,13 +125,15 @@ void Trainer::sort_from(int pos) {
 }
 
 void Trainer::remove(std::string fname) {
-	bool exists = false;
 	for (int i = 0; i < data.size(); ++i) {
 		if (data[i].fname == fname) {
 			sum -= data[i].score;
+			double nscore = data[i].score / 2;
+			std::string next = mkFName(nscore);
+			copyFile(fname.c_str(), next.c_str());
 			data.erase(data.begin() + i);
 			deleteFile(fname.c_str());
-			exists = true;
+			insert(next, nscore);
 			break;
 		}
 	}
