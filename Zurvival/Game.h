@@ -25,5 +25,6 @@ public:
 	void listen(bool &end, bool &pause, order_t &order, int &value);
 	void update(unsigned);
 	void draw();
+	void drawGUI();
 };
 

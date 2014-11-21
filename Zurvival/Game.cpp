@@ -107,7 +107,7 @@ void Game::draw() {
 	float p2y = (float)my / LIGHT_REDUCTION;
 	int ldiff = LIGHT_FINAL_ALPHA - LIGHT_BEGIN_ALPHA;
 	for (int i = 0; i < lightmap->h; ++i) {
-		// precalt y diffs
+		// precalc y diffs
 		float dy1 = (p1y - i)*(p1y - i);
 		float dy2 = (p2y - i)*(p2y - i);
 		for (int j = 0; j < lightmap->w; ++j) {
@@ -135,6 +135,7 @@ void Game::draw() {
 	SDL_FreeSurface(lightmap);
 	SDL_DestroyTexture(lighttex);
 	// draw gui
+	drawGUI();
 }
 
 void Game::listen(bool &end, bool &pause, order_t &order, int &value) {
@@ -228,4 +229,18 @@ void Game::listen(bool &end, bool &pause, order_t &order, int &value) {
 				break;
 		}
 	}
+}
+
+void Game::drawGUI(){
+//draw slots 
+	int margi = width / 30;
+	int slotRect = height / 12;
+	SDL_Rect pistolSlot = {margi, margi, slotRect, slotRect};
+	SDL_Rect shotgunSlot = { margi, margi * 2 + slotRect, slotRect, slotRect };
+	SDL_Rect hevySlot = { margi, margi * 3 + slotRect*2, slotRect, slotRect };
+	SDL_Rect healSlot = { margi, margi * 4 + slotRect * 3, slotRect, slotRect };
+	SDL_RenderCopy(renderer, sprMngr->getTexture("pistolSlot"), NULL, &pistolSlot);
+	SDL_RenderCopy(renderer, sprMngr->getTexture("shotgunSlot"), NULL, &shotgunSlot);
+	SDL_RenderCopy(renderer, sprMngr->getTexture("hevySlot"), NULL, &hevySlot);
+	SDL_RenderCopy(renderer, sprMngr->getTexture("healSlot"), NULL, &healSlot);
 }
