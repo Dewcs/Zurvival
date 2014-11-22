@@ -166,6 +166,8 @@ void Zurvival::load_sprites() {
 	sprMngr->addImage("pgreen", "sprites/pgreen.png", { 0, 0, width, height });
 	sprMngr->addImage("pblue", "sprites/pblue.png", { 0, 0, width, height });
 	sprMngr->addImage("pwhite", "sprites/pwhite.png", { 0, 0, width, height });
+	//backgroundGUI sprite
+	sprMngr->addImage("backgroundGUI", "sprites/backgroundGUI.png", { 0, 0, width / 10 + (width / 30), height });
 	//slot sprites
 	sprMngr->addImage("pistolSlot", "sprites/pistolSlot.png", { width / 30, width / 30, height / 8, height / 8 });
 	sprMngr->addImage("shotgunSlot", "sprites/shotgunSlot.png", { width / 30, (width / 30)*2 + (height / 8), height / 8, height / 8 });

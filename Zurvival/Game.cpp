@@ -232,15 +232,11 @@ void Game::listen(bool &end, bool &pause, order_t &order, int &value) {
 }
 
 void Game::drawGUI(){
-//draw slots 
-	int margi = width / 30;
-	int slotRect = height / 12;
-	SDL_Rect pistolSlot = sprMngr->getRect("pistolSlot");
-	SDL_Rect shotgunSlot = sprMngr->getRect("shotgunSlot");
-	SDL_Rect hevySlot = sprMngr->getRect("hevySlot");
-	SDL_Rect healSlot = sprMngr->getRect("healSlot");
-	SDL_RenderCopy(renderer, sprMngr->getTexture("pistolSlot"), NULL, &pistolSlot);
-	SDL_RenderCopy(renderer, sprMngr->getTexture("shotgunSlot"), NULL, &shotgunSlot);
-	SDL_RenderCopy(renderer, sprMngr->getTexture("hevySlot"), NULL, &hevySlot);
-	SDL_RenderCopy(renderer, sprMngr->getTexture("healSlot"), NULL, &healSlot);
+	//draw backgroundGUI
+	SDL_RenderCopy(renderer, sprMngr->getTexture("backgroundGUI"), NULL, &sprMngr->getRect("backgroundGUI"));
+	//draw slots 
+	SDL_RenderCopy(renderer, sprMngr->getTexture("pistolSlot"), NULL, &sprMngr->getRect("pistolSlot"));
+	SDL_RenderCopy(renderer, sprMngr->getTexture("shotgunSlot"), NULL, &sprMngr->getRect("shotgunSlot"));
+	SDL_RenderCopy(renderer, sprMngr->getTexture("hevySlot"), NULL, &sprMngr->getRect("hevySlot"));
+	SDL_RenderCopy(renderer, sprMngr->getTexture("healSlot"), NULL, &sprMngr->getRect("healSlot"));
 }
