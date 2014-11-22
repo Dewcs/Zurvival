@@ -239,4 +239,7 @@ void Game::drawGUI(){
 	SDL_RenderCopy(renderer, sprMngr->getTexture("shotgunSlot"), NULL, &sprMngr->getRect("shotgunSlot"));
 	SDL_RenderCopy(renderer, sprMngr->getTexture("hevySlot"), NULL, &sprMngr->getRect("hevySlot"));
 	SDL_RenderCopy(renderer, sprMngr->getTexture("healSlot"), NULL, &sprMngr->getRect("healSlot"));
+	SDL_RenderCopy(renderer, sprMngr->getTexture("retroceso"), NULL, &sprMngr->getRect("retroceso"));
+	//draw pistol
+	SDL_RenderCopy(renderer, sprMngr->getTexture("pistolWep"), NULL, &sprMngr->getRect("pistolWep"));
 }
