@@ -167,10 +167,10 @@ void Zurvival::load_sprites() {
 	sprMngr->addImage("pblue", "sprites/pblue.png", { 0, 0, width, height });
 	sprMngr->addImage("pwhite", "sprites/pwhite.png", { 0, 0, width, height });
 	//slot sprites
-	sprMngr->addImage("pistolSlot", "sprites/pistolSlot.png", { width / 30, width / 30, height / 12, height / 12 });
-	sprMngr->addImage("shotgunSlot", "sprites/shotgunSlot.png", { width / 30, (width / 30)*2 + (height / 12), height / 12, height / 12 });
-	sprMngr->addImage("hevySlot", "sprites/hevySlot.png", { width / 30, (width / 30) * 3 + (height / 12)*2, height / 12, height / 12 });
-	sprMngr->addImage("healSlot", "sprites/healSlot.png", { width / 30, (width / 30) * 4 + (height / 12)*3, height / 12, height / 12 });
+	sprMngr->addImage("pistolSlot", "sprites/pistolSlot.png", { width / 30, width / 30, height / 8, height / 8 });
+	sprMngr->addImage("shotgunSlot", "sprites/shotgunSlot.png", { width / 30, (width / 30)*2 + (height / 8), height / 8, height / 8 });
+	sprMngr->addImage("hevySlot", "sprites/hevySlot.png", { width / 30, (width / 30) * 3 + (height / 8)*2, height / 8, height / 8 });
+	sprMngr->addImage("healSlot", "sprites/healSlot.png", { width / 30, (width / 30) * 4 + (height / 8)*3, height / 8, height / 8 });
 }
 
 

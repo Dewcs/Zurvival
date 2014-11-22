@@ -235,10 +235,10 @@ void Game::drawGUI(){
 //draw slots 
 	int margi = width / 30;
 	int slotRect = height / 12;
-	SDL_Rect pistolSlot = {margi, margi, slotRect, slotRect};
-	SDL_Rect shotgunSlot = { margi, margi * 2 + slotRect, slotRect, slotRect };
-	SDL_Rect hevySlot = { margi, margi * 3 + slotRect*2, slotRect, slotRect };
-	SDL_Rect healSlot = { margi, margi * 4 + slotRect * 3, slotRect, slotRect };
+	SDL_Rect pistolSlot = sprMngr->getRect("pistolSlot");
+	SDL_Rect shotgunSlot = sprMngr->getRect("shotgunSlot");
+	SDL_Rect hevySlot = sprMngr->getRect("hevySlot");
+	SDL_Rect healSlot = sprMngr->getRect("healSlot");
 	SDL_RenderCopy(renderer, sprMngr->getTexture("pistolSlot"), NULL, &pistolSlot);
 	SDL_RenderCopy(renderer, sprMngr->getTexture("shotgunSlot"), NULL, &shotgunSlot);
 	SDL_RenderCopy(renderer, sprMngr->getTexture("hevySlot"), NULL, &hevySlot);
