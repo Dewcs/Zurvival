@@ -39,6 +39,7 @@ public:
 	void update(unsigned);
 	void draw();
 	void drawGUI();
+	bool playerTouchItem();
 private:
 	void spawn(unsigned);
 	void cleanup();
