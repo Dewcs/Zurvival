@@ -11,7 +11,7 @@ MainCharacter::MainCharacter(int x,int y)
 	vy = 0;
 	arrayWeapons = new Weapon*[3];
 	for (int i = 0; i < 3; i++){
-		if (i = 0) arrayWeapons[i] = new Pistol();
+		if (i == 0) arrayWeapons[i] = new Pistol();
 		else  arrayWeapons[i] = NULL;
 	}
 	heals = 0;
@@ -20,7 +20,7 @@ MainCharacter::MainCharacter(int x,int y)
 
 MainCharacter::~MainCharacter(){
 	for (int i = 0; i < 3; i++){
-		delete arrayWeapons[i];
+		if (arrayWeapons[i]!=NULL) delete arrayWeapons[i];
 	}
 	delete[] arrayWeapons;
 }
