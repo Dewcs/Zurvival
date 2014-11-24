@@ -216,15 +216,31 @@ void Game::draw() {
 	SDL_Rect mainCharacter = { width / 2 - mainw / 2, height / 2 - mainw / 2, height / 15, height / 15 };
 	SDL_RenderCopyEx(renderer, sprMngr->getTexture("soldier"), NULL, &mainCharacter, mc->getAngle() - 90, NULL, SDL_FLIP_NONE);
 	// draw npc
-
+	int hwidth = height / 15;
+	SDL_Rect screen = { 0, 0, width, height };
+	for (int i = 0; i < humans.size(); ++i) {
+		int x, y;
+		gmap->getScreenPosition(humans[i]->getX(), humans[i]->getY(), x, y);
+		SDL_Rect humanRect = { x - hwidth / 2, y - hwidth / 2, hwidth, hwidth };
+		if (rectInsideRect(screen, humanRect)) SDL_RenderCopyEx(renderer, sprMngr->getTexture("soldier"), NULL, &humanRect, humans[i]->getAngle() - 90, NULL, SDL_FLIP_NONE);
+	}
 	// draw zombies
 	int zwidth = height / 15;
-	SDL_Rect screen = { 0, 0, width, height };
 	for (int i = 0; i < zombies.size(); ++i) {
 		int x, y;
 		gmap->getScreenPosition(zombies[i]->getX(), zombies[i]->getY(), x, y);
 		SDL_Rect zombieRect = { x - zwidth / 2, y - zwidth / 2, zwidth, zwidth };
 		if (rectInsideRect(screen, zombieRect)) SDL_RenderCopyEx(renderer, sprMngr->getTexture("zombie_anim" + std::to_string((SDL_GetTicks()/100)%8)), NULL, &zombieRect, zombies[i]->getAngle() - 90, NULL, SDL_FLIP_NONE);
+	}
+	// draw bullets
+	for (unsigned i = 0; i < bales->size(); ++i) {
+		float x0, y0, dist, angle;
+		bales->getDrawInfo(i, x0, y0, dist, angle);
+		int x, y;
+		gmap->getScreenPosition(x0, y0, x, y);
+		SDL_Point bulletPoint2 = { 0, 1 };
+		SDL_Rect bulletRect = { x, y, dist*(height/15), 1 };
+		SDL_RenderCopyEx(renderer, sprMngr->getTexture("pwhite"), NULL, &bulletRect, rad2deg(angle), &bulletPoint2, SDL_FLIP_NONE); // &bulletPoint rad2deg(angle)
 	}
 	// draw light
 	SDL_Surface *lightmap;
