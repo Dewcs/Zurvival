@@ -79,4 +79,39 @@ Pistol::~Pistol() {
 
 }
 
+Shotgun::Shotgun(){
+	tempsRecarga = 8000;
+	tempsEntreDispars = 1000;
+	tamanyCarregador = 8;
+	balesCarregador = 8;
+
+	tempsPerDisparar = 0;
+	tempsPerRecarregar = 0;
+	balesTotals = 16;
+
+	balesPerDispar = 5;
+	distanciaDispar = 15;
+}
+
+Shotgun::~Shotgun(){
+
+}
+
+Heavymachinegun::Heavymachinegun(){
+	tempsRecarga = 15000;
+	tempsEntreDispars = 50;
+	tamanyCarregador = 100;
+	balesCarregador = 100;
+
+	tempsPerDisparar = 0;
+	tempsPerRecarregar = 0;
+	balesTotals = 200;
+
+	balesPerDispar = 1;
+	distanciaDispar = 25;
+}
+
+Heavymachinegun::~Heavymachinegun(){
+
+}
 
