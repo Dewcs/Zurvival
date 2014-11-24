@@ -86,15 +86,15 @@ void MainCharacter::getItem(item* id){
 		break;
 	case ITEM_BULLETS_1:
 		//add shotgun bullets to inventory
-		if (arrayWeapons[1] != NULL) arrayWeapons[1]->afegirBales(8);
+		if (arrayWeapons[1] != NULL) arrayWeapons[1]->afegirBales(id->amount);
 		break;
 	case ITEM_BULLETS_2:
 		//add pistol bullets to inventory
-		arrayWeapons[0]->afegirBales(15);
+		if (arrayWeapons[0] != NULL) arrayWeapons[0]->afegirBales(id->amount);
 		break;
 	case ITEM_BULLETS_3:
 		//add hevymachinegun bullets to inventory
-		if (arrayWeapons[2] != NULL) arrayWeapons[2]->afegirBales(100);
+		if (arrayWeapons[2] != NULL) arrayWeapons[2]->afegirBales(id->amount);
 		break;
 	case ITEM_WEAPON_1:
 		//add pistol to inventory or more bullets
