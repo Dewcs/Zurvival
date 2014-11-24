@@ -40,6 +40,7 @@ public:
 	void draw();
 	void drawGUI();
 	bool playerTouchItem();
+	void drawItems();
 private:
 	void spawn(unsigned);
 	void cleanup();

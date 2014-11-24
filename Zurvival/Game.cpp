@@ -89,9 +89,9 @@ void Game::spawn(unsigned delta) {
 		if (mode != "random") zTrainer->remove(mode);
 	}
 	// items
-	if (itemap->size() / double(total_width * total_height) < ITEMS_PER_SQM && rand() % (itemap->size() + 1) == 0) {
+	/*if (itemap->size() / double(total_width * total_height) < ITEMS_PER_SQM && rand() % (itemap->size() + 1) == 0) {
 		itemap->addRandomItem((double)begin_x, (double)begin_y, (double)total_width, (double)total_height);
-	}
+	}*/
 }
 
 void Game::cleanup() {
@@ -134,7 +134,7 @@ void Game::update(unsigned delta) {
 	// update position
 	mc->update(delta);
 	// update map
-	gmap->setCenter(mc->getX(), mc->getY());
+	gmap->setCenter(mc->getX(), mc->getY(), itemap);
 	// update smell map
 	smells->addPoint(mc->getX(), mc->getY(), 1, SDL_GetTicks());
 	// update sounds map
@@ -209,6 +209,8 @@ void Game::update(unsigned delta) {
 void Game::draw() {
 	// draw bg
 	gmap->drawMap(renderer, sprMngr);
+	//draw items
+	drawItems();
 	// draw main character
 	int mainw = height / 15;
 	SDL_Rect mainCharacter = { width / 2 - mainw / 2, height / 2 - mainw / 2, height / 15, height / 15 };
@@ -390,5 +392,44 @@ void Game::drawGUI(){
 
 bool Game::playerTouchItem(){
 	return true;
+}
+
+void Game::drawItems(){
+	int iwidth = height / 15;
+	SDL_Rect screen = {0,0,width,height};
+	for (unsigned i = 0; i < itemap->size(); ++i) {
+		item *tmp = itemap->getItem(i);
+		int x, y;
+		gmap->getScreenPosition(tmp->x, tmp->y, x, y);
+		SDL_Rect itemRect = { x - iwidth / 2, y - iwidth / 2, iwidth, iwidth };
+		if (rectInsideRect(screen, itemRect)){
+			switch (tmp->type)
+			{
+			case ITEM_HEAL:
+				SDL_RenderCopy(renderer, sprMngr->getTexture("healSprite"), NULL, &itemRect);
+				break;
+			case ITEM_BULLETS_1:
+				SDL_RenderCopy(renderer, sprMngr->getTexture("shotgunAmo"), NULL, &itemRect);
+				break;
+			case ITEM_BULLETS_2:
+				SDL_RenderCopy(renderer, sprMngr->getTexture("pistolAmo"), NULL, &itemRect);
+				break;
+			case ITEM_BULLETS_3:
+				SDL_RenderCopy(renderer, sprMngr->getTexture("hevyAmo"), NULL, &itemRect);
+				break;
+			case ITEM_WEAPON_1:
+				SDL_RenderCopy(renderer, sprMngr->getTexture("pistolWep"), NULL, &itemRect);
+				break;
+			case ITEM_WEAPON_2:
+				SDL_RenderCopy(renderer, sprMngr->getTexture("shotgunWep"), NULL, &itemRect);
+				break;
+			case ITEM_WEAPON_3:
+				SDL_RenderCopy(renderer, sprMngr->getTexture("hevyWep"), NULL, &itemRect);
+				break;
+			default:
+				break;
+			}
+		}
+	}
 }
 

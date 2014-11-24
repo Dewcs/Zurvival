@@ -180,7 +180,7 @@ void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, in
 parameters: window
 create a neighbords if i need*/
 
-void Chunk::spawnNeighbors(SDL_Rect window) {
+void Chunk::spawnNeighbors(SDL_Rect window, ItemMap * itemap) {
 	if (!isCalled) {
 		isCalled = true;
 		for (int i = 0; i < 4; i++){
@@ -196,13 +196,16 @@ void Chunk::spawnNeighbors(SDL_Rect window) {
 					else {
 						// create id
 						nei = new Chunk(x + xval[i], y + yval[i], exists);
+						for (int j = 0; j < 2; j++){
+							itemap->addRandomItem((double)nei->x, (double)nei->y, (double)CHUNK_SIZE, (double)CHUNK_SIZE);
+						}
 					}
 					// add links
 					setChunk(i, nei);
 					nei->setChunk((i + 2) % 4, this);
 				}
 				//call spawnNeighbords whith neibord
-				nei->spawnNeighbors(window);
+				nei->spawnNeighbors(window, itemap);
 			}
 		}
 	}

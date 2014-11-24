@@ -28,8 +28,7 @@ void Map::drawMap(SDL_Renderer* renderer, SpriteManager* sprMngr){
 	delete drawn;
 }
 
-void Map::setCenter(double x, double y){
-
+void Map::setCenter(double x, double y, ItemMap * itemap){
 	int xfloor = floor(x);
 	int yfloor = floor(y);
 	int positionChunkX = xfloor / CHUNK_SIZE;
@@ -42,7 +41,7 @@ void Map::setCenter(double x, double y){
 	centerX = x;
 	centerY = y;
 	// check neighboors
-	center->spawnNeighbors(createWindow());
+	center->spawnNeighbors(createWindow(), itemap);
 	center->resetCalls();
 }
 

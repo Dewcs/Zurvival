@@ -2,6 +2,7 @@
 #include <iostream>
 #include "Const.h"
 #include "Functions.h"
+#include "Weapon.h"
 
 class MainCharacter{
 	private:
@@ -9,6 +10,7 @@ class MainCharacter{
 		double x, y; // current position
 		double vx, vy; // view position
 		double viewAngle; // angle of view direction
+		Weapon ** arrayWeapons;
 	public:
 		MainCharacter(int x,int y);
 		~MainCharacter();

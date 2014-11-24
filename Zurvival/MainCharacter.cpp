@@ -9,11 +9,16 @@ MainCharacter::MainCharacter(int x,int y)
 	viewAngle = 0;
 	vx = 0;
 	vy = 0;
+	arrayWeapons = new Weapon*[3];
+	arrayWeapons[1] = new Pistol();
 }
 
 
-MainCharacter::~MainCharacter()
-{
+MainCharacter::~MainCharacter(){
+	for (int i = 0; i < 3; i++){
+		delete arrayWeapons[i];
+	}
+	delete[] arrayWeapons;
 }
 
 void MainCharacter::setView(int x, int y) {
