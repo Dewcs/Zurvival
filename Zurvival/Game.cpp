@@ -132,7 +132,7 @@ void Game::update(unsigned delta) {
 	SDL_GetMouseState(&mx, &my);
 	mc->setView(mx - width / 2, my - height / 2);
 	// update position
-	mc->update(delta);
+	mc->update(delta, itemap);
 	// update map
 	gmap->setCenter(mc->getX(), mc->getY(), itemap);
 	// update smell map
