@@ -404,13 +404,13 @@ void Game::drawGUI(){
 	//next, all weapons
 	if (mc->returnWeapon(1) != -1){
 		SDL_RenderCopy(renderer, sprMngr->getTexture("shotgunWep"), NULL, &sprMngr->getRect("shotgunWep"));
-		sprMngr->drawNumber(mc->returnItems(1, true), "red_numbers", (width / 30) + (height / 8), ((width / 30) * 2 + (height / 8)) + (height / 10), height / 50, ALIGN_CENTER);
-		sprMngr->drawNumber(mc->returnItems(1, false), "red_numbers", (width / 30) + (height / 9.5), ((width / 30) * 2 + (height / 8)) + (height / 10), height / 50, ALIGN_CENTER);
+		sprMngr->drawNumber(mc->returnItems(1, true), "red_numbers", (width / 30) + (height / 8), ((width / 30) * 2 + (height / 8)) + (height / 10), height / 50, ALIGN_RIGHT);
+		sprMngr->drawNumber(mc->returnItems(1, false), "red_numbers", (width / 30) + (height / 9.5), ((width / 30) * 2 + (height / 8)) + (height / 10), height / 50, ALIGN_LEFT);
 	}
 	if (mc->returnWeapon(2) != -1){
 		SDL_RenderCopy(renderer, sprMngr->getTexture("hevyWep"), NULL, &sprMngr->getRect("hevyWep"));
-		sprMngr->drawNumber(mc->returnItems(2, true), "red_numbers", (width / 30) + (height / 9), ((width / 30) * 3 + (height / 8) * 2) + (height / 10), height / 50, ALIGN_CENTER);
-		sprMngr->drawNumber(mc->returnItems(2, false), "red_numbers", (width / 30) + (height / 12), ((width / 30) * 3 + (height / 8) * 2) + (height / 10), height / 50, ALIGN_CENTER);
+		sprMngr->drawNumber(mc->returnItems(2, true), "red_numbers", (width / 30) + (height / 9), ((width / 30) * 3 + (height / 8) * 2) + (height / 10), height / 50, ALIGN_RIGHT);
+		sprMngr->drawNumber(mc->returnItems(2, false), "red_numbers", (width / 30) + (height / 12), ((width / 30) * 3 + (height / 8) * 2) + (height / 10), height / 50, ALIGN_LEFT);
 	}
 
 }
