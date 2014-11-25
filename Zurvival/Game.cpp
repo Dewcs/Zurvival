@@ -98,6 +98,13 @@ void Game::cleanup() {
 	// remove dead and out of screen
 	for (int i = humans.size() - 1; i >= 0; --i) {
 		if (humans[i]->isDead() || !pointInsideRect(humans[i]->getX(), humans[i]->getY(), -width / DP_RATIO / 2, -height / DP_RATIO / 2, width / DP_RATIO, height / DP_RATIO)) {
+			double humanScore = humans[i]->capability();
+			if (!humans[i]->isDead()) humanScore *= 0.5;
+			if (humanScore>0 && hTrainer->is_good(humanScore)) {
+				std::string fname = hTrainer->mkFName(humanScore);
+				humans[i]->save(fname.c_str());
+				hTrainer->insert(fname, humanScore);
+			}
 			bales->unlinkOwner(humans[i]);
 			delete humans[i];
 			humans.erase(humans.begin() + i);
@@ -105,6 +112,13 @@ void Game::cleanup() {
 	}
 	for (int i = zombies.size() - 1; i >= 0; --i) {
 		if (zombies[i]->isDead() || !pointInsideRect(zombies[i]->getX(), zombies[i]->getY(), -width / DP_RATIO / 2, -height / DP_RATIO / 2, width / DP_RATIO, height / DP_RATIO)) {
+			double zombieScore = zombies[i]->capability();
+			if (!zombies[i]->isDead()) zombieScore *= 0.5;
+			if (zombieScore>0 && zTrainer->is_good(zombieScore)) {
+				std::string fname = zTrainer->mkFName(zombieScore);
+				zombies[i]->save(fname.c_str());
+				zTrainer->insert(fname, zombieScore);
+			}
 			delete zombies[i];
 			zombies.erase(zombies.begin() + i);
 		}
@@ -235,22 +249,19 @@ void Game::draw() {
 	lightmap = SDL_CreateRGBSurface(0, lightWidth, lightHeight, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
 	Uint32 *pixels = (Uint32 *)lightmap->pixels;
 	// player point
-	float p1x = (float)lightWidth / 2;
+	/*float p1x = (float)lightWidth / 2;
 	float p1y = (float)lightHeight / 2;
 	// center of light point (mouse)
 	int mx, my;
 	SDL_GetMouseState(&mx, &my);
 	float ldist = p1y*(float)LIGHT_DISTANCE;
 	float ldist2 = ldist*ldist;
-	int p2x = (float)mx / LIGHT_REDUCTION;
-	int p2y = (float)my / LIGHT_REDUCTION;
-	int midx, midy;
-	midx = (p1x + p2x) / 2;
-	midy = (p1y + p2y) / 2;
+	float p2x = (float)mx / LIGHT_REDUCTION;
+	float p2y = (float)my / LIGHT_REDUCTION;
 	int ldiff = LIGHT_FINAL_ALPHA - LIGHT_BEGIN_ALPHA;
 	for (int i = 0; i < lightmap->h; ++i) {
 		// precalc y diffs
-		float dy1 = (midy - i)*(midy - i);
+		float dy1 = (p1y - i)*(p1y - i);
 		float dy2 = (p2y - i)*(p2y - i);
 		for (int j = 0; j < lightmap->w; ++j) {
 			float dx2 = (p2x - j)*(p2x - j);
@@ -258,10 +269,10 @@ void Game::draw() {
 			int ratio = LIGHT_FINAL_ALPHA;
 			// if can be close
 			if (dist2 < ldist2) {
-				float dx1 = (midx - j)*(midx - j);
+				float dx1 = (p1x - j)*(p1x - j);
 				float dist1 = dy1 + dx1;
 				// we want a cone so lets give less power to the origin and more to the target
-				float dist = dist1/2 + dist2;
+				float dist = dist1 / 8 + dist2;
 				// if is still close
 				if (dist < ldist2) {
 					ratio = LIGHT_BEGIN_ALPHA + int(dist / ldist2 * ldiff);
@@ -270,9 +281,42 @@ void Game::draw() {
 			// add the pixel
 			pixels[(i * lightmap->w) + j] = (ratio<<24) | LIGHT_BASE_COLOR;
 		}
+	}*/
+	float p1x = (float)lightWidth / 2;
+	float p1y = (float)lightHeight / 2;
+	// center of light point (mouse)
+	int mx, my;
+	SDL_GetMouseState(&mx, &my);
+	float ldist = p1y*(float)LIGHT_DISTANCE;
+	float ldist2 = ldist*ldist;
+	float p2x = (float)mx / LIGHT_REDUCTION;
+	float p2y = (float)my / LIGHT_REDUCTION;
+	int ldiff = LIGHT_FINAL_ALPHA - LIGHT_BEGIN_ALPHA;
+	float baseDist = distP2P(p1x, p1y, p2x, p2y)/4;
+	for (int i = 0; i < lightmap->h; ++i) {
+		// precalc y diffs
+		float dy1 = (p1y - i)*(p1y - i);
+		float dy2 = (p2y - i)*(p2y - i);
+		for (int j = 0; j < lightmap->w; ++j) {
+			float dx2 = (p2x - j)*(p2x - j);
+			float dist2 = dy2 + dx2;
+			
+			int ratio = LIGHT_FINAL_ALPHA;
+			// if can be close
+			float dx1 = (p1x - j)*(p1x - j);
+			float dist1 = dy1 + dx1;
+			double dist3 = lineDist(j, i, p1x, p1y, p2x, p2y);
+			// we want a cone so lets give less power to the origin and more to the target
+			float dist = (dist1 / 4 + dist2 / 1 + dist3/16)/(baseDist*baseDist*baseDist);
+			//log(1, "%f", dist);
+			if (dist < 0) dist = 0;
+			else if (dist > 1) dist = 1;
+			// if is still close
+			ratio = LIGHT_BEGIN_ALPHA + int((dist) * ldiff);
+			// add the pixel
+			pixels[(i * lightmap->w) + j] = (ratio << 24) | LIGHT_BASE_COLOR;
+		}
 	}
-	pixels[(midy * lightmap->w) + midx] = (0xFFFFFF) | LIGHT_BASE_COLOR;
-	pixels[(p2y * lightmap->w) + p2x] = (0xFFFFFF) | LIGHT_BASE_COLOR;
 	SDL_Texture *lighttex=SDL_CreateTextureFromSurface(renderer, lightmap);
 	SDL_SetTextureBlendMode(lighttex, SDL_BLENDMODE_BLEND);
 	SDL_RenderCopy(renderer, lighttex, NULL, NULL);

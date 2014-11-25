@@ -136,6 +136,21 @@ std::string to_string_with_precision(double a_value, const int n) {
 	return out.str();
 }
 
+void getLine(double x1, double y1, double x2, double y2, double &a, double &b, double &c)
+{
+	// (x- p1X) / (p2X - p1X) = (y - p1Y) / (p2Y - p1Y) 
+	a = y2 - y1;
+	b = x2 - x1;
+	c = x1 * y2 - x2 * y1;
+}
+
+double lineDist(double pct1X, double pct1Y, double pct2X, double pct2Y, double pct3X, double pct3Y)
+{
+	double a, b, c;
+	getLine(pct2X, pct2Y, pct3X, pct3Y, a, b, c);
+	return abs(a * pct1X + b * pct1Y + c) / sqrt(a * a + b * b);
+}
+
 double randomReal(double min, double max) {
 	return min + (max - min) * rand() / (double)RAND_MAX;
 }

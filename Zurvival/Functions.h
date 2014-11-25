@@ -52,8 +52,10 @@ SDL_Rect rectIntersect(SDL_Rect a, SDL_Rect b);
 double angleDist(double a, double b);
 // is angle between angle a and angle b?
 bool inAngleRange(double angle, double a, double b);
-
-
+// 2 points to line
+void getLine(double x1, double y1, double x2, double y2, double &a, double &b, double &c);
+// 2 points as a line to point distance
+double lineDist(double pct1X, double pct1Y, double pct2X, double pct2Y, double pct3X, double pct3Y);
 /*************************************************************************
 STRING FUNCTIONS
 **************************************************************************/
