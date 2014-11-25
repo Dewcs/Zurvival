@@ -9,12 +9,14 @@ MainCharacter::MainCharacter(int x,int y)
 	viewAngle = 0;
 	vx = 0;
 	vy = 0;
+	onFire = false;
 	arrayWeapons = new Weapon*[3];
 	for (int i = 0; i < 3; i++){
 		if (i == 0) arrayWeapons[i] = new Pistol();
 		else  arrayWeapons[i] = NULL;
 	}
 	heals = 0;
+	mainWeapon = arrayWeapons[0];
 }
 
 
@@ -41,7 +43,7 @@ void MainCharacter::stopMove(move_t move) {
 	this->move ^= move;
 }
 
-void MainCharacter::update(unsigned delta, ItemMap *itemap) {
+void MainCharacter::update(unsigned delta, ItemMap *itemap, ArrayBales *ab) {
 	double mx = 0;
 	double my = 0;
 	if (move&MOVE_TOP) my -= 1;
@@ -59,6 +61,10 @@ void MainCharacter::update(unsigned delta, ItemMap *itemap) {
 		getItem(tmp);
 		delete tmp;
 		tmp = itemap->collectItem(x, y);
+	}
+	//comprovate if player fire
+	if (onFire && mainWeapon->pucDisparar()){
+		mainWeapon->dispararBala(x, y, viewAngle, ab, this);
 	}
 }
 
@@ -140,4 +146,12 @@ int MainCharacter::returnItems(int id, bool yes){
 	}
 	else return heals;
 
+}
+
+void MainCharacter::useItem(int slot){
+	if (slot < 4 && slot> 0){
+		if (arrayWeapons[slot - 1] != NULL) mainWeapon = arrayWeapons[slot - 1];
+	}else if (slot == 4){
+		if (heals > 0) heals--;
+	}
 }

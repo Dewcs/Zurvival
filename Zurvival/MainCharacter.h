@@ -12,6 +12,8 @@ class MainCharacter{
 		double vx, vy; // view position
 		double viewAngle; // angle of view direction
 		Weapon ** arrayWeapons;
+		Weapon * mainWeapon;
+		bool onFire;
 		int heals;
 	public:
 		MainCharacter(int x,int y);
@@ -19,7 +21,7 @@ class MainCharacter{
 		void setView(int x, int y);
 		void startMove(move_t move); // 0,1,2,4,8 none,north,right,south,left
 		void stopMove(move_t move);
-		void update(unsigned delta, ItemMap *itemap); // how many ms passed since last update
+		void update(unsigned delta, ItemMap *itemap, ArrayBales *ab); // how many ms passed since last update
 		double getAngle(); // return the angle in degrees
 		double getRawAngle(); // return angle in radians
 		double getX(); // get the x position
@@ -27,5 +29,6 @@ class MainCharacter{
 		void getItem(item*);
 		int returnWeapon(int id);
 		int returnItems(int id, bool yes);
+		void useItem(int slot);
 };
 
