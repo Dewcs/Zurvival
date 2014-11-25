@@ -26,6 +26,7 @@ public:
 	void updateDelta(int ms);
 	int totalBales();
 	void afegirBales(int quantitat);
+	int returnBullets(bool id);
 };
 
 class Pistol :public Weapon{

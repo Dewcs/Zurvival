@@ -395,19 +395,24 @@ void Game::drawGUI(){
 	SDL_RenderCopy(renderer, sprMngr->getTexture("retroceso"), NULL, &sprMngr->getRect("retroceso"));
 	//draw pistol
 	SDL_RenderCopy(renderer, sprMngr->getTexture("pistolWep"), NULL, &sprMngr->getRect("pistolWep"));
+	sprMngr->drawNumber(mc->returnItems(0, true), "red_numbers", (width / 30) + (height / 8), (width / 30) + (height / 10), height / 50, ALIGN_RIGHT);
+	sprMngr->drawNumber(mc->returnItems(0, false), "red_numbers", (width / 30) + (height / 9.5), (width / 30) + (height / 10), height / 50, ALIGN_LEFT);
+	//first, draw heal item sprite
+	SDL_RenderCopy(renderer, sprMngr->getTexture("healSprite"), NULL, &sprMngr->getRect("healSprite"));
+	sprMngr->drawNumber(mc->returnItems(3, true), "red_numbers", (width / 30) + (height / 8.8), ((width / 30) * 4 + (height / 8) * 3) + (height/10 ), height / 50, ALIGN_CENTER);
 	//comprovate if is necesary draw into slots
-	if (playerTouchItem()){
-		//first, draw heal item sprite
-		SDL_RenderCopy(renderer, sprMngr->getTexture("healSprite"), NULL, &sprMngr->getRect("healSprite"));
-		//next, all weapons
+	//next, all weapons
+	if (mc->returnWeapon(1) != -1){
 		SDL_RenderCopy(renderer, sprMngr->getTexture("shotgunWep"), NULL, &sprMngr->getRect("shotgunWep"));
-		SDL_RenderCopy(renderer, sprMngr->getTexture("hevyWep"), NULL, &sprMngr->getRect("hevyWep"));
-		//draw number of bullets and number of heal items
+		sprMngr->drawNumber(mc->returnItems(1, true), "red_numbers", (width / 30) + (height / 8), ((width / 30) * 2 + (height / 8)) + (height / 10), height / 50, ALIGN_CENTER);
+		sprMngr->drawNumber(mc->returnItems(1, false), "red_numbers", (width / 30) + (height / 9.5), ((width / 30) * 2 + (height / 8)) + (height / 10), height / 50, ALIGN_CENTER);
 	}
-}
+	if (mc->returnWeapon(2) != -1){
+		SDL_RenderCopy(renderer, sprMngr->getTexture("hevyWep"), NULL, &sprMngr->getRect("hevyWep"));
+		sprMngr->drawNumber(mc->returnItems(2, true), "red_numbers", (width / 30) + (height / 9), ((width / 30) * 3 + (height / 8) * 2) + (height / 10), height / 50, ALIGN_CENTER);
+		sprMngr->drawNumber(mc->returnItems(2, false), "red_numbers", (width / 30) + (height / 12), ((width / 30) * 3 + (height / 8) * 2) + (height / 10), height / 50, ALIGN_CENTER);
+	}
 
-bool Game::playerTouchItem(){
-	return true;
 }
 
 void Game::drawItems(){

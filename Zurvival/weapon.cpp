@@ -62,6 +62,11 @@ void Weapon::afegirBales(int quantitat) {
 	if (balesCarregador == 0 && tempsPerRecarregar == 0) tempsPerRecarregar = tempsRecarga;
 }
 
+int Weapon::returnBullets(bool id){
+	if (id) return balesCarregador;
+	else return balesTotals;
+}
+
 Pistol::Pistol() {
 	tempsRecarga=2000;
 	tempsEntreDispars=300;

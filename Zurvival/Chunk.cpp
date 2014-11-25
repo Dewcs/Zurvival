@@ -196,7 +196,7 @@ void Chunk::spawnNeighbors(SDL_Rect window, ItemMap * itemap) {
 					else {
 						// create id
 						nei = new Chunk(x + xval[i], y + yval[i], exists);
-						for (int j = 0; j < 2; j++){
+						for (int j = 0; j < 10; j++){
 							itemap->addRandomItem((double)nei->x, (double)nei->y, (double)CHUNK_SIZE, (double)CHUNK_SIZE);
 						}
 					}

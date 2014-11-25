@@ -115,3 +115,29 @@ void MainCharacter::getItem(item* id){
 		break;
 	}
 }
+
+int MainCharacter::returnWeapon(int id){
+	if (arrayWeapons[id] == NULL){
+		return -1;
+	}
+	else{
+		return arrayWeapons[id]->totalBales();
+	}
+}
+
+int MainCharacter::returnItems(int id, bool yes){
+	if (id == 2) {
+		if (yes) return arrayWeapons[id]->returnBullets(true);
+		else return arrayWeapons[id]->returnBullets(false);
+	}
+	else if (id == 0){
+		if (yes) return arrayWeapons[id]->returnBullets(true);
+		else return arrayWeapons[id]->returnBullets(false);
+	}
+	else if (id == 1){
+		if (yes) return arrayWeapons[id]->returnBullets(true);
+		else return arrayWeapons[id]->returnBullets(false);
+	}
+	else return heals;
+
+}

@@ -25,5 +25,7 @@ class MainCharacter{
 		double getX(); // get the x position
 		double getY(); // get the y position
 		void getItem(item*);
+		int returnWeapon(int id);
+		int returnItems(int id, bool yes);
 };
 
