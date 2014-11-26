@@ -56,6 +56,8 @@ bool inAngleRange(double angle, double a, double b);
 void getLine(double x1, double y1, double x2, double y2, double &a, double &b, double &c);
 // 2 points as a line to point distance
 double lineDist(double pct1X, double pct1Y, double pct2X, double pct2Y, double pct3X, double pct3Y);
+// triange area
+float triangleArea(float x1, float y1, float x2, float y2, float x3, float y3);
 /*************************************************************************
 STRING FUNCTIONS
 **************************************************************************/

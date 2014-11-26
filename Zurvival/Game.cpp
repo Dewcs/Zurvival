@@ -242,12 +242,51 @@ void Game::draw() {
 		SDL_Rect bulletRect = { x, y, dist*(height/15), 1 };
 		SDL_RenderCopyEx(renderer, sprMngr->getTexture("pwhite"), NULL, &bulletRect, rad2deg(angle), &bulletPoint2, SDL_FLIP_NONE); // &bulletPoint rad2deg(angle)
 	}
-	// draw light
-	SDL_Surface *lightmap;
+	// center of the image
 	int lightWidth = width / LIGHT_REDUCTION;
 	int lightHeight = height / LIGHT_REDUCTION;
+	float Ax = (float)lightWidth / 2;
+	float Ay = (float)lightHeight / 2;
+	// prepare light surface
+	int ldiff = LIGHT_FINAL_ALPHA - LIGHT_BEGIN_ALPHA;
+	SDL_Surface *lightmap;
 	lightmap = SDL_CreateRGBSurface(0, lightWidth, lightHeight, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
 	Uint32 *pixels = (Uint32 *)lightmap->pixels;
+	// center of light point (mouse)
+	int mx, my;
+	SDL_GetMouseState(&mx, &my);
+	float Mx = (float)mx / LIGHT_REDUCTION;
+	float My = (float)my / LIGHT_REDUCTION;
+	// angle form center to mouse
+	float angle = angleP2P(Ax, Ay, Mx, My);
+	// distance from center to mouse
+	float distance = distP2P(Ax, Ay, Mx, My);
+	float dfactor = (distance / lightHeight) + 1;
+	float dlight = lightHeight / dfactor * LIGHT_DISTANCE;
+	for (int i = 0; i < lightmap->h; ++i) {
+		// precalc y diff
+		float dy1 = (My - i)*(My - i);
+		float dy2 = (Ay - i)*(Ay - i);
+		for (int j = 0; j < lightmap->w; ++j) {
+			float dx1 = (Mx - j)*(Mx - j);
+			float dx2 = (Ax - j)*(Ax - j);
+			float dist = sqrt(dx1 + dy1);
+			float cDist = sqrt(dx2 + dy2);
+			float pAngle = angleP2P(Ax, Ay, j, i);
+			float aDist = angleDist(pAngle, angle);
+			int ratio = LIGHT_FINAL_ALPHA;
+			if (cDist < distance && aDist<0.3 && dist < dlight) {
+				ratio = min(LIGHT_BEGIN_ALPHA + dist / dlight *ldiff, LIGHT_BEGIN_ALPHA + aDist / 0.3 *ldiff);
+			}
+			else if (cDist < distance && aDist<0.3) {
+				ratio = LIGHT_BEGIN_ALPHA + aDist / 0.3 *ldiff;
+			}
+			else if (dist < dlight) {
+				ratio = LIGHT_BEGIN_ALPHA + dist / dlight * ldiff;
+			}
+			pixels[(i * lightmap->w) + j] = (ratio << 24) | LIGHT_BASE_COLOR;
+		}
+	}
 	// player point
 	/*float p1x = (float)lightWidth / 2;
 	float p1y = (float)lightHeight / 2;
@@ -282,7 +321,7 @@ void Game::draw() {
 			pixels[(i * lightmap->w) + j] = (ratio<<24) | LIGHT_BASE_COLOR;
 		}
 	}*/
-	float p1x = (float)lightWidth / 2;
+	/*float p1x = (float)lightWidth / 2;
 	float p1y = (float)lightHeight / 2;
 	// center of light point (mouse)
 	int mx, my;
@@ -316,7 +355,7 @@ void Game::draw() {
 			// add the pixel
 			pixels[(i * lightmap->w) + j] = (ratio << 24) | LIGHT_BASE_COLOR;
 		}
-	}
+	}*/
 	SDL_Texture *lighttex=SDL_CreateTextureFromSurface(renderer, lightmap);
 	SDL_SetTextureBlendMode(lighttex, SDL_BLENDMODE_BLEND);
 	SDL_RenderCopy(renderer, lighttex, NULL, NULL);

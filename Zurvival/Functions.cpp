@@ -151,6 +151,10 @@ double lineDist(double pct1X, double pct1Y, double pct2X, double pct2Y, double p
 	return abs(a * pct1X + b * pct1Y + c) / sqrt(a * a + b * b);
 }
 
+float triangleArea(float x1, float y1, float x2, float y2, float x3, float y3) {
+	return fabs(x1*(y2 - y3)+x2*(y3-y1)+x3*(y1-y2))/2;
+}
+
 double randomReal(double min, double max) {
 	return min + (max - min) * rand() / (double)RAND_MAX;
 }

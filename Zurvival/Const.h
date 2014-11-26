@@ -74,7 +74,7 @@ const int yval[] = { 1, 0, -1, 0 };
 // establishes a factor of reduction for faster computation times
 #define LIGHT_REDUCTION 8
 // light reduction factor
-#define LIGHT_DISTANCE 0.7
+#define LIGHT_DISTANCE 0.35
 // begin alpha [0-LIGHT_FINAL_ALPHA]
 #define LIGHT_BEGIN_ALPHA 50
 // final alpha [LIGHT_BEGIN_ALPHA-255]
