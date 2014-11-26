@@ -368,7 +368,21 @@ void Game::listen(bool &end, bool &pause, order_t &order, int &value) {
 					break;
 				}
 				break;
-
+			case SDL_MOUSEBUTTONDOWN: 
+				switch (event.button.button) {
+				case SDL_BUTTON_LEFT: 
+					//OnLButtonDown(Event.button.x, Event->button.y);
+					break;
+				case SDL_BUTTON_RIGHT: 
+					//OnRButtonDown(Event->button.x, Event->button.y);
+					break;
+				
+				case SDL_BUTTON_MIDDLE: 
+					//OnMButtonDown(Event->button.x, Event->button.y);
+					break;
+				
+				}
+				break;
 			default:
 				break;
 		}
