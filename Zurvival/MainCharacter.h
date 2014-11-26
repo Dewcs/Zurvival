@@ -30,5 +30,6 @@ class MainCharacter{
 		int returnWeapon(int id);
 		int returnItems(int id, bool yes);
 		void useItem(int slot);
+		void fire(bool fire);
 };
 

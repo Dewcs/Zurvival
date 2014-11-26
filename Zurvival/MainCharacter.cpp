@@ -155,3 +155,11 @@ void MainCharacter::useItem(int slot){
 		if (heals > 0) heals--;
 	}
 }
+
+void MainCharacter::fire(bool fire){
+	if (fire){
+		onFire = true;
+	}else{
+		onFire = false;
+	}
+}
