@@ -63,8 +63,8 @@ void MainCharacter::update(unsigned delta, ItemMap *itemap, ArrayBales *ab) {
 		tmp = itemap->collectItem(x, y);
 	}
 	//comprovate if player fire
+	mainWeapon->updateDelta(delta);
 	if (onFire && mainWeapon->pucDisparar()){
-		mainWeapon->updateDelta(delta);
 		mainWeapon->dispararBala(x, y, viewAngle, ab, this);
 	}
 }

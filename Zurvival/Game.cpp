@@ -319,6 +319,18 @@ void Game::listen(bool &end, bool &pause, order_t &order, int &value) {
 				case SDLK_a:
 					mc->startMove(MOVE_LEFT);
 					break;
+				case SDLK_1:
+					mc->useItem(1);
+					break;
+				case SDLK_2:
+					mc->useItem(2);
+					break;
+				case SDLK_3:
+					mc->useItem(3);
+					break;
+				case SDLK_4:
+					mc->useItem(4);
+					break;
 				default:
 					break;
 				}
