@@ -157,7 +157,7 @@ void Game::update(unsigned delta) {
 					double bulletDmg = 40;
 					bales->remove(i);
 					zombies[j]->doDamage(bulletDmg);
-					if (h != NULL) {
+					if (h != NULL && (MainCharacter*)h != mc) {
 						h->addHitted();
 						h->addDamageDealt(bulletDmg);
 						if (zombies[j]->isDead()) {
