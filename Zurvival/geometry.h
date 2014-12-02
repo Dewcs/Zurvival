@@ -18,6 +18,23 @@ class Point {
 		double angleTo(const Point& p);
 };
 
+class V3 {
+public:
+	float x, y, z;
+	V3(float x, float y, float z);
+	float dist(const V3& other) {
+		return sqrt((x - other.x)*(x - other.x) + (y - other.y)*(y - other.y) + (z - other.z)*(z - other.z));
+	}
+	float angleTo(const V3& other) {
+		float scalar = dotProduct(other);
+		float bot = sqrt(x*x + y*y + z*z)*sqrt(other.x*other.x + other.y*other.y + other.z*other.z);
+		return acos(scalar / bot);  
+	}
+	float dotProduct(const V3 &other) {
+		return x*other.x + y*other.y + z*other.z;
+	}
+};
+
 class Segment {
 public:
 	Point p0, p1;

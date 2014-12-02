@@ -235,15 +235,44 @@ void Game::draw() {
 	lightmap = SDL_CreateRGBSurface(0, lightWidth, lightHeight, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
 	Uint32 *pixels = (Uint32 *)lightmap->pixels;
 	// player point
-	float p1x = (float)lightWidth / 2;
-	float p1y = (float)lightHeight / 2;
+	float px = (float)lightWidth / 2;
+	float py = (float)lightHeight / 2;
+	float pz = 10;
+	// optimization
+	struct VecInfo{
+		float x, y, z, s;
+	};
+	std::vector<std::vector<VecInfo> > tmp(lightWidth, std::vector<VecInfo>(lightHeight));
+	for (int i = 0; i < lightWidth; ++i) {
+		for (int j = 0; j < lightHeight; ++j) {
+			tmp[i][j].x = i - lightWidth;
+			tmp[i][j].y = j - lightHeight;
+			tmp[i][j].z = 0;
+			tmp[i][j].s = sqrt(tmp[i][j].x*tmp[i][j].x + tmp[i][j].y*tmp[i][j].y);
+		}
+	}
 	// center of light point (mouse)
 	int mx, my;
 	SDL_GetMouseState(&mx, &my);
-	float ldist = p1y*(float)LIGHT_DISTANCE;
-	float ldist2 = ldist*ldist;
-	int p2x = (float)mx / LIGHT_REDUCTION;
-	int p2y = (float)my / LIGHT_REDUCTION;
+	float mx = (float)mx / LIGHT_REDUCTION;
+	float my = (float)my / LIGHT_REDUCTION;
+	float mz = 0;
+	float vx = mx - px;
+	float vy = my - py;
+	float vz = mz - pz;
+	float vb = sqrt(vx*vx + vy*vy + vz*vz);
+	float dotz = vz*vz;
+	for (int i = 0; i < lightmap->h; ++i) {
+		float dpy = (py - i)*(py - i);
+		float dmy = (my - i)*(my - i);
+		float doty = dpy * dmy;
+		for (int j = 0; j < lightmap->w; ++j) {	
+			float dist = sqrt(dotz+dpy);
+			float dotx = tmp[j][i].x * vx;
+			float dot = dotx + doty + dotz;
+		}
+	}
+	/*
 	int midx, midy;
 	midx = (p1x + p2x) / 2;
 	midy = (p1y + p2y) / 2;
@@ -279,7 +308,7 @@ void Game::draw() {
 	SDL_FreeSurface(lightmap);
 	SDL_DestroyTexture(lighttex);
 	// draw gui
-	drawGUI();
+	drawGUI();*/
 }
 
 void Game::listen(bool &end, bool &pause, order_t &order, int &value) {
