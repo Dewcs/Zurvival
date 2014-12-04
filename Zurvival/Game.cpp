@@ -188,6 +188,18 @@ void Game::update(unsigned delta) {
 			}
 		}
 	}
+	//zombie attack mc
+		double hx = mc->getX();
+		double hy = mc->getY();
+		for (unsigned j = 0; j < zombies.size() && !mc->isDead(); ++j) {
+			double zx = zombies[j]->getX();
+			double zy = zombies[j]->getY();
+			if (abs(hx - zx) < 3 && abs(hy - zy) < 3 && distP2P(hx, hy, zx, zy) <= 1.2 && zombies[j]->canAttack()) {
+				double zombieDmg = zombies[j]->getDamage();
+				zombies[j]->addDamageDealt(zombieDmg);
+				mc->doDamage(zombieDmg);
+			}
+		}
 	// cleanup
 	cleanup();
 }
@@ -280,6 +292,8 @@ void Game::draw() {
 	SDL_DestroyTexture(lighttex);
 	// draw gui
 	drawGUI();
+	//draw life of main character
+	sprMngr->drawNumber(mc->getLife(), "red_numbers", width/2 + (height / 28),height/2 - (height/10), height / 20 , ALIGN_CENTER);
 }
 
 void Game::listen(bool &end, bool &pause, order_t &order, int &value) {

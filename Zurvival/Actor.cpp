@@ -40,3 +40,7 @@ Circle Actor::getCircle() {
 void Actor::doDamage(double damage) {
 	hp -= damage;
 }
+
+double Actor::getLife(){
+	return hp;
+}

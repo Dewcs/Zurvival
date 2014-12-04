@@ -22,5 +22,6 @@ public:
 	int getTime(int timestamp);
 	Circle getCircle();
 	void doDamage(double damage);
+	double getLife();
 };
 

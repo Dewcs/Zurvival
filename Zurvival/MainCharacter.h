@@ -4,13 +4,12 @@
 #include "Functions.h"
 #include "Weapon.h"
 #include "ItemMap.h"
+#include "Actor.h"
 
-class MainCharacter{
+class MainCharacter : public Actor{
 	private:
 		unsigned move; // moving direction
-		double x, y; // current position
 		double vx, vy; // view position
-		double viewAngle; // angle of view direction
 		Weapon ** arrayWeapons;
 		Weapon * mainWeapon;
 		bool onFire;
@@ -22,10 +21,6 @@ class MainCharacter{
 		void startMove(move_t move); // 0,1,2,4,8 none,north,right,south,left
 		void stopMove(move_t move);
 		void update(unsigned delta, ItemMap *itemap, ArrayBales *ab); // how many ms passed since last update
-		double getAngle(); // return the angle in degrees
-		double getRawAngle(); // return angle in radians
-		double getX(); // get the x position
-		double getY(); // get the y position
 		void getItem(item*);
 		int returnWeapon(int id);
 		int returnItems(int id, bool yes);

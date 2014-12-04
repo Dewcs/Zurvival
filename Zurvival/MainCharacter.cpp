@@ -5,6 +5,7 @@ MainCharacter::MainCharacter(int x,int y)
 {
 	this->x = x;
 	this->y = y;
+	hp = 100;
 	move = 0;
 	viewAngle = 0;
 	vx = 0;
@@ -67,22 +68,6 @@ void MainCharacter::update(unsigned delta, ItemMap *itemap, ArrayBales *ab) {
 	if (onFire && mainWeapon->pucDisparar()){
 		mainWeapon->dispararBala(x, y, viewAngle, ab, this);
 	}
-}
-
-double MainCharacter::getAngle() {
-	return rad2deg(viewAngle);
-}
-
-double MainCharacter::getRawAngle() {
-	return viewAngle;
-}
-
-double MainCharacter::getX() {
-	return x;
-}
-
-double MainCharacter::getY() {
-	return y;
 }
 
 void MainCharacter::getItem(item* id){
@@ -153,7 +138,11 @@ void MainCharacter::useItem(int slot){
 	if (slot < 4 && slot> 0){
 		if (arrayWeapons[slot - 1] != NULL) mainWeapon = arrayWeapons[slot - 1];
 	}else if (slot == 4){
-		if (heals > 0) heals--;
+		if (heals > 0) {
+			hp = hp + 50;
+			if (hp > 100) hp = 100;
+			heals--;
+		}
 	}
 }
 
