@@ -8,6 +8,7 @@
 #include "DeathPit.h"
 #include "Game.h"
 #include "Config.h"
+#include "GameOver.h"
 
 class Zurvival {
 	private:
@@ -22,6 +23,7 @@ class Zurvival {
 		DeathPit *deathPit;
 		Config *config;
 		Game *game;
+		GameOver *gameOver;
 		bool stop,pause; // did the game end
 		page_t page; // current game page
 	public:

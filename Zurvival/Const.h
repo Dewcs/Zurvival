@@ -20,7 +20,8 @@ enum page_t {
 	MAINMENU,
 	DEATHPIT,
 	OPTIONS,
-	GAME
+	GAME, 
+	GAMEOVER
 };
 
 enum order_t {

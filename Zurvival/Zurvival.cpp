@@ -54,6 +54,7 @@ Zurvival::Zurvival() {
 	options = NULL; // new Options(renderer, sprMngr);
 	deathPit = NULL; // new DeathPit(renderer, sprMngr, width, height);
 	game = NULL; // new Game(renderer, sprMngr,width,height);
+	gameOver = NULL; // new GameOver (renderer, sprMngr, width, height);
 	// set current page
 	page = LOADING;
 	// prepare for delta
@@ -69,6 +70,7 @@ Zurvival::~Zurvival() {
 	if (options != NULL) delete options;
 	if (game != NULL) delete game;
 	if (deathPit != NULL) delete deathPit;
+	if (gameOver != NULL) delete gameOver;
 	log(VERBOSE_BASIC, "DELETING SPRITE MANAGER");
 	delete sprMngr;
 	log(VERBOSE_BASIC, "DELETING CONFIG");
@@ -131,6 +133,11 @@ void Zurvival::update() {
 			if (!pause) game->update(delta);
 			game->draw();
 			break;
+		case GAMEOVER: // falta plantejament del listen i draw en la classe gameover
+			gameOver->listen(stop,pause,order,value);
+			if (!pause)gameOver->update(delta);
+			gameOver->draw();
+			break;
 		default:
 			break;
 	}
@@ -161,6 +168,8 @@ void Zurvival::load_sprites() {
 	sprMngr->addImage("soldier", "sprites/soldier.png", { 0, 0, width, height });
 	sprMngr->addImage("zombie", "sprites/zombie.png", { 0, 0, width, height });
 	sprMngr->addSpriteSheet("zombie_anim", "sprites/zombie3.png", { 0, 0, width, height },48,48,1,0xFFFFFFFF);
+	//gameover sprites
+	sprMngr->addImage("bg_gameOver", "sprites/zombies.jpg", {0,0,width,height});
 	// death pit sprites
 	sprMngr->addImage("pred", "sprites/pred.png", { 0, 0, width, height });
 	sprMngr->addImage("pgreen", "sprites/pgreen.png", { 0, 0, width, height });
@@ -210,6 +219,10 @@ void Zurvival::doOrder(order_t order, int value) {
 			delete deathPit;
 			deathPit = NULL;
 		}
+		if (gameOver != NULL){
+			delete gameOver;
+			gameOver = NULL;
+		}
 
 		// create needed
 		switch (value)
@@ -225,6 +238,9 @@ void Zurvival::doOrder(order_t order, int value) {
 			break;
 		case GAME:
 			game = new Game(renderer, sprMngr, width, height);
+			break;
+		case GAMEOVER:
+			gameOver = new GameOver(renderer, sprMngr);
 			break;
 		default:
 			break;
