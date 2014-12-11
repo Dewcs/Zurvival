@@ -297,6 +297,11 @@ void Game::draw() {
 }
 
 void Game::listen(bool &end, bool &pause, order_t &order, int &value) {
+	if (mc->isDead()){
+		order = ORDER_CHANGE_PAGE;
+		value = GAMEOVER;
+		return;
+	}
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 		switch (event.type){
@@ -397,6 +402,11 @@ void Game::listen(bool &end, bool &pause, order_t &order, int &value) {
 			case SDL_MOUSEBUTTONDOWN: 
 				switch (event.button.button) {
 				case SDL_BUTTON_LEFT: 
+					if (sprMngr->isInsideRect("retroceso", event.button.x, event.button.y)) {
+						order = ORDER_CHANGE_PAGE;
+						value = MAINMENU;
+						return;
+					}
 					mc->fire(true);
 					break;
 				case SDL_BUTTON_RIGHT: 

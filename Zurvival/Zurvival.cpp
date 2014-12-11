@@ -169,7 +169,7 @@ void Zurvival::load_sprites() {
 	sprMngr->addImage("zombie", "sprites/zombie.png", { 0, 0, width, height });
 	sprMngr->addSpriteSheet("zombie_anim", "sprites/zombie3.png", { 0, 0, width, height },48,48,1,0xFFFFFFFF);
 	//gameover sprites
-	sprMngr->addImage("bg_gameOver", "sprites/zombies.jpg", {0,0,width,height});
+	sprMngr->addImage("bg_gameOver", "sprites/bg_gameOver.jpg", {0,0,width,height});
 	// death pit sprites
 	sprMngr->addImage("pred", "sprites/pred.png", { 0, 0, width, height });
 	sprMngr->addImage("pgreen", "sprites/pgreen.png", { 0, 0, width, height });
