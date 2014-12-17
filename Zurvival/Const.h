@@ -27,6 +27,7 @@ enum page_t {
 enum order_t {
 	ORDER_NONE,
 	ORDER_CHANGE_PAGE,
+	ORDER_SET_SCORE,
 };
 
 enum align_t {

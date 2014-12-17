@@ -1,5 +1,7 @@
 #pragma once
 #include <iostream>
+#include <vector>
+#include <fstream>
 #include "Const.h"
 #include <SDL.h>
 #include "SpriteManager.h"
@@ -26,6 +28,7 @@ class Zurvival {
 		GameOver *gameOver;
 		bool stop,pause; // did the game end
 		page_t page; // current game page
+		std::vector<int> scores;
 	public:
 		Zurvival();
 		~Zurvival();
@@ -34,6 +37,7 @@ class Zurvival {
 		void doOrder(order_t order, int value); // perform an order onto the game
 	private:
 		void load_sprites(); // load game sprites
+		void addScore(int);
 };
 
 

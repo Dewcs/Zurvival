@@ -25,6 +25,8 @@ Game::Game(SDL_Renderer* renderer, SpriteManager* sprMngr,int width,int height)
 	bales = new ArrayBales();
 
 	log(VERBOSE_DATA_CREATION, "CREATED GAME");
+	ended = false;
+	begin = SDL_GetTicks();
 }
 
 
@@ -298,8 +300,15 @@ void Game::draw() {
 
 void Game::listen(bool &end, bool &pause, order_t &order, int &value) {
 	if (mc->isDead()){
-		order = ORDER_CHANGE_PAGE;
-		value = GAMEOVER;
+		if (!ended) {
+			ended = true;
+			order = ORDER_SET_SCORE;
+			value = SDL_GetTicks()-begin;
+		}
+		else {
+			order = ORDER_CHANGE_PAGE;
+			value = GAMEOVER;
+		}
 		return;
 	}
 	SDL_Event event;

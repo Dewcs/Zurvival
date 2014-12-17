@@ -61,6 +61,18 @@ Zurvival::Zurvival() {
 	last_time = SDL_GetTicks();
 	stop = false;
 	pause = false;
+	scores = std::vector<int> (0);
+	if (fileExists("scores.dat")) {
+		// load scores
+		std::ifstream myfile;
+		myfile.open("scores.dat", std::ios::in | std::ios::binary);
+		int dummy;
+		while (myfile.read((char*)&dummy, sizeof(int))) {
+			scores.push_back(dummy);
+		}
+		sort(scores.begin(), scores.end());
+		myfile.close();
+	}
 }
 
 
@@ -86,6 +98,13 @@ Zurvival::~Zurvival() {
 	log(VERBOSE_BASIC, "DONE DELETING TTF");
 	SDL_Quit();
 	log(VERBOSE_BASIC, "DONE DELETING SDL");
+	// save scores
+	std::ofstream myfile;
+	myfile.open("scores.dat", std::ios::out | std::ios::binary | std::ios::trunc);
+	for (int i = 0; i < scores.size(); ++i) {
+		myfile.write((char*)&scores[i], sizeof(int));
+	}
+	myfile.close();
 }
 
 bool Zurvival::running() {
@@ -194,6 +213,8 @@ void Zurvival::load_sprites() {
 	sprMngr->addImage("healSprite", "sprites/healSprite.png", { (width / 30) + (width / 100), (width / 30) * 4 + (height / 8) * 3 , height / 10, height / 10 });
 	// retroceso button
 	sprMngr->addImage("retroceso", "sprites/retroceso.png", { width / 40, (width / 30) * 5 + (height / 8) * 4, width / 12, height / 12 });
+	// highscores
+	sprMngr->addText("highscores", "HIGHSCORES", { 255, 0, 0 }, height / 8, "sprites/Gore Font II.ttf", { width / 2 - width / 12, height / 8, width / 6, height / 12 });
 }
 
 
@@ -240,12 +261,24 @@ void Zurvival::doOrder(order_t order, int value) {
 			game = new Game(renderer, sprMngr, width, height);
 			break;
 		case GAMEOVER:
-			gameOver = new GameOver(renderer, sprMngr);
+			gameOver = new GameOver(renderer, sprMngr, &scores, width, height);
 			break;
 		default:
 			break;
 		}
 		// toogle cursor
 		SDL_ShowCursor(int(value != GAME));
+	}
+	else if (order == ORDER_SET_SCORE) {
+		addScore(value);
+	}
+}
+
+void Zurvival::addScore(int score) {
+	scores.push_back(score);
+	sort(scores.begin(), scores.end());
+	std::reverse(scores.begin(), scores.end());
+	if (scores.size() > 10) {
+		scores.pop_back();
 	}
 }

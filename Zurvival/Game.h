@@ -32,6 +32,8 @@ private:
 	std::vector<Human*> humans;
 
 	Trainer *zTrainer, *hTrainer;
+	bool ended;
+	int begin;
 public:
 	Game(SDL_Renderer* renderer, SpriteManager* sprMngr, int width,int height);
 	~Game();
