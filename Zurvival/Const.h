@@ -97,3 +97,6 @@ const int yval[] = { 1, 0, -1, 0 };
 #define MAX_HUMAN_STORAGE 200 // how many human ia to store
 
 #define ITEMS_PER_SQM 0.005 // how many items per square meter
+
+// Game vars
+#define UNSPAWN_DISTANCE 300

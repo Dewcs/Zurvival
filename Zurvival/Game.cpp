@@ -38,23 +38,11 @@ Game::~Game()
 	delete smells;
 
 	for (unsigned i = 0; i < zombies.size(); ++i) {
-		double zombieScore = zombies[i]->capability();
-		if (zTrainer->is_good(zombieScore)) {
-			std::string fname = zTrainer->mkFName(zombieScore);
-			zombies[i]->save(fname.c_str());
-			zTrainer->insert(fname, zombieScore);
-		}
 		delete zombies[i];
 	}
 	zombies.clear();
 
 	for (unsigned i = 0; i < humans.size(); ++i) {
-		double humanScore = humans[i]->capability();
-		if (hTrainer->is_good(humanScore)) {
-			std::string fname = hTrainer->mkFName(humanScore);
-			humans[i]->save(fname.c_str());
-			hTrainer->insert(fname, humanScore);
-		}
 		delete humans[i];
 	}
 	humans.clear();
@@ -70,25 +58,40 @@ Game::~Game()
 }
 
 void Game::spawn(unsigned delta) {
+	int time = SDL_GetTicks() - begin;
+	int max = floor(sqrt((time / 1000) + 1))+4;
+	int maxh = max * 0.2;
+	int maxz = max * 0.8;
+	
+	int screen_height = TILE_FOR_HEIGHT+4;
+	int screen_width = width/(height/TILE_FOR_HEIGHT)+20;
+	int rect_height = 100;
+	int rect_width = 100;
+	int x0 = mc->getX() - rect_width / 2;
+	int y0 = mc->getY() - rect_height / 2;
+	int x1 = mc->getX() - screen_width / 2;
+	int y1 = mc->getY() - screen_height / 2;
 	// humans
-	int total_width = (width / DP_RATIO) * 2 / 3;
-	int total_height = (height / DP_RATIO) * 2 / 3;
-	int begin_x = -total_width / 2;
-	int begin_y = -total_height / 2;
-	if (humans.size() < DP_HUMAN_AMOUNT && rand() % (humans.size() + 1) == 0) {
-		int x = rand() % (total_width)+begin_x;
-		int y = rand() % (total_height)+begin_y;
+	if (humans.size() < maxh) {
+		int x = 0;
+		int y = 0; 
+		do {
+			x = rand() % (rect_width)+x0;
+			y = rand() % (rect_height)+y0;
+		} while (pointInsideRect(x, y, x1, y1, screen_width, screen_height));
 		std::string mode = hTrainer->random();
 		humans.push_back(new Human(x, y, SDL_GetTicks(), mode));
-		if (mode != "random") hTrainer->remove(mode);
 	}
 	// zombies
-	if (zombies.size() < DP_ZOMBIE_AMOUNT && rand() % (zombies.size() + 1) == 0) {
-		int x = rand() % (total_width)+begin_x;
-		int y = rand() % (total_height)+begin_y;
+	if (zombies.size() < maxz) {
+		int x = 0;
+		int y = 0;
+		do {
+			x = rand() % (rect_width)+x0;
+			y = rand() % (rect_height)+y0;
+		} while (pointInsideRect(x, y, x1, y1, screen_width, screen_height));
 		std::string mode = zTrainer->random();
 		zombies.push_back(new Zombie(x, y, SDL_GetTicks(), mode));
-		if (mode != "random") zTrainer->remove(mode);
 	}
 	// items
 	/*if (itemap->size() / double(total_width * total_height) < ITEMS_PER_SQM && rand() % (itemap->size() + 1) == 0) {
@@ -99,14 +102,14 @@ void Game::spawn(unsigned delta) {
 void Game::cleanup() {
 	// remove dead and out of screen
 	for (int i = humans.size() - 1; i >= 0; --i) {
-		if (humans[i]->isDead() || !pointInsideRect(humans[i]->getX(), humans[i]->getY(), -width / DP_RATIO / 2, -height / DP_RATIO / 2, width / DP_RATIO, height / DP_RATIO)) {
+		if (humans[i]->isDead() || distP2P(humans[i]->getX(), humans[i]->getY(), mc->getX(), mc->getY())>UNSPAWN_DISTANCE) {
 			bales->unlinkOwner(humans[i]);
 			delete humans[i];
 			humans.erase(humans.begin() + i);
 		}
 	}
 	for (int i = zombies.size() - 1; i >= 0; --i) {
-		if (zombies[i]->isDead() || !pointInsideRect(zombies[i]->getX(), zombies[i]->getY(), -width / DP_RATIO / 2, -height / DP_RATIO / 2, width / DP_RATIO, height / DP_RATIO)) {
+		if (zombies[i]->isDead() || distP2P(zombies[i]->getX(), zombies[i]->getY(), mc->getX(), mc->getY())>UNSPAWN_DISTANCE) {
 			delete zombies[i];
 			zombies.erase(zombies.begin() + i);
 		}
@@ -126,7 +129,8 @@ void Game::update(unsigned delta) {
 	// update smell map
 	smells->addPoint(mc->getX(), mc->getY(), 1, SDL_GetTicks());
 	// update sounds map
-	sounds->addPoint(mc->getX(), mc->getY(), 30, SDL_GetTicks());
+	if (mc->isFiring()) sounds->addPoint(mc->getX(), mc->getY(), 100, SDL_GetTicks());
+	else if (mc->isMoving()) sounds->addPoint(mc->getX(), mc->getY(), 20, SDL_GetTicks());
 	// update zombies
 	spawn(delta);
 	// update humans
@@ -164,11 +168,44 @@ void Game::update(unsigned delta) {
 						h->addDamageDealt(bulletDmg);
 						if (zombies[j]->isDead()) {
 							h->addKills(1);
-							if (humans.size()< DP_HUMAN_AMOUNT * 2) humans.push_back(h->clone(zombies[j]->getX(), zombies[j]->getY(), SDL_GetTicks()));
 						}
 					}
 					break;
 				}
+			}
+		}
+		for (unsigned j = 0; j < humans.size(); ++j) {
+			if (!humans[j]->isDead() && (Human*)h != humans[j]) {
+				Circle c = humans[j]->getCircle();
+				if (collide(s, c)) {
+					double bulletDmg = 40;
+					bales->remove(i);
+					humans[j]->doDamage(bulletDmg);
+					if (h != NULL && (MainCharacter*)h != mc) {
+						h->addHitted();
+						h->addDamageDealt(bulletDmg);
+						if (humans[j]->isDead()) {
+							h->addKills(1);
+						}
+					}
+					break;
+				}
+			}
+		}
+		if (!mc->isDead() && (MainCharacter*)h != mc) {
+			Circle c = mc->getCircle();
+			if (collide(s, c)) {
+				double bulletDmg = 40;
+				bales->remove(i);
+				mc->doDamage(bulletDmg);
+				if (h != NULL && (MainCharacter*)h != mc) {
+					h->addHitted();
+					h->addDamageDealt(bulletDmg);
+					if (mc->isDead()) {
+						h->addKills(1); 
+					}
+				}
+				break;
 			}
 		}
 	}

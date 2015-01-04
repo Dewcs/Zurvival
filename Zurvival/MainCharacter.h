@@ -26,5 +26,7 @@ class MainCharacter : public Actor{
 		int returnItems(int id, bool yes);
 		void useItem(int slot);
 		void fire(bool fire);
+		bool isFiring() { return onFire; }
+		bool isMoving() { return move != 0; }
 };
 
