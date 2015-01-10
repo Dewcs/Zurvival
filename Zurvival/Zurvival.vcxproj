@@ -109,6 +109,7 @@
     <ClCompile Include="Options.cpp" />
     <ClCompile Include="Radar.cpp" />
     <ClCompile Include="SpriteManager.cpp" />
+    <ClCompile Include="TileManager.cpp" />
     <ClCompile Include="tinyxml2.cpp" />
     <ClCompile Include="Trainer.cpp" />
     <ClCompile Include="Weapon.cpp" />
@@ -138,6 +139,7 @@
     <ClInclude Include="Options.h" />
     <ClInclude Include="Radar.h" />
     <ClInclude Include="SpriteManager.h" />
+    <ClInclude Include="TileManager.h" />
     <ClInclude Include="tinyxml2.h" />
     <ClInclude Include="Trainer.h" />
     <ClInclude Include="Weapon.h" />

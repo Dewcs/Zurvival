@@ -13,6 +13,7 @@
 #include "geometry.h"
 #include "MainCharacter.h"
 #include "Map.h"
+#include "TileManager.h"
 
 class Game
 {
@@ -34,6 +35,7 @@ private:
 	Trainer *zTrainer, *hTrainer;
 	bool ended;
 	int begin;
+	TileManager *tm;
 public:
 	Game(SDL_Renderer* renderer, SpriteManager* sprMngr, int width,int height);
 	~Game();

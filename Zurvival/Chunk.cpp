@@ -11,8 +11,9 @@ Chunk::Chunk(int x, int y, std::set<unsigned>* exists){
 	//create a matrix of int's of the chunk
 	matrix = new int[CHUNK_SIZE * CHUNK_SIZE];
 	for (int i = 0; i < CHUNK_SIZE * CHUNK_SIZE; i++){
-		matrix[i] = 0;
+		matrix[i] = -1;
 	}
+	randomChunk();
 	//initializate all pointers of NULL
 	right = NULL;
 	bot= NULL;
@@ -38,8 +39,9 @@ Chunk::Chunk(int x, int y, std::set<unsigned>* exists, Chunk *r, Chunk* b, Chunk
 	//create a matrix of int's of the chunk
 	matrix = new int[CHUNK_SIZE * CHUNK_SIZE];
 	for (int i = 0; i < CHUNK_SIZE * CHUNK_SIZE; i++){
-		matrix[i] = 0;
+		matrix[i] = -1;
 	}
+	randomChunk();
 	//initializate all pointers
 	right = r;
 	bot = b;
@@ -77,9 +79,11 @@ Chunk::~Chunk(){
 randomize all cells in the matrix chunk*/
 
 void Chunk::randomChunk(){
-	matrix = new int[CHUNK_SIZE * CHUNK_SIZE];
-	for (int i = 0; i < CHUNK_SIZE * CHUNK_SIZE; i++){
-		matrix[i] = rand() % 10;
+	//matrix = new int[CHUNK_SIZE * CHUNK_SIZE];
+	for (int i = 0; i < CHUNK_SIZE; i+=2) {
+		for (int j = 0; j < CHUNK_SIZE; j += 2) {
+			matrix[i*CHUNK_SIZE + j] = rand() % TILE_MAX;
+		}
 	}
 }
 
@@ -121,7 +125,7 @@ bool Chunk::areDiferentChunk(int x, int y){
 parameters: double center map x / double center map y / int width in pixels / int height in pixels / sdl renderer / pointer sprite manager
 draw chunk and draw neighbord if i need*/
 
-void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, int height_pixels, unsigned *drawn, SDL_Renderer* renderer, SpriteManager* sprMngr){
+void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, int height_pixels, unsigned *drawn, SDL_Renderer* renderer, SpriteManager* sprMngr, TileManager *tm){
 	if (!isCalled) { //comprovem que el chunk ha sigut dibuixat
 		isCalled = true; //com no ha sigut dibuixat i hem entrat posem el seu boolea a true
 		//SDL_Log("DRAWN CHUNK %d %d", x, y);
@@ -153,14 +157,65 @@ void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, in
 			for (int i = 0; i <= rectToDraw.w; i++){
 				for (int j = 0; j <= rectToDraw.h; j++){
 					if (relativeX + i >= 0 && relativeX + i < CHUNK_SIZE && relativeY + j >= 0 && relativeY + j < CHUNK_SIZE) {
-						SDL_Rect rect = { vertexDrawX + (i*sizeOnPixels) + 1, vertexDrawY + (j*sizeOnPixels) + 1, sizeOnPixels - 2, sizeOnPixels - 2 };
-						switch (matrix[(relativeX + i)*CHUNK_SIZE + (relativeY + j)]){
-						case GRASS:
-							SDL_RenderCopy(renderer, sprMngr->getTexture("grass"), NULL, &rect);
+						SDL_Rect rect = { vertexDrawX + (i*sizeOnPixels), vertexDrawY + (j*sizeOnPixels), sizeOnPixels, sizeOnPixels };
+						if (getMapValue(relativeX + i, relativeY + j) == -1) {
+							if (((relativeX + i) + (relativeY + j)) % 2 == 0) {
+								// all
+								SDL_RenderCopy(
+									renderer,
+									tm->get(
+										getMapValue(relativeX + i - 1, relativeY + j - 1),
+										getMapValue(relativeX + i + 1, relativeY + j - 1),
+										getMapValue(relativeX + i + 1, relativeY + j + 1),
+										getMapValue(relativeX + i - 1, relativeY + j + 1)
+									), 
+									NULL,
+									&rect
+								);
+							}
+							else {
+								// else
+								SDL_RenderCopy(
+									renderer,
+									tm->get(
+										getMapValue(relativeX + i, relativeY + j - 1),
+										getMapValue(relativeX + i + 1, relativeY + j),
+										getMapValue(relativeX + i, relativeY + j + 1),
+										getMapValue(relativeX + i - 1, relativeY + j)
+									),
+									NULL,
+									&rect
+									);
+							}
+						}
+						else {
+							SDL_RenderCopy(renderer, tm->get(getMapValue(relativeX + i, relativeY + j)), NULL, &rect);
+						}
+						/*switch (matrix[(relativeX + i)*CHUNK_SIZE + (relativeY + j)]){
+						case TILE_GRASS:
+							SDL_RenderCopy(renderer, sprMngr->getTexture("tile_grass"), NULL, &rect);
+							break;
+						case TILE_GRASS2:
+							SDL_RenderCopy(renderer, sprMngr->getTexture("tile_grass2"), NULL, &rect);
+							break;
+						case TILE_ROCK:
+							SDL_RenderCopy(renderer, sprMngr->getTexture("tile_rock"), NULL, &rect);
+							break;
+						case TILE_WOOD:
+							SDL_RenderCopy(renderer, sprMngr->getTexture("tile_wood"), NULL, &rect);
+							break;
+						case TILE_SNOW:
+							SDL_RenderCopy(renderer, sprMngr->getTexture("tile_snow"), NULL, &rect);
+							break;
+						case TILE_METAL:
+							SDL_RenderCopy(renderer, sprMngr->getTexture("tile_metal"), NULL, &rect);
+							break;
+						case TILE_WATER:
+							SDL_RenderCopy(renderer, sprMngr->getTexture("tile_water"), NULL, &rect);
 							break;
 						default:
 							break;
-						}
+						}*/
 					}
 				}
 			}
@@ -168,7 +223,7 @@ void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, in
 			for (int i = 0; i < 4; i++){
 				Chunk * nei = getChunk(i);
 				if (nei != NULL){
-					nei->drawChunk(centerX_M, centerY_M, width_pixels, height_pixels, drawn, renderer, sprMngr);
+					nei->drawChunk(centerX_M, centerY_M, width_pixels, height_pixels, drawn, renderer, sprMngr, tm);
 				}
 			}
 		}
@@ -264,5 +319,30 @@ print in console all information of this chunk*/
 
 void Chunk::debug() {
 	std::cout << x << " " << y << " " << this << " " << top << " " << right << " " << bot << " " << left << std::endl;
+}
+
+int Chunk::getMapValue(int x, int y) {
+	
+	int ret = 0;
+	if (x >= 0 && x < CHUNK_SIZE && y >= 0 && y < CHUNK_SIZE) {
+		ret = matrix[x*CHUNK_SIZE + y];
+	}
+	else if (x < 0) {
+		if (left == NULL) left = search(this->x - 1, this->y);
+		if (left != NULL) ret = left->getMapValue(CHUNK_SIZE + x, y);
+	}
+	else if (x >= CHUNK_SIZE) {
+		if (right == NULL) right = search(this->x + 1, this->y);
+		if (right != NULL) ret = right->getMapValue(x - CHUNK_SIZE, y);
+	}
+	else if (y < 0) {
+		if (top == NULL) top = search(this->x, this->y-1);
+		if (top != NULL) ret = top->getMapValue(x, CHUNK_SIZE + y);
+	}
+	else if (y >= CHUNK_SIZE) {
+		if (bot == NULL) bot = search(this->x, this->y + 1);
+		if (bot != NULL)ret = bot->getMapValue(x, y - CHUNK_SIZE);
+	}
+	return ret;
 }
 

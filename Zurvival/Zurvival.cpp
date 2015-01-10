@@ -182,8 +182,15 @@ void Zurvival::load_sprites() {
 	sprMngr->addText("menu_title", "ZURVIVAL", { 255, 0, 0 }, height / 6, "sprites/Gore Font II.ttf", { width / 20, height / 8, width / 2, height / 6 });
 	sprMngr->addText("back", "<- Go Back", { 255, 0, 0 }, height / 8, "sprites/Gore Font II.ttf", { width / 20, height *8 / 10, width / 8, height / 8 });
 	sprMngr->addNumbers("red_numbers", { 255, 0, 0 }, height / 50, "sprites/Gore Font II.ttf");
+	// tile sprites
+	sprMngr->addImage("tile_grass", "sprites/grass.jpg", { 0, 0, width, height });
+	sprMngr->addImage("tile_grass2", "sprites/grassSprite.png", { 0, 0, width, height });
+	sprMngr->addImage("tile_rock", "sprites/RockSprite.png", { 0, 0, width, height });
+	sprMngr->addImage("tile_metal", "sprites/metalSprite.png", { 0, 0, width, height });
+	sprMngr->addImage("tile_snow", "sprites/snowSprite.jpg", { 0, 0, width, height });
+	sprMngr->addImage("tile_water", "sprites/waterSprite.jpg", { 0, 0, width, height });
+	sprMngr->addImage("tile_wood", "sprites/woodSprite.jpg", { 0, 0, width, height });
 	// game sprites
-	sprMngr->addImage("grass", "sprites/grass.jpg", { 0, 0, width, height });
 	sprMngr->addImage("soldier", "sprites/soldier.png", { 0, 0, width, height });
 	sprMngr->addImage("zombie", "sprites/zombie.png", { 0, 0, width, height });
 	sprMngr->addSpriteSheet("zombie_anim", "sprites/zombie3.png", { 0, 0, width, height },48,48,1,0xFFFFFFFF);

@@ -16,12 +16,12 @@ Map::~Map(){
 }
 
 
-void Map::drawMap(SDL_Renderer* renderer, SpriteManager* sprMngr){
+void Map::drawMap(SDL_Renderer* renderer, SpriteManager* sprMngr, TileManager *tm){
 	unsigned *drawn = new unsigned[DRAWN_CHUNKS];
 	for (int i = 0; i < DRAWN_CHUNKS; i++){
 		drawn[i] = NULL;
 	}
-	center->drawChunk(centerX, centerY, width, height, drawn, renderer, sprMngr);
+	center->drawChunk(centerX, centerY, width, height, drawn, renderer, sprMngr,tm);
 	//SDL_Rect rect = { 0, 0, height / 10, height / 10 };
 	//SDL_RenderCopy(renderer, sprMngr->getTexture("grass"), NULL, &rect);
 	center->resetCalls();

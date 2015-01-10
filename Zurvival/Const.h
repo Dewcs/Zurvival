@@ -42,11 +42,17 @@ enum move_t {
 	MOVE_BOT = 4,
 	MOVE_LEFT = 8
 };
-enum tile_t {
-	GRASS,
-	WATER
-};
 
+enum tile_t {
+	TILE_GRASS,
+	TILE_GRASS2,
+	TILE_WATER,
+	TILE_ROCK,
+	TILE_WOOD,
+	TILE_METAL,
+	TILE_SNOW,
+	TILE_MAX
+};
 enum actor_t {
 	ACTOR_ZOMBIE,
 	ACTOR_HUMAN,
@@ -54,7 +60,7 @@ enum actor_t {
 
 // x and y offsets for chunk neighbors
 const int xval[] = { 0, 1, 0, -1 };
-const int yval[] = { 1, 0, -1, 0 };
+const int yval[] = { -1, 0, 1, 0 };
 
 // should calculate but atm is fine
 #define DRAWN_CHUNKS 4

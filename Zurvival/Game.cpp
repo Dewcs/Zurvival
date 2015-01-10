@@ -24,6 +24,15 @@ Game::Game(SDL_Renderer* renderer, SpriteManager* sprMngr,int width,int height)
 
 	bales = new ArrayBales();
 
+	tm = new TileManager(TILE_MAX);
+	tm->add(sprMngr->getTexture("tile_grass"), TILE_GRASS);
+	tm->add(sprMngr->getTexture("tile_grass2"), TILE_GRASS2);
+	tm->add(sprMngr->getTexture("tile_rock"), TILE_ROCK);
+	tm->add(sprMngr->getTexture("tile_wood"), TILE_WOOD);
+	tm->add(sprMngr->getTexture("tile_snow"), TILE_SNOW);
+	tm->add(sprMngr->getTexture("tile_metal"), TILE_METAL);
+	tm->add(sprMngr->getTexture("tile_water"), TILE_WATER);
+
 	log(VERBOSE_DATA_CREATION, "CREATED GAME");
 	ended = false;
 	begin = SDL_GetTicks();
@@ -52,6 +61,8 @@ Game::~Game()
 	delete itemap;
 
 	delete bales;
+
+	delete tm;
 
 	renderer = NULL;
 	sprMngr = NULL;
@@ -247,7 +258,7 @@ void Game::update(unsigned delta) {
 
 void Game::draw() {
 	// draw bg
-	gmap->drawMap(renderer, sprMngr);
+	gmap->drawMap(renderer, sprMngr,tm);
 	//draw items
 	drawItems();
 	// draw main character
