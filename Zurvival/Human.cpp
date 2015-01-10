@@ -188,6 +188,7 @@ void Human::update(unsigned delta, ArrayBales *ab) {
 		fire = false;
 	}
 }
+
 Human* Human::clone(int x, int y, int timestamp) {
 	Human *ret = new Human(x, y, timestamp, "empty");
 	Brain *cpy = ia->copy();

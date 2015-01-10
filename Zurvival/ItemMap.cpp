@@ -72,3 +72,13 @@ item* ItemMap::collectItem(double x, double y) {
 item* ItemMap::getItem(int id) {
 	return items[id];
 }
+
+void ItemMap::randomItemToPos(double humanPosX, double humanPosY){
+	item *i = new item();
+	i->type = (item_t)(rand() % ITEM_MAX);
+	i->amount = c_item[i->type][0];
+	if (c_item[i->type][1] != 0) i->amount += (rand() % c_item[i->type][1]);
+	i->x = randomReal(humanPosX-1, humanPosX+1);
+	i->y = randomReal(humanPosY-1, humanPosY+1);
+	items.push_back(i);
+}

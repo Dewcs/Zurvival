@@ -41,6 +41,7 @@ public:
 	item* closerToPoint(double x, double y, item_t type);
 	item* collectItem(double x, double y);
 	item* getItem(int id);
+	void randomItemToPos(double, double);
 	int size() { return items.size(); };
 };
 

@@ -104,6 +104,8 @@ void Game::cleanup() {
 	for (int i = humans.size() - 1; i >= 0; --i) {
 		if (humans[i]->isDead() || distP2P(humans[i]->getX(), humans[i]->getY(), mc->getX(), mc->getY())>UNSPAWN_DISTANCE) {
 			bales->unlinkOwner(humans[i]);
+			itemap->randomItemToPos(humans[i]->getX(), humans[i]->getY());
+			itemap->randomItemToPos(humans[i]->getX(), humans[i]->getY());
 			delete humans[i];
 			humans.erase(humans.begin() + i);
 		}
