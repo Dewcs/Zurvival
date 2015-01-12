@@ -75,7 +75,11 @@ SDL_Texture* TileManager::getVert(int left, int right, SDL_Renderer *renderer) {
 		Uint32 *pixels = (Uint32 *)tmp->pixels;
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
-				if (rand() % 128 >= x) pixels[(y * tmp->w) + x] = 0xff000000 | l[3 * ((y * tmp->w) + x)] | l[3 * ((y * tmp->w) + x) + 1] << 8 | l[3 * ((y * tmp->w) + x) + 2] << 16;
+				double rnd = randomReal(0, 1);
+				double p1, p2;
+				p1 = 1.0 / ((128 - x)*(128 - x)*(128 - x));
+				p2 = 1.0 / ((x + 1)*(x + 1)*(x + 1));
+				if (p1 / (p1 + p2) <= rnd) pixels[(y * tmp->w) + x] = 0xff000000 | l[3 * ((y * tmp->w) + x)] | l[3 * ((y * tmp->w) + x) + 1] << 8 | l[3 * ((y * tmp->w) + x) + 2] << 16;
 				else pixels[(y * tmp->w) + x] = 0xff000000 | r[3 * ((y * tmp->w) + x)] | r[3 * ((y * tmp->w) + x) + 1] << 8 | r[3 * ((y * tmp->w) + x) + 2] << 16;
 			}
 		}
@@ -100,7 +104,11 @@ SDL_Texture* TileManager::getHori(int top, int bot, SDL_Renderer *renderer) {
 		Uint32 *pixels = (Uint32 *)tmp->pixels;
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
-				if (rand() % 128 >= y) pixels[(y * tmp->w) + x] = 0xff000000 | l[3 * ((y * tmp->w) + x)] | l[3 * ((y * tmp->w) + x) + 1] << 8 | l[3 * ((y * tmp->w) + x) + 2] << 16;
+				double rnd = randomReal(0, 1);
+				double p1, p2;
+				p1 = 1.0 / ((128 - y)*(128 - y)*(128 - y));
+				p2 = 1.0 / ((y + 1)*(y + 1)*(y + 1));
+				if (p1/(p1+p2)<=rnd) pixels[(y * tmp->w) + x] = 0xff000000 | l[3 * ((y * tmp->w) + x)] | l[3 * ((y * tmp->w) + x) + 1] << 8 | l[3 * ((y * tmp->w) + x) + 2] << 16;
 				else pixels[(y * tmp->w) + x] = 0xff000000 | r[3 * ((y * tmp->w) + x)] | r[3 * ((y * tmp->w) + x) + 1] << 8 | r[3 * ((y * tmp->w) + x) + 2] << 16;
 			}
 		}
@@ -127,8 +135,14 @@ SDL_Texture* TileManager::getAll(int id0, int id1, int id2, int id3, SDL_Rendere
 		Uint32 *pixels = (Uint32 *)tmp->pixels;
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
-				if (rand() % 128 >= y) {
-					if (rand() % 128 >= x) {
+				double rnd = randomReal(0, 1);
+				double p1, p2;
+				p1 = 1.0 / ((128 - y)*(128 - y)*(128 - y));
+				p2 = 1.0 / ((y + 1)*(y + 1)*(y + 1));
+				if (p1 / (p1 + p2) <= rnd) {
+					p1 = 1.0 / ((128 - x)*(128 - x)*(128 - x));
+					p2 = 1.0 / ((x + 1)*(x + 1)*(x + 1));
+					if (p1 / (p1 + p2) <= rnd) {
 						pixels[(y * tmp->w) + x] = 0xff000000 | t[3 * ((y * tmp->w) + x)] | t[3 * ((y * tmp->w) + x) + 1] << 8 | t[3 * ((y * tmp->w) + x) + 2] << 16;
 					}
 					else {
@@ -136,7 +150,9 @@ SDL_Texture* TileManager::getAll(int id0, int id1, int id2, int id3, SDL_Rendere
 					}
 				}
 				else {
-					if (rand() % 128 >= x) {
+					p1 = 1.0 / ((128 - x)*(128 - x)*(128 - x));
+					p2 = 1.0 / ((x + 1)*(x + 1)*(x + 1));
+					if (p1 / (p1 + p2) <= rnd) {
 						pixels[(y * tmp->w) + x] = 0xff000000 | l[3 * ((y * tmp->w) + x)] | l[3 * ((y * tmp->w) + x) + 1] << 8 | l[3 * ((y * tmp->w) + x) + 2] << 16;
 					}
 					else {

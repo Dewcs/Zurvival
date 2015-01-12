@@ -157,7 +157,15 @@ void Chunk::randomChunk(){
 	//matrix = new int[CHUNK_SIZE * CHUNK_SIZE];
 	for (int i = 0; i < CHUNK_SIZE; i+=2) {
 		for (int j = 0; j < CHUNK_SIZE; j += 2) {
-			matrix[i*CHUNK_SIZE + j] = rand() % TILE_MAX;
+			int p1, p2;
+			if (j > 0) p1 = matrix[coord(i, (j - 2))];
+			else p1 = rand()%TILE_MAX;
+			if (i > 0) p2 = matrix[coord((i - 2), j)];
+			else p2 = rand() % TILE_MAX;
+			if (rand() % 10 == 0) matrix[coord(i, j)] = rand() % TILE_MAX;
+			else if (rand() % 2 == 0) matrix[coord(i, j)] = p1;
+			else matrix[coord(i, j)] = p2;
+			//log(1, "%d %d %d %d %d %d %d", i, j, p1, p2, matrix[coord(i, j)], coord((i - 2), j), coord(i, (j - 2)));
 		}
 	}
 }
@@ -248,7 +256,7 @@ void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, in
 									NULL,
 									&rect
 								);
-								sprMngr->drawNumber(getMapValue(relativeX + i - 1, relativeY + j - 1) * 1000 + getMapValue(relativeX + i + 1, relativeY + j - 1) * 100 + getMapValue(relativeX + i + 1, relativeY + j + 1) * 10 + getMapValue(relativeX + i - 1, relativeY + j + 1), "red_numbers", rect.x, rect.y, rect.h/4, ALIGN_LEFT);
+								//sprMngr->drawNumber(getMapValue(relativeX + i - 1, relativeY + j - 1) * 1000 + getMapValue(relativeX + i + 1, relativeY + j - 1) * 100 + getMapValue(relativeX + i + 1, relativeY + j + 1) * 10 + getMapValue(relativeX + i - 1, relativeY + j + 1), "red_numbers", rect.x, rect.y, rect.h/4, ALIGN_LEFT);
 							}
 							else {
 								// else
@@ -264,12 +272,12 @@ void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, in
 									NULL,
 									&rect
 									);
-								sprMngr->drawNumber(getMapValue(relativeX + i, relativeY + j - 1) * 1000 + getMapValue(relativeX + i + 1, relativeY + j) * 100 + getMapValue(relativeX + i, relativeY + j + 1) * 10 + getMapValue(relativeX + i - 1, relativeY + j), "red_numbers", rect.x, rect.y, rect.h/4, ALIGN_LEFT);
+								//sprMngr->drawNumber(getMapValue(relativeX + i, relativeY + j - 1) * 1000 + getMapValue(relativeX + i + 1, relativeY + j) * 100 + getMapValue(relativeX + i, relativeY + j + 1) * 10 + getMapValue(relativeX + i - 1, relativeY + j), "red_numbers", rect.x, rect.y, rect.h/4, ALIGN_LEFT);
 							}
 						}
 						else {
 							SDL_RenderCopy(renderer, tm->get(getMapValue(relativeX + i, relativeY + j)), NULL, &rect);
-							sprMngr->drawNumber(getMapValue(relativeX + i, relativeY + j), "red_numbers", rect.x, rect.y, rect.h, ALIGN_LEFT);
+							//sprMngr->drawNumber(getMapValue(relativeX + i, relativeY + j), "red_numbers", rect.x, rect.y, rect.h, ALIGN_LEFT);
 						}
 						/*switch (matrix[(relativeX + i)*CHUNK_SIZE + (relativeY + j)]){
 						case TILE_GRASS:
