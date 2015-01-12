@@ -107,6 +107,7 @@
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Options.cpp" />
+    <ClCompile Include="ParticleMap.cpp" />
     <ClCompile Include="Radar.cpp" />
     <ClCompile Include="SpriteManager.cpp" />
     <ClCompile Include="TileManager.cpp" />
@@ -137,6 +138,7 @@
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Options.h" />
+    <ClInclude Include="ParticleMap.h" />
     <ClInclude Include="Radar.h" />
     <ClInclude Include="SpriteManager.h" />
     <ClInclude Include="TileManager.h" />

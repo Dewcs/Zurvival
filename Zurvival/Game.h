@@ -14,6 +14,7 @@
 #include "MainCharacter.h"
 #include "Map.h"
 #include "TileManager.h"
+#include "ParticleMap.h"
 
 class Game
 {
@@ -36,6 +37,7 @@ private:
 	bool ended;
 	int begin;
 	TileManager *tm;
+	ParticleMap *pm;
 public:
 	Game(SDL_Renderer* renderer, SpriteManager* sprMngr, int width,int height);
 	~Game();

@@ -33,6 +33,8 @@ Game::Game(SDL_Renderer* renderer, SpriteManager* sprMngr,int width,int height)
 	tm->add(sprMngr->getTexture("tile_metal"), "sprites/metalSprite.jpg", TILE_METAL);
 	tm->add(sprMngr->getTexture("tile_water"), "sprites/waterSprite.jpg", TILE_WATER);
 
+	pm = new ParticleMap();
+
 	log(VERBOSE_DATA_CREATION, "CREATED GAME");
 	ended = false;
 	begin = SDL_GetTicks();
@@ -64,6 +66,8 @@ Game::~Game()
 
 	delete tm;
 
+	delete pm;
+
 	renderer = NULL;
 	sprMngr = NULL;
 }
@@ -76,8 +80,8 @@ void Game::spawn(unsigned delta) {
 	
 	int screen_height = TILE_FOR_HEIGHT+4;
 	int screen_width = width/(height/TILE_FOR_HEIGHT)+20;
-	int rect_height = 100;
-	int rect_width = 100;
+	int rect_height = 70;
+	int rect_width = 70;
 	int x0 = mc->getX() - rect_width / 2;
 	int y0 = mc->getY() - rect_height / 2;
 	int x1 = mc->getX() - screen_width / 2;
@@ -130,7 +134,6 @@ void Game::cleanup() {
 }
 
 void Game::update(unsigned delta) {
-	log(1, "up");
 	// update main
 	// update view
 	int mx, my;
@@ -140,6 +143,7 @@ void Game::update(unsigned delta) {
 	mc->update(delta, itemap, bales);
 	// update map
 	gmap->setCenter(mc->getX(), mc->getY(), itemap);
+	pm->update(mc->getX(), mc->getY(), delta);
 	// update smell map
 	smells->addPoint(mc->getX(), mc->getY(), 1, SDL_GetTicks());
 	// update sounds map
@@ -167,59 +171,44 @@ void Game::update(unsigned delta) {
 	// update bales
 	bales->updateBales(delta);
 	// update damages
+	
 	for (int i = bales->size() - 1; i >= 0; --i) {
+		bool coll = false;
 		Segment s = bales->getBalaSegment(i);
 		Human *h = (Human*)bales->getBalaOwner(i);
-		for (unsigned j = 0; j < zombies.size(); ++j) {
+		for (unsigned j = 0; j < zombies.size() && !coll; ++j) {
 			if (!zombies[j]->isDead()) {
 				Circle c = zombies[j]->getCircle();
 				if (collide(s, c)) {
 					double bulletDmg = 40;
 					bales->remove(i);
 					zombies[j]->doDamage(bulletDmg);
-					if (h != NULL && (MainCharacter*)h != mc) {
-						h->addHitted();
-						h->addDamageDealt(bulletDmg);
-						if (zombies[j]->isDead()) {
-							h->addKills(1);
-						}
-					}
-					break;
+					pm->add(zombies[j]->getX(), zombies[j]->getY(), "pred", 5000, 40, randomReal(0.001, 0.002));
+					if (zombies[j]->isDead()) pm->add(zombies[j]->getX(), zombies[j]->getY(), "pred", 10000, 400, randomReal(0.001, 0.003));
+					coll = true;
 				}
 			}
 		}
-		for (unsigned j = 0; j < humans.size(); ++j) {
+		for (unsigned j = 0; j < humans.size() && !coll; ++j) {
 			if (!humans[j]->isDead() && (Human*)h != humans[j]) {
 				Circle c = humans[j]->getCircle();
 				if (collide(s, c)) {
 					double bulletDmg = 40;
 					bales->remove(i);
 					humans[j]->doDamage(bulletDmg);
-					if (h != NULL && (MainCharacter*)h != mc) {
-						h->addHitted();
-						h->addDamageDealt(bulletDmg);
-						if (humans[j]->isDead()) {
-							h->addKills(1);
-						}
-					}
-					break;
+					pm->add(humans[j]->getX(), humans[j]->getY(), "pred", 5000, 40, randomReal(0.001, 0.002));
+					if (humans[j]->isDead()) pm->add(zombies[j]->getX(), zombies[j]->getY(), "pred", 10000, 400, randomReal(0.001,0.003));
+					coll = true;
 				}
 			}
 		}
-		if (!mc->isDead() && (MainCharacter*)h != mc) {
+		if (!coll && !mc->isDead() && (MainCharacter*)h != mc) {
 			Circle c = mc->getCircle();
 			if (collide(s, c)) {
-				double bulletDmg = 40;
+				double bulletDmg = 10;
 				bales->remove(i);
 				mc->doDamage(bulletDmg);
-				if (h != NULL && (MainCharacter*)h != mc) {
-					h->addHitted();
-					h->addDamageDealt(bulletDmg);
-					if (mc->isDead()) {
-						h->addKills(1); 
-					}
-				}
-				break;
+				pm->add(mc->getX(), mc->getY(), "pred", 5000, 40, randomReal(0.001, 0.002));
 			}
 		}
 	}
@@ -234,7 +223,9 @@ void Game::update(unsigned delta) {
 				double zombieDmg = zombies[j]->getDamage();
 				zombies[j]->addDamageDealt(zombieDmg);
 				humans[i]->doDamage(zombieDmg);
+				pm->add(hx, hy, "pred", 5000, 50, randomReal(0.001, 0.002));
 				if (humans[i]->isDead()) {
+					pm->add(hx, hy, "pred", 10000, 500, randomReal(0.001, 0.003));
 					zombies[j]->addKills(1);
 					if (zombies.size()< DP_ZOMBIE_AMOUNT * 2) zombies.push_back(zombies[j]->clone(hx, hy, SDL_GetTicks()));
 				}
@@ -247,21 +238,21 @@ void Game::update(unsigned delta) {
 		for (unsigned j = 0; j < zombies.size() && !mc->isDead(); ++j) {
 			double zx = zombies[j]->getX();
 			double zy = zombies[j]->getY();
-			if (abs(hx - zx) < 3 && abs(hy - zy) < 3 && distP2P(hx, hy, zx, zy) <= 1.2 && zombies[j]->canAttack()) {
+			if (abs(hx - zx) < 3 && abs(hy - zy) < 3 && distP2P(hx, hy, zx, zy) <= 0.6 && zombies[j]->canAttack()) {
 				double zombieDmg = zombies[j]->getDamage();
 				zombies[j]->addDamageDealt(zombieDmg);
 				mc->doDamage(zombieDmg);
+				pm->add(hx, hy, "pred", 5000, 50, randomReal(0.001, 0.002));
 			}
 		}
 	// cleanup
 	cleanup();
-	log(1, "upe");
 }
 
 void Game::draw() {
-	log(1, "draw");
 	// draw bg
 	gmap->drawMap(renderer, sprMngr,tm);
+	pm->draw(renderer, sprMngr, width, height);
 	//draw items
 	drawItems();
 	// draw main character
@@ -391,7 +382,6 @@ void Game::draw() {
 	drawGUI();
 	//draw life of main character
 	sprMngr->drawNumber(mc->getLife(), "red_numbers", width/2 + (height / 28),height/2 - (height/10), height / 20 , ALIGN_CENTER);
-	log(1, "drawe");
 	//extra
 }
 
