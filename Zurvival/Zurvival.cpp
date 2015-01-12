@@ -190,6 +190,16 @@ void Zurvival::load_sprites() {
 	sprMngr->addImage("tile_snow", "sprites/snowSprite.jpg", { 0, 0, width, height });
 	sprMngr->addImage("tile_water", "sprites/waterSprite.jpg", { 0, 0, width, height });
 	sprMngr->addImage("tile_wood", "sprites/woodSprite.jpg", { 0, 0, width, height });
+	// mc sprites
+	sprMngr->addImage("soldierPistolL", "sprites/pistol1.png", { 0, 0, width, height });
+	sprMngr->addImage("soldierPistolR", "sprites/pistol2.png", { 0, 0, width, height });
+	sprMngr->addImage("soldierPistolC", "sprites/pistol3.png", { 0, 0, width, height });
+	sprMngr->addImage("soldierShotgunL", "sprites/shotgun3.png", { 0, 0, width, height });
+	sprMngr->addImage("soldierShotgunR", "sprites/shotgun1.png", { 0, 0, width, height });
+	sprMngr->addImage("soldierShotgunC", "sprites/shotgun2.png", { 0, 0, width, height });
+	sprMngr->addImage("soldierHeavyL", "sprites/hevy1.png", { 0, 0, width, height });
+	sprMngr->addImage("soldierHeavyR", "sprites/hevy2.png", { 0, 0, width, height });
+	sprMngr->addImage("soldierHeavyC", "sprites/hevy3.png", { 0, 0, width, height });
 	// game sprites
 	sprMngr->addImage("soldier", "sprites/soldier.png", { 0, 0, width, height });
 	sprMngr->addImage("zombie", "sprites/zombie.png", { 0, 0, width, height });

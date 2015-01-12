@@ -264,7 +264,49 @@ void Game::draw() {
 	// draw main character
 	int mainw = height / 15;
 	SDL_Rect mainCharacter = { width / 2 - mainw / 2, height / 2 - mainw / 2, height / 15, height / 15 };
-	SDL_RenderCopyEx(renderer, sprMngr->getTexture("soldier"), NULL, &mainCharacter, mc->getAngle() - 90, NULL, SDL_FLIP_NONE);
+	string sprite;
+	switch (mc->getWeapon()){
+		case 0:
+			if (!mc->isMoving()){
+				sprite = "soldierPistolC";
+			}else{
+				if ((SDL_GetTicks()/100) %2 == 0){
+					sprite = "soldierPistolL";
+				}else{
+					sprite = "soldierPistolR";
+				}
+			}
+			break;
+		case 1:
+			if (!mc->isMoving()){
+				sprite = "soldierShotgunC";
+			}
+			else{
+				if ((SDL_GetTicks() / 100) % 2 == 0){
+					sprite = "soldierShotgunL";
+				}
+				else{
+					sprite = "soldierShotgunR";
+				}
+			}
+			break;
+		case 2:
+			if (!mc->isMoving()){
+				sprite = "soldierHeavyC";
+			}
+			else{
+				if ((SDL_GetTicks() / 100) % 2 == 0){
+					sprite = "soldierHeavyL";
+				}
+				else{
+					sprite = "soldierHeavyR";
+				}
+			}
+			break;
+		default:
+			break;
+	}
+	SDL_RenderCopyEx(renderer, sprMngr->getTexture(sprite), NULL, &mainCharacter, mc->getAngle() + 90, NULL, SDL_FLIP_NONE);
 	// draw npc
 	int hwidth = height / 15;
 	SDL_Rect screen = { 0, 0, width, height };
@@ -346,6 +388,8 @@ void Game::draw() {
 	drawGUI();
 	//draw life of main character
 	sprMngr->drawNumber(mc->getLife(), "red_numbers", width/2 + (height / 28),height/2 - (height/10), height / 20 , ALIGN_CENTER);
+
+	//extra
 }
 
 void Game::listen(bool &end, bool &pause, order_t &order, int &value) {
@@ -396,6 +440,9 @@ void Game::listen(bool &end, bool &pause, order_t &order, int &value) {
 					break;
 				case SDLK_a:
 					mc->startMove(MOVE_LEFT);
+					break;
+				case SDLK_r:
+					mc->reload();
 					break;
 				case SDLK_1:
 					mc->useItem(1);

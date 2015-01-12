@@ -153,3 +153,15 @@ void MainCharacter::fire(bool fire){
 		onFire = false;
 	}
 }
+
+int MainCharacter::getWeapon(){
+	for (int i = 0; i < 3; i++){
+		if (mainWeapon == arrayWeapons[i]) return i;
+	}
+	return 0;
+}
+
+void MainCharacter::reload(){
+	mainWeapon->recarregarManual();
+	log(1, "reload");
+}

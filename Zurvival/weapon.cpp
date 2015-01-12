@@ -11,7 +11,7 @@ Weapon::~Weapon(){
 }
 
 bool Weapon::pucDisparar(){
-	if (balesCarregador > 0 && tempsPerDisparar==0){
+	if (balesCarregador > 0 && tempsPerDisparar==0 && tempsPerRecarregar == 0){
 		return true;
 	}
 	else{
@@ -34,7 +34,15 @@ void Weapon::dispararBala(float x, float y, double vd, ArrayBales *ab, void *own
 	}
 }
 
+void Weapon::recarregarManual(){
+	if (balesCarregador != tamanyCarregador && balesTotals != 0 && tempsPerRecarregar == 0) {
+		tempsPerRecarregar = tempsRecarga;
+	}
+}
+
+
 void Weapon::recarregarBales() {
+	balesTotals = balesTotals + balesCarregador;
 	balesCarregador = min(tamanyCarregador, balesTotals);
 	balesTotals -= balesCarregador;
 }
