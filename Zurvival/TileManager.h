@@ -18,7 +18,7 @@ private:
 	int size;
 	vector<vector<SDL_Texture*> > vert;
 	vector<vector<SDL_Texture*> > hori;
-	vector<SDL_Texture*> all;
+	vector<vector<vector<vector<SDL_Texture*> > > > all;
 public:
 	TileManager(int size);
 	~TileManager();

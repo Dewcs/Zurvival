@@ -5,7 +5,7 @@ TileManager::TileManager(int size)
 	tiles = vector<Tile>(size);
 	vert = vector<vector<SDL_Texture*> >(size, vector<SDL_Texture*>(size, NULL));
 	hori = vector<vector<SDL_Texture*> >(size, vector<SDL_Texture*>(size, NULL));
-	all = vector<SDL_Texture*> (size*size*size*size, NULL);
+	all = vector<vector<vector<vector<SDL_Texture*> > > > (size, vector<vector<vector<SDL_Texture*> > >(size, vector<vector<SDL_Texture*> > (size,vector<SDL_Texture*> (size, NULL))));
 }
 
 
@@ -28,7 +28,13 @@ TileManager::~TileManager()
 	}
 	hori.clear();
 	for (unsigned i = 0; i < all.size(); ++i) {
-		if (all[i] != NULL) SDL_DestroyTexture(all[i]);
+		for (unsigned j = 0; j < all[i].size(); ++j) {
+			for (unsigned k = 0; k < all[i][j].size(); ++k) {
+				for (unsigned l = 0; l < all[i][j][k].size(); ++l) {
+					if (all[i][j][k][l] != NULL) SDL_DestroyTexture(all[i][j][k][l]);
+				}
+			}
+		}
 	}
 	all.clear();
 }
@@ -106,10 +112,8 @@ SDL_Texture* TileManager::getHori(int top, int bot, SDL_Renderer *renderer) {
 }
 
 SDL_Texture* TileManager::getAll(int id0, int id1, int id2, int id3, SDL_Renderer *renderer) {
-	int id = id0*size*size*size + id1*size*size + id2*size + id3;
-	if (id < 0 || id >= all.size()) log(1, "ERROR ALL");
 	if (id0==id1 && id1==id2 && id2==id3) return tiles[id0].tex;
-	if (all[id] == NULL) {
+	if (all[id0][id1][id2][id3] == NULL) {
 		SDL_Surface *tmp;
 		Uint8 *l, *r, *t, *b;
 		t = (Uint8 *)tiles[id0].sur->pixels;
@@ -122,16 +126,37 @@ SDL_Texture* TileManager::getAll(int id0, int id1, int id2, int id3, SDL_Rendere
 		Uint32 *pixels = (Uint32 *)tmp->pixels;
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
-				int rnd = rand() % 4;
-				if (rnd==0) pixels[(y * tmp->w) + x] = 0xff000000 | l[3 * ((y * tmp->w) + x)] | l[3 * ((y * tmp->w) + x) + 1] << 8 | l[3 * ((y * tmp->w) + x) + 2] << 16;
-				else if (rnd==1) pixels[(y * tmp->w) + x] = 0xff000000 | r[3 * ((y * tmp->w) + x)] | r[3 * ((y * tmp->w) + x) + 1] << 8 | r[3 * ((y * tmp->w) + x) + 2] << 16;
-				else if (rnd == 2) pixels[(y * tmp->w) + x] = 0xff000000 | t[3 * ((y * tmp->w) + x)] | t[3 * ((y * tmp->w) + x) + 1] << 8 | t[3 * ((y * tmp->w) + x) + 2] << 16;
-				else if (rnd == 3) pixels[(y * tmp->w) + x] = 0xff000000 | b[3 * ((y * tmp->w) + x)] | b[3 * ((y * tmp->w) + x) + 1] << 8 | b[3 * ((y * tmp->w) + x) + 2] << 16;
+				if (rand() % 128 >= y) {
+					if (rand() % 128 >= x) {
+						pixels[(y * tmp->w) + x] = 0xff000000 | t[3 * ((y * tmp->w) + x)] | t[3 * ((y * tmp->w) + x) + 1] << 8 | t[3 * ((y * tmp->w) + x) + 2] << 16;
+					}
+					else {
+						pixels[(y * tmp->w) + x] = 0xff000000 | r[3 * ((y * tmp->w) + x)] | r[3 * ((y * tmp->w) + x) + 1] << 8 | r[3 * ((y * tmp->w) + x) + 2] << 16;
+					}
+				}
+				else {
+					if (rand() % 128 >= x) {
+						pixels[(y * tmp->w) + x] = 0xff000000 | l[3 * ((y * tmp->w) + x)] | l[3 * ((y * tmp->w) + x) + 1] << 8 | l[3 * ((y * tmp->w) + x) + 2] << 16;
+					}
+					else {
+						pixels[(y * tmp->w) + x] = 0xff000000 | b[3 * ((y * tmp->w) + x)] | b[3 * ((y * tmp->w) + x) + 1] << 8 | b[3 * ((y * tmp->w) + x) + 2] << 16;
+					}
+				}
+				/*int rnd = rand() % 508;
+				int ar, br, cr, dr;
+				ar = (127-x) + (127-y);
+				br = x + (127 - y);
+				cr = (x) + (y);
+				dr = (127 - x) + (y);
+				if (rnd <= ar) pixels[(y * tmp->w) + x] = 0xff000000 | t[3 * ((y * tmp->w) + x)] | t[3 * ((y * tmp->w) + x) + 1] << 8 | t[3 * ((y * tmp->w) + x) + 2] << 16;
+				else if (rnd <= ar+br) pixels[(y * tmp->w) + x] = 0xff000000 | r[3 * ((y * tmp->w) + x)] | r[3 * ((y * tmp->w) + x) + 1] << 8 | r[3 * ((y * tmp->w) + x) + 2] << 16;
+				else if (rnd <= ar + br + cr) pixels[(y * tmp->w) + x] = 0xff000000 | b[3 * ((y * tmp->w) + x)] | b[3 * ((y * tmp->w) + x) + 1] << 8 | b[3 * ((y * tmp->w) + x) + 2] << 16;
+				else pixels[(y * tmp->w) + x] = 0xff000000 | l[3 * ((y * tmp->w) + x)] | l[3 * ((y * tmp->w) + x) + 1] << 8 | l[3 * ((y * tmp->w) + x) + 2] << 16;*/
 			}
 		}
 		SDL_Texture *tmptex = SDL_CreateTextureFromSurface(renderer, tmp);
 		SDL_FreeSurface(tmp);
-		all[id] = tmptex;
+		all[id0][id1][id2][id3] = tmptex;
 	}
-	return all[id];
+	return all[id0][id1][id2][id3];
 }
