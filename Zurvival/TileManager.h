@@ -16,8 +16,8 @@ class TileManager
 private:
 	vector<Tile> tiles;
 	int size;
-	vector<SDL_Texture*> vert;
-	vector<SDL_Texture*> hori;
+	vector<vector<SDL_Texture*> > vert;
+	vector<vector<SDL_Texture*> > hori;
 	vector<SDL_Texture*> all;
 public:
 	TileManager(int size);

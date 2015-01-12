@@ -148,7 +148,7 @@ void SpriteManager::drawNumber(int number, const std::string &key, int x, int y,
 				SDL_RenderCopy(renderer, numlist[key][number], NULL, &r);
 			}
 			else {
-				int tnumber = 0;
+				int tnumber = number;
 				while (tnumber > 0) {
 					int ac = tnumber % 10;
 					tnumber /= 10;
@@ -192,7 +192,7 @@ void SpriteManager::drawNumber(int number, const std::string &key, int x, int y,
 				SDL_RenderCopy(renderer,numlist[key][number], NULL, &r);
 			}
 			else {
-				int tnumber = 0;
+				int tnumber = number;
 				int tw = 0;
 				while (tnumber > 0) {
 					int ac = tnumber % 10;

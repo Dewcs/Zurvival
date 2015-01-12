@@ -4,6 +4,8 @@
 parameters: x position / y position / list set if exist this chunk
 create a chunk, asign x and y position, create a matrix pointer with chunk_size and put boolean isCalled false. put this chunk in set exists*/
 
+#define coord(x,y) x*CHUNK_SIZE+y
+
 Chunk::Chunk(int x, int y, std::set<unsigned>* exists){
 	//save x and y cordinates
 	this->x = x;
@@ -11,9 +13,10 @@ Chunk::Chunk(int x, int y, std::set<unsigned>* exists){
 	//create a matrix of int's of the chunk
 	matrix = new int[CHUNK_SIZE * CHUNK_SIZE];
 	for (int i = 0; i < CHUNK_SIZE * CHUNK_SIZE; i++){
-		matrix[i] = -1;
+		matrix[i] = TILE_MAX;
 	}
 	randomChunk();
+
 	//initializate all pointers of NULL
 	right = NULL;
 	bot= NULL;
@@ -24,6 +27,42 @@ Chunk::Chunk(int x, int y, std::set<unsigned>* exists){
 
 	this->exists = exists;
 	SDL_Log("CREATED CHUNK %d %d", x, y);
+	for (int i = 0; i < CHUNK_SIZE; ++i) {
+		log(1, "%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d",
+			matrix[coord(0,i)],
+			matrix[coord(1, i)],
+			matrix[coord(2, i)],
+			matrix[coord(3, i)],
+			matrix[coord(4, i)],
+			matrix[coord(5, i)],
+			matrix[coord(6, i)],
+			matrix[coord(7, i)],
+			matrix[coord(8, i)],
+			matrix[coord(9, i)],
+			matrix[coord(10, i)],
+			matrix[coord(11, i)],
+			matrix[coord(12, i)],
+			matrix[coord(13, i)],
+			matrix[coord(14, i)],
+			matrix[coord(15, i)],
+			matrix[coord(16, i)],
+			matrix[coord(17, i)],
+			matrix[coord(18, i)],
+			matrix[coord(19, i)],
+			matrix[coord(20, i)],
+			matrix[coord(21, i)],
+			matrix[coord(22, i)],
+			matrix[coord(23, i)],
+			matrix[coord(24, i)],
+			matrix[coord(25, i)],
+			matrix[coord(26, i)],
+			matrix[coord(27, i)],
+			matrix[coord(28, i)],
+			matrix[coord(29, i)],
+			matrix[coord(30, i)],
+			matrix[coord(31, i)]
+		);
+	}
 	this->exists->insert(chunkUID(x, y));
 	
 }
@@ -39,7 +78,7 @@ Chunk::Chunk(int x, int y, std::set<unsigned>* exists, Chunk *r, Chunk* b, Chunk
 	//create a matrix of int's of the chunk
 	matrix = new int[CHUNK_SIZE * CHUNK_SIZE];
 	for (int i = 0; i < CHUNK_SIZE * CHUNK_SIZE; i++){
-		matrix[i] = -1;
+		matrix[i] = TILE_MAX;
 	}
 	randomChunk();
 	//initializate all pointers
@@ -52,6 +91,42 @@ Chunk::Chunk(int x, int y, std::set<unsigned>* exists, Chunk *r, Chunk* b, Chunk
 
 	this->exists = exists;
 	SDL_Log("CREATED CHUNK %d %d", x, y);
+	for (int i = 0; i < CHUNK_SIZE; ++i) {
+		log(1, "%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d",
+			matrix[coord(0, i)],
+			matrix[coord(1, i)],
+			matrix[coord(2, i)],
+			matrix[coord(3, i)],
+			matrix[coord(4, i)],
+			matrix[coord(5, i)],
+			matrix[coord(6, i)],
+			matrix[coord(7, i)],
+			matrix[coord(8, i)],
+			matrix[coord(9, i)],
+			matrix[coord(10, i)],
+			matrix[coord(11, i)],
+			matrix[coord(12, i)],
+			matrix[coord(13, i)],
+			matrix[coord(14, i)],
+			matrix[coord(15, i)],
+			matrix[coord(16, i)],
+			matrix[coord(17, i)],
+			matrix[coord(18, i)],
+			matrix[coord(19, i)],
+			matrix[coord(20, i)],
+			matrix[coord(21, i)],
+			matrix[coord(22, i)],
+			matrix[coord(23, i)],
+			matrix[coord(24, i)],
+			matrix[coord(25, i)],
+			matrix[coord(26, i)],
+			matrix[coord(27, i)],
+			matrix[coord(28, i)],
+			matrix[coord(29, i)],
+			matrix[coord(30, i)],
+			matrix[coord(31, i)]
+			);
+	}
 	this->exists->insert(chunkUID(x, y));
 }
 
@@ -158,7 +233,7 @@ void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, in
 				for (int j = 0; j <= rectToDraw.h; j++){
 					if (relativeX + i >= 0 && relativeX + i < CHUNK_SIZE && relativeY + j >= 0 && relativeY + j < CHUNK_SIZE) {
 						SDL_Rect rect = { vertexDrawX + (i*sizeOnPixels), vertexDrawY + (j*sizeOnPixels), sizeOnPixels, sizeOnPixels };
-						if (getMapValue(relativeX + i, relativeY + j) == -1) {
+						if (getMapValue(relativeX + i, relativeY + j) == TILE_MAX) {
 							if (((relativeX + i) + (relativeY + j)) % 2 == 0) {
 								// all
 								SDL_RenderCopy(
@@ -173,6 +248,7 @@ void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, in
 									NULL,
 									&rect
 								);
+								sprMngr->drawNumber(getMapValue(relativeX + i - 1, relativeY + j - 1) * 1000 + getMapValue(relativeX + i + 1, relativeY + j - 1) * 100 + getMapValue(relativeX + i + 1, relativeY + j + 1) * 10 + getMapValue(relativeX + i - 1, relativeY + j + 1), "red_numbers", rect.x, rect.y, rect.h/4, ALIGN_LEFT);
 							}
 							else {
 								// else
@@ -188,10 +264,12 @@ void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, in
 									NULL,
 									&rect
 									);
+								sprMngr->drawNumber(getMapValue(relativeX + i, relativeY + j - 1) * 1000 + getMapValue(relativeX + i + 1, relativeY + j) * 100 + getMapValue(relativeX + i, relativeY + j + 1) * 10 + getMapValue(relativeX + i - 1, relativeY + j), "red_numbers", rect.x, rect.y, rect.h/4, ALIGN_LEFT);
 							}
 						}
 						else {
 							SDL_RenderCopy(renderer, tm->get(getMapValue(relativeX + i, relativeY + j)), NULL, &rect);
+							sprMngr->drawNumber(getMapValue(relativeX + i, relativeY + j), "red_numbers", rect.x, rect.y, rect.h, ALIGN_LEFT);
 						}
 						/*switch (matrix[(relativeX + i)*CHUNK_SIZE + (relativeY + j)]){
 						case TILE_GRASS:
@@ -327,7 +405,7 @@ int Chunk::getMapValue(int x, int y) {
 	
 	int ret = 0;
 	if (x >= 0 && x < CHUNK_SIZE && y >= 0 && y < CHUNK_SIZE) {
-		ret = matrix[x*CHUNK_SIZE + y];
+		ret = matrix[coord(x,y)];
 	}
 	else if (x < 0) {
 		if (left == NULL) left = search(this->x - 1, this->y);
