@@ -219,9 +219,9 @@ void Zurvival::load_sprites() {
 	sprMngr->addImage("hevySlot", "sprites/hevySlot.png", { width / 30, (width / 30) * 3 + (height / 8)*2, height / 8, height / 8 });
 	sprMngr->addImage("healSlot", "sprites/healSlot.png", { width / 30, (width / 30) * 4 + (height / 8)*3, height / 8, height / 8 });
 	//wepon sprites
-	sprMngr->addImage("pistolWep", "sprites/pistolWep.png", { (width / 30) + (width / 60), (width / 30) + (width / 60), height / 15, height / 15 });
-	sprMngr->addImage("shotgunWep", "sprites/shotgunWep.png", { (width / 30) + (width / 80), (width / 30) * 2 + (height / 8) + (width / 50), height / 10, height / 20 });
-	sprMngr->addImage("hevyWep", "sprites/hevyWep.png", { (width / 30) + (width / 100), (width / 30) * 3 + (height / 8) * 2 + (width / 100), height / 10, height / 15 });
+	sprMngr->addImage("pistolWep", "sprites/pistolWep.png", { (width / 30) + (width / 60), (width / 30) + (width / 100), height / 15, height / 15 });
+	sprMngr->addImage("shotgunWep", "sprites/shotgunWep.png", { (width / 30) + (width / 80), (width / 30) * 2 + (height / 10) + (width / 100), height / 10, height / 10 });
+	sprMngr->addImage("hevyWep", "sprites/hevyWep.png", { (width / 30), (width / 30) * 3 + (height / 10) * 2 + (width / 50), height / 8, height / 8 });
 	//amo sprites
 	sprMngr->addImage("pistolAmo", "sprites/pistolAmo.png", { 0,0,0,0});
 	sprMngr->addImage("shotgunAmo", "sprites/shotgunAmo.png", { 0, 0, 0, 0 });
