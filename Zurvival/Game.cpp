@@ -130,6 +130,7 @@ void Game::cleanup() {
 }
 
 void Game::update(unsigned delta) {
+	log(1, "up");
 	// update main
 	// update view
 	int mx, my;
@@ -254,9 +255,11 @@ void Game::update(unsigned delta) {
 		}
 	// cleanup
 	cleanup();
+	log(1, "upe");
 }
 
 void Game::draw() {
+	log(1, "draw");
 	// draw bg
 	gmap->drawMap(renderer, sprMngr,tm);
 	//draw items
@@ -388,7 +391,7 @@ void Game::draw() {
 	drawGUI();
 	//draw life of main character
 	sprMngr->drawNumber(mc->getLife(), "red_numbers", width/2 + (height / 28),height/2 - (height/10), height / 20 , ALIGN_CENTER);
-
+	log(1, "drawe");
 	//extra
 }
 

@@ -62,7 +62,7 @@ SDL_Texture* TileManager::get(int id0, int id1, int id2, int id3, SDL_Renderer *
 }
 
 SDL_Texture* TileManager::getVert(int left, int right, SDL_Renderer *renderer) {
-	if (left*size + right < 0 || left*size + right >= vert.size()) log(1, "ERROR VERT");
+	if (left < 0 || left >= vert.size() || right < 0 || right >= vert.size()) log(1, "ERROR VERT %d %d",left,right);
 	if (left == right) return tiles[left].tex;
 	if (vert[left][right] == NULL) {
 		SDL_Surface *tmp;
@@ -87,7 +87,7 @@ SDL_Texture* TileManager::getVert(int left, int right, SDL_Renderer *renderer) {
 }
 
 SDL_Texture* TileManager::getHori(int top, int bot, SDL_Renderer *renderer) {
-	if (top*size + bot < 0 || top*size + bot >= hori.size()) log(1, "ERROR HORI");
+	if (top < 0 || top >= vert.size() || bot < 0 || bot >= vert.size()) log(1, "ERROR HORI %d %d",top,bot);
 	if (top == bot) return tiles[top].tex;
 	if (hori[top][bot] == NULL) {
 		SDL_Surface *tmp;
@@ -112,6 +112,7 @@ SDL_Texture* TileManager::getHori(int top, int bot, SDL_Renderer *renderer) {
 }
 
 SDL_Texture* TileManager::getAll(int id0, int id1, int id2, int id3, SDL_Renderer *renderer) {
+	if (id0 < 0 || id0 >= vert.size() || id1 < 0 || id1 >= vert.size() || id2 < 0 || id2 >= vert.size() || id3 < 0 || id3 >= vert.size()) log(1, "ERROR HORI %d %d %d %d", id0,id1,id2,id3);
 	if (id0==id1 && id1==id2 && id2==id3) return tiles[id0].tex;
 	if (all[id0][id1][id2][id3] == NULL) {
 		SDL_Surface *tmp;

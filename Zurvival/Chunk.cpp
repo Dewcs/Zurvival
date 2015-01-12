@@ -320,7 +320,7 @@ void Chunk::spawnNeighbors(SDL_Rect window, ItemMap * itemap) {
 		isCalled = true;
 		for (int i = 0; i < 4; i++){
 			// is inside the screen window?
-			if (rectInsideRect(window.x, window.y, window.w, window.h, (x + xval[i]) * CHUNK_SIZE, (y + yval[i]) * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE)) {
+			if (rectInsideRect(window.x, window.y, window.w, window.h, (x + xval[i]) * CHUNK_SIZE - 2, (y + yval[i]) * CHUNK_SIZE - 2, CHUNK_SIZE + 4, CHUNK_SIZE + 4)) {
 				Chunk * nei = getChunk(i);
 				if (nei == NULL) {
 					// does the chunk exists?
@@ -402,8 +402,7 @@ void Chunk::debug() {
 }
 
 int Chunk::getMapValue(int x, int y) {
-	
-	int ret = 0;
+	int ret = 7;
 	if (x >= 0 && x < CHUNK_SIZE && y >= 0 && y < CHUNK_SIZE) {
 		ret = matrix[coord(x,y)];
 	}
