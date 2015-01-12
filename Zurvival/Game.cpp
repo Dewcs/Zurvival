@@ -564,7 +564,7 @@ void Game::drawGUI(){
 	sprMngr->drawNumber(mc->returnItems(0, false), "red_numbers", (width / 30) + (height / 45), (width / 30) + (height / 10), height / 50, ALIGN_LEFT);
 	//first, draw heal item sprite
 	SDL_RenderCopy(renderer, sprMngr->getTexture("healSprite"), NULL, &sprMngr->getRect("healSprite"));
-	sprMngr->drawNumber(mc->returnItems(3, true), "red_numbers", (width / 30) + (height / 8.8), ((width / 30) * 4 + (height / 8) * 3) + (height/10 ), height / 50, ALIGN_CENTER);
+	sprMngr->drawNumber(mc->returnItems(3, true), "red_numbers", (width / 30) + (height / 15), ((width / 30) * 4 + (height / 8) * 3) + (height/10 ), height / 50, ALIGN_RIGHT);
 	//comprovate if is necesary draw into slots
 	//next, all weapons
 	if (mc->returnWeapon(1) != -1){
@@ -618,4 +618,3 @@ void Game::drawItems(){
 		}
 	}
 }
-

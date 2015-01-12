@@ -227,7 +227,7 @@ void Zurvival::load_sprites() {
 	sprMngr->addImage("shotgunAmo", "sprites/shotgunAmo.png", { 0, 0, 0, 0 });
 	sprMngr->addImage("hevyAmo", "sprites/hevyAmo.png", { 0, 0, 0, 0 });
 	//heal sprite
-	sprMngr->addImage("healSprite", "sprites/healSprite.png", { (width / 30) + (width / 100), (width / 30) * 4 + (height / 8) * 3 , height / 10, height / 10 });
+	sprMngr->addImage("healSprite", "sprites/healSprite.png", { (width / 30) + (width / 80), (width / 30) * 4 + (height / 8) * 3, height / 13, height / 13 });      
 	// retroceso button
 	sprMngr->addImage("retroceso", "sprites/retroceso.png", { width / 40, (width / 30) * 5 + (height / 8) * 4, width / 12, height / 12 });
 	// highscores
