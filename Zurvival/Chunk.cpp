@@ -167,7 +167,8 @@ void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, in
 										getMapValue(relativeX + i - 1, relativeY + j - 1),
 										getMapValue(relativeX + i + 1, relativeY + j - 1),
 										getMapValue(relativeX + i + 1, relativeY + j + 1),
-										getMapValue(relativeX + i - 1, relativeY + j + 1)
+										getMapValue(relativeX + i - 1, relativeY + j + 1),
+										renderer
 									), 
 									NULL,
 									&rect
@@ -181,7 +182,8 @@ void Chunk::drawChunk(double centerX_M, double  centerY_M, int  width_pixels, in
 										getMapValue(relativeX + i, relativeY + j - 1),
 										getMapValue(relativeX + i + 1, relativeY + j),
 										getMapValue(relativeX + i, relativeY + j + 1),
-										getMapValue(relativeX + i - 1, relativeY + j)
+										getMapValue(relativeX + i - 1, relativeY + j),
+										renderer
 									),
 									NULL,
 									&rect

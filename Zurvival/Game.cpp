@@ -25,13 +25,13 @@ Game::Game(SDL_Renderer* renderer, SpriteManager* sprMngr,int width,int height)
 	bales = new ArrayBales();
 
 	tm = new TileManager(TILE_MAX);
-	tm->add(sprMngr->getTexture("tile_grass"), TILE_GRASS);
-	tm->add(sprMngr->getTexture("tile_grass2"), TILE_GRASS2);
-	tm->add(sprMngr->getTexture("tile_rock"), TILE_ROCK);
-	tm->add(sprMngr->getTexture("tile_wood"), TILE_WOOD);
-	tm->add(sprMngr->getTexture("tile_snow"), TILE_SNOW);
-	tm->add(sprMngr->getTexture("tile_metal"), TILE_METAL);
-	tm->add(sprMngr->getTexture("tile_water"), TILE_WATER);
+	tm->add(sprMngr->getTexture("tile_grass"),"sprites/grass.jpg", TILE_GRASS);
+	tm->add(sprMngr->getTexture("tile_grass2"), "sprites/grassSprite.jpg", TILE_GRASS2);
+	tm->add(sprMngr->getTexture("tile_rock"), "sprites/RockSprite.jpg", TILE_ROCK);
+	tm->add(sprMngr->getTexture("tile_wood"), "sprites/woodSprite.jpg", TILE_WOOD);
+	tm->add(sprMngr->getTexture("tile_snow"), "sprites/snowSprite.jpg", TILE_SNOW);
+	tm->add(sprMngr->getTexture("tile_metal"), "sprites/metalSprite.jpg", TILE_METAL);
+	tm->add(sprMngr->getTexture("tile_water"), "sprites/waterSprite.jpg", TILE_WATER);
 
 	log(VERBOSE_DATA_CREATION, "CREATED GAME");
 	ended = false;

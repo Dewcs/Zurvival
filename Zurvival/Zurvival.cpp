@@ -184,9 +184,9 @@ void Zurvival::load_sprites() {
 	sprMngr->addNumbers("red_numbers", { 255, 0, 0 }, height / 50, "sprites/Gore Font II.ttf");
 	// tile sprites
 	sprMngr->addImage("tile_grass", "sprites/grass.jpg", { 0, 0, width, height });
-	sprMngr->addImage("tile_grass2", "sprites/grassSprite.png", { 0, 0, width, height });
-	sprMngr->addImage("tile_rock", "sprites/RockSprite.png", { 0, 0, width, height });
-	sprMngr->addImage("tile_metal", "sprites/metalSprite.png", { 0, 0, width, height });
+	sprMngr->addImage("tile_grass2", "sprites/grassSprite.jpg", { 0, 0, width, height });
+	sprMngr->addImage("tile_rock", "sprites/RockSprite.jpg", { 0, 0, width, height });
+	sprMngr->addImage("tile_metal", "sprites/metalSprite.jpg", { 0, 0, width, height });
 	sprMngr->addImage("tile_snow", "sprites/snowSprite.jpg", { 0, 0, width, height });
 	sprMngr->addImage("tile_water", "sprites/waterSprite.jpg", { 0, 0, width, height });
 	sprMngr->addImage("tile_wood", "sprites/woodSprite.jpg", { 0, 0, width, height });
