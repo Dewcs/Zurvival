@@ -1,5 +1,6 @@
 #pragma once
 
+// verbose levels for log()
 enum verbose_t {
 	VERBOSE_NONE = 0,
 	VERBOSE_BASIC = 1,
@@ -12,9 +13,10 @@ enum verbose_t {
 	VERBOSE_TRAIN = 128,
 	VERBOSE_ALL = 0xFFFFFFFF,
 };
-
+// current verbose level
 #define VERBOSE_LEVEL VERBOSE_ALL&~(VERBOSE_FRAME_DRAW|VERBOSE_BRAIN)
 
+// game pages
 enum page_t {
 	LOADING,
 	MAINMENU,
@@ -24,18 +26,21 @@ enum page_t {
 	GAMEOVER
 };
 
+// game type of orders
 enum order_t {
 	ORDER_NONE,
 	ORDER_CHANGE_PAGE,
 	ORDER_SET_SCORE,
 };
 
+// type of text align
 enum align_t {
 	ALIGN_RIGHT,
 	ALIGN_LEFT,
 	ALIGN_CENTER
 };
 
+// type of moves
 enum move_t {
 	MOVE_TOP = 1,
 	MOVE_RIGHT = 2,
@@ -43,6 +48,7 @@ enum move_t {
 	MOVE_LEFT = 8
 };
 
+// typss of tiles
 enum tile_t {
 	TILE_GRASS,
 	TILE_GRASS2,
@@ -53,6 +59,8 @@ enum tile_t {
 	TILE_SNOW,
 	TILE_MAX
 };
+
+// type of actors
 enum actor_t {
 	ACTOR_ZOMBIE,
 	ACTOR_HUMAN,
@@ -66,7 +74,6 @@ const int yval[] = { -1, 0, 1, 0 };
 #define DRAWN_CHUNKS 4
 
 // how many chunks can have the map in x and y coordinates power of 2 please
-
 #define MAX_CHUNK 256
 
 // wisth and height of map chunks
@@ -105,4 +112,4 @@ const int yval[] = { -1, 0, 1, 0 };
 #define ITEMS_PER_SQM 0.005 // how many items per square meter
 
 // Game vars
-#define UNSPAWN_DISTANCE 200
+#define UNSPAWN_DISTANCE 200 // more than this distance make humans and zombies disapear

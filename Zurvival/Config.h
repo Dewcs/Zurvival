@@ -5,6 +5,10 @@
 #include "Functions.h"
 #include "tinyxml2.h"
 
+/*
+Class to handle a configuration file with variables holding booleans, integers and strings
+*/
+
 enum type_t {
 	TYPE_BOOL,
 	TYPE_INT,

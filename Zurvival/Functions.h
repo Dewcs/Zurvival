@@ -57,11 +57,13 @@ bool inAngleRange(double angle, double a, double b);
 /*************************************************************************
 STRING FUNCTIONS
 **************************************************************************/
+// convers a double to n decimals string
 std::string to_string_with_precision(double a_value, const int n);
 
 /*************************************************************************
 OTHER FUNCTIONS
 **************************************************************************/
-
+// random real value
 double randomReal(double min, double max);
+// returns a chunk unique identifier
 unsigned chunkUID(int x, int y);

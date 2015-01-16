@@ -41,6 +41,7 @@ int log(int level, const char *format, ...) {
 		done = vfprintf(stdout, format, arg);
 		printf("\n");
 		va_end(arg);
+		// force flush!
 		fflush(stdout);
 		return done;
 	}

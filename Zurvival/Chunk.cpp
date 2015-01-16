@@ -378,12 +378,15 @@ Chunk* Chunk::search(int x, int y) {
 
 // SHOULD BE OPTIMIZED!!!!
 Chunk* Chunk::_search(int x, int y, unsigned uid, std::set<unsigned> *visited) {
+	// if i'm the searched chunk return my pointer
 	if (uid == chunkUID(this->x, this->y)) return this;
 	else {
+		// otherwise search if my neigboors are
 		Chunk * ret = NULL;
 		for (int i = 0; i < 4 && ret == NULL; ++i) {
 			Chunk * nei = getChunk(i);
 			unsigned neiUID = chunkUID(this->x + xval[i], this->y + yval[i]);
+			// check if neigboors where called before
 			if (nei != NULL && visited->count(neiUID) == 0) {
 				visited->insert(neiUID);
 				ret = nei->_search(x, y, uid, visited);
@@ -412,6 +415,7 @@ void Chunk::debug() {
 int Chunk::getMapValue(int x, int y) {
 	int ret = 7;
 	if (x >= 0 && x < CHUNK_SIZE && y >= 0 && y < CHUNK_SIZE) {
+		// the position is inside the chunk
 		ret = matrix[coord(x,y)];
 	}
 	else if (x < 0) {

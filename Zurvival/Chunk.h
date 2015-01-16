@@ -9,6 +9,12 @@
 #include "ItemMap.h"
 #include "TileManager.h"
 
+/*
+	CLass to handle the data of a small piece of the map, have linkts to its neigboors
+
+	2D bidirectional list
+*/
+
 class Chunk {
 	private:
 		int *matrix; //pointer matrix 
@@ -33,9 +39,9 @@ class Chunk {
 		void resetCalls(); // return booleans isCalled as false
 		Chunk* search(int x, int y); // serch chunk 
 		Chunk* _search(int x, int y, unsigned uid, std::set<unsigned> *visited); // return chunk 
-		int getMapValue(int x, int y);
+		int getMapValue(int x, int y); // gets the tile value of the positions x,y relative to current chunk
 	private:
-		int countLinks();
-		void debug();
+		int countLinks(); // how many links does the chunck have?
+		void debug(); // print the chunk
 };
 
