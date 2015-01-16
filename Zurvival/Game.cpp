@@ -23,7 +23,7 @@ Game::Game(SDL_Renderer* renderer, SpriteManager* sprMngr,int width,int height)
 	itemap = new ItemMap();
 
 	bales = new ArrayBales();
-
+	// tile map initiator
 	tm = new TileManager(TILE_MAX);
 	tm->add(sprMngr->getTexture("tile_grass"),"sprites/grass.jpg", TILE_GRASS);
 	tm->add(sprMngr->getTexture("tile_grass2"), "sprites/grassSprite.jpg", TILE_GRASS2);
@@ -73,20 +73,22 @@ Game::~Game()
 }
 
 void Game::spawn(unsigned delta) {
+	// spawn closer to mc
 	int time = SDL_GetTicks() - begin;
 	int max = floor(sqrt((time / 1000) + 1))+4;
-	int maxh = max * 0.2;
-	int maxz = max * 0.8;
+	int maxh = max * 0.2; // percentage of humans 20%
+	int maxz = max * 0.8; // percentage of zombies 80%
 	
 	int screen_height = TILE_FOR_HEIGHT+4;
 	int screen_width = width/(height/TILE_FOR_HEIGHT)+20;
-	int rect_height = 70;
+	// max distance to spawn
+	int rect_height = 70; 
 	int rect_width = 70;
 	int x0 = mc->getX() - rect_width / 2;
 	int y0 = mc->getY() - rect_height / 2;
 	int x1 = mc->getX() - screen_width / 2;
 	int y1 = mc->getY() - screen_height / 2;
-	// humans
+	// humans spawn
 	if (humans.size() < maxh) {
 		int x = 0;
 		int y = 0; 
@@ -97,7 +99,7 @@ void Game::spawn(unsigned delta) {
 		std::string mode = hTrainer->random();
 		humans.push_back(new Human(x, y, SDL_GetTicks(), mode));
 	}
-	// zombies
+	// zombies spawn
 	if (zombies.size() < maxz) {
 		int x = 0;
 		int y = 0;
@@ -171,7 +173,6 @@ void Game::update(unsigned delta) {
 	// update bales
 	bales->updateBales(delta);
 	// update damages
-	
 	for (int i = bales->size() - 1; i >= 0; --i) {
 		bool coll = false;
 		Segment s = bales->getBalaSegment(i);

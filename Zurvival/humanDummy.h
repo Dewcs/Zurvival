@@ -2,6 +2,10 @@
 #include "Functions.h"
 #include <stdlib.h>
 
+/*
+	Dummy humans class to begin train it just moves into a constant unique direction untill it gets out of the map
+*/
+
 class humanDummy
 {
 private:

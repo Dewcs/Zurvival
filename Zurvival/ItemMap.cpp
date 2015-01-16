@@ -25,6 +25,7 @@ void ItemMap::addRandomItem(double x, double y, double w, double h) {
 item* ItemMap::closerToPoint(double x, double y) {
 	int b = -1;
 	double bd;
+	// search closer item
 	for (int i = 0; i < items.size(); ++i) {
 		double dist = distP2P(x, y, items[i]->x, items[i]->y);
 		if (b == -1 || bd>dist) {
@@ -39,6 +40,7 @@ item* ItemMap::closerToPoint(double x, double y) {
 item* ItemMap::closerToPoint(double x, double y, item_t type) {
 	int b = -1;
 	double bd;
+	// search closer item
 	for (int i = 0; i < items.size(); ++i) {
 		if (items[i]->type == type) {
 			double dist = distP2P(x, y, items[i]->x, items[i]->y);
@@ -55,6 +57,7 @@ item* ItemMap::closerToPoint(double x, double y, item_t type) {
 item* ItemMap::collectItem(double x, double y) {
 	int b = -1;
 	double bd;
+	// search closer item
 	for (int i = 0; i < items.size(); ++i) {
 		double dist = distP2P(x, y, items[i]->x, items[i]->y);
 		if (b == -1 || bd>dist) {
@@ -62,6 +65,7 @@ item* ItemMap::collectItem(double x, double y) {
 			b = i;
 		}
 	}
+	// if closet item is closer than 1 meter collect it
 	if (b != -1 && bd < 1) {
 		item *tmp = items[b];
 		items.erase(items.begin() + b);

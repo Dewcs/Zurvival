@@ -2,6 +2,11 @@
 #include <math.h>
 #include "Functions.h"
 
+/*
+	Geometry functios of  Point, 3D-Vector,Line segment and Circle
+
+*/
+
 class Point {
 	public:
 		double x, y;

@@ -5,12 +5,16 @@
 #include "SpriteManager.h"
 #include "Const.h"
 
+/*
+	Class to handle highscores screen
+*/
+
 class GameOver
 {
 	SDL_Renderer* renderer;
 	SpriteManager* sprMngr;
-	std::vector<int> *scores;
-	int width, height;
+	std::vector<int> *scores; // array of scores
+	int width, height; //screen size
 public:
 	GameOver(SDL_Renderer* renderer, SpriteManager* sprMngr, std::vector<int> *scores, int width, int height);
 	~GameOver();

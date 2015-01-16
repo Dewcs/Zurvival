@@ -197,15 +197,15 @@ Human* Human::clone(int x, int y, int timestamp) {
 	return ret;
 }
 double Human::capability() {
-	double kps = 0;
-	double area = (maxx - minx)*(maxy - miny);
-	double af = 1.0 - 1000.0 / (1000.0 + area);
-	double kf = 1.0 - 10.0 / (11 + kills);
-	double df = 1.0 - 100.0 / (101.0 + damageDealt);
-	double hf = 1.0 - 10.0 / (11 + hitted);
-	double tf = 1.0 - 100000.0 / (100001 + (now - begin));
-	kps = af * kf * df * hf;
-	return kps;
+	double ret = 0; 
+	double area = (maxx - minx)*(maxy - miny); // area traveled
+	double af = 1.0 - 1000.0 / (1000.0 + area); // area factor
+	double kf = 1.0 - 10.0 / (11 + kills); // kill factor
+	double df = 1.0 - 100.0 / (101.0 + damageDealt); // damage factor
+	double hf = 1.0 - 10.0 / (11 + hitted); // aim factor
+	double tf = 1.0 - 100000.0 / (100001 + (now - begin)); // time factor
+	ret = af * kf * df * hf; // capability formula
+	return ret;
 }
 
 bool Human::fired() {
@@ -216,6 +216,7 @@ bool Human::moved() {
 }
 
 bool Human::emitSmell() {
+	// emit 1 smell every 250 ms
 	if (now - last_smell > 250) {
 		last_smell = now;
 		return true;
