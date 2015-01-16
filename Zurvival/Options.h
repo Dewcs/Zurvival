@@ -2,6 +2,9 @@
 #include <SDL.h>
 #include "SpriteManager.h"
 #include "Const.h"
+/*
+	Class to hanle option scene
+*/
 class Options
 {
 private:

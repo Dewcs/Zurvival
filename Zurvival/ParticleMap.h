@@ -6,23 +6,23 @@
 using namespace std;
 
 struct Particle {
-	double x, y;
-	double dx, dy;
-	double speed;
-	unsigned time;
-	unsigned duration;
-	string sprite;
+	double x, y; // current x,y coordinate
+	double dx, dy; // direction of the particle
+	double speed; // particle travel speed
+	unsigned time; // particle alive time (ms)
+	unsigned duration; // how many ms does the particle last?
+	string sprite; // particle sprite key
 };
 
 class ParticleMap
 {
-	double cx, cy;
-	vector<Particle> particles;
+	double cx, cy; // map center
+	vector<Particle> particles; // list of particles
 public:
 	ParticleMap();
 	~ParticleMap();
-	void update(double x, double y, unsigned delta);
-	void draw(SDL_Renderer* renderer, SpriteManager* sprMngr, int width, int height);
-	void add(double x, double y, string sprite, unsigned duration, unsigned amount, double speed);
+	void update(double x, double y, unsigned delta); // update all particles delta times and cet center x,y
+	void draw(SDL_Renderer* renderer, SpriteManager* sprMngr, int width, int height); // drar all particles inside screen
+	void add(double x, double y, string sprite, unsigned duration, unsigned amount, double speed); // add a new particle (direction is random)
 };
 

@@ -35,6 +35,7 @@ void Map::setCenter(double x, double y, ItemMap * itemap){
 	int positionChunkY = yfloor / CHUNK_SIZE;
 	if (xfloor < 0) positionChunkX = positionChunkX - 1;
 	if (yfloor < 0) positionChunkY = positionChunkY - 1;
+	// chekc if new center is another chunk
 	if (center->areDiferentChunk(positionChunkX, positionChunkY)){
 		center = center->search(positionChunkX, positionChunkY);
 	}

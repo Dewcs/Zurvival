@@ -3,6 +3,10 @@
 #include <iostream>
 #include "SpriteManager.h"
 #include "Const.h"
+
+/*
+	Class of the game menu
+*/
 class MainMenu {
 	private:
 		SDL_Renderer* renderer;
