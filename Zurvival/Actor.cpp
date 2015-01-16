@@ -1,10 +1,8 @@
 #include "Actor.h"
 
-
 Actor::Actor()
 {
 }
-
 
 Actor::~Actor()
 {
@@ -27,8 +25,8 @@ double Actor::getY() {
 	return y;
 }
 
-int Actor::getTime(int timestamp) {
-	return timestamp - begin;
+int Actor::getTime(int now) {
+	return now - begin;
 }
 
 Circle Actor::getCircle() {

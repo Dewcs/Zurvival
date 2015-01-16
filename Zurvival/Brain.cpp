@@ -35,17 +35,22 @@ void Brain::tweak() {
 	switch (change)
 	{
 	case CHANGE_NONE:
+		// change nothing
 		break;
 	case CHANGE_INF:
+		// change a random in function
 		nodes[nodeid].in = infunc(fastrand() % INF_SIZE);
 		break;
 	case CHANGE_OUTF:
+		// change a random out function
 		nodes[nodeid].out = outfunc(fastrand() % OUTF_SIZE);
 		break;
 	case CHANGE_LINK:
+		// change a link of a random node
 		nodes[nodeid].ids[linkid] = fastrand() % (input + 5 + nodeid);
 		break;
 	case REMOVE_NODE:
+		// remove 1 node
 		if (hidden > 0) {
 			--hidden;
 			size = input + 5 + output + hidden;
@@ -70,11 +75,13 @@ void Brain::tweak() {
 		}
 		break;
 	case REMOVE_LINK:
+		// remove 1 link
 		if (nodes[nodeid].ids.size() > 1) {
 			nodes[nodeid].ids.erase(nodes[nodeid].ids.begin() + linkid);
 		}
 		break;
 	case ADD_NODE:
+		// add a new node
 		++hidden;
 		size = input + 5 + output + hidden;
 		values.insert(values.begin() + nodeid, 0);
@@ -98,9 +105,11 @@ void Brain::tweak() {
 		}
 		break;
 	case ADD_LINK:
+		// add a new link
 		nodes[nodeid].ids.insert(nodes[nodeid].ids.begin() + linkid, fastrand() % (input + 5 + nodeid));
 		break;
 	case SHUFFLE_LINKS:
+		// resort links of a node
 		for (unsigned j = 0; j < nodes[nodeid].ids.size(); ++j) {
 			a = fastrand() % nodes[nodeid].ids.size();
 			b = fastrand() % nodes[nodeid].ids.size();
@@ -113,7 +122,7 @@ void Brain::tweak() {
 	default:
 		break;
 	}
-	optimize();
+	optimize(); // optimize unused nodes
 	// check for errors
 	for (unsigned i = 0; i < output + hidden; ++i) {
 		for (unsigned j = 0; j < nodes[i].ids.size(); ++j) {
@@ -125,20 +134,23 @@ void Brain::tweak() {
 }
 
 void Brain::randomize() {
+	// assign a random size
 	hidden = fastrand() % ((input + output) / 2) + 1;
 	size = input + 5 + output + hidden;
 	values = std::vector<float> (size,0);
 	nodes = std::vector<Node> (output + hidden);
+	// creates all nodes with random values
 	for (unsigned i = 0; i < nodes.size(); ++i) {
 		nodes[i].in = infunc(fastrand() % INF_SIZE);
 		nodes[i].out = outfunc(fastrand() % OUTF_SIZE);
 		unsigned size2 = fastrand() % (input + 4 + i) + 1;
 		nodes[i].ids = std::vector<unsigned> (size2);
+		// creates all node links with random values
 		for (unsigned j = 0; j < size2; ++j) {
 			nodes[i].ids[j] = fastrand() % (input + 5 + i);
 		}
 	}
-	optimize();
+	optimize(); // optimize unused nodes
 }
 void Brain::setInput(const std::vector<float> &input) {
 	for (unsigned i = 0; i < this->input; ++i) {
@@ -187,6 +199,7 @@ void Brain::evaluate() {
 		log(VERBOSE_BRAIN, "EVAL NODE %d RESULT: %f", i, values[i + 5 + input]);
 	}
 	if (errors) {
+		// if the evaluation gave errors reset the brain to a random one
 		randomize();
 	}
 }

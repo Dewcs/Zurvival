@@ -21,11 +21,14 @@ void ArrayBales::createBala(float fr, float x, float y, double vd, void *owner){
 }
 
 void ArrayBales::updateBales(unsigned delta) {
+	// check bullets to be removed
 	for (int i = bales.size() - 1; i >= 0; --i) {
 		if (distP2P(bales[i].x, bales[i].y, bales[i].x0, bales[i].y0)>bales[i].firingRange) {
+			// remove bullet if it passes the firing range
 			bales.erase(bales.begin() + i);
 		}
 	}
+	// update all bullets position
 	for (int i = 0; i < bales.size(); ++i) {
 		bales[i].x0 = bales[i].x1;
 		bales[i].y0 = bales[i].y1;
@@ -54,6 +57,7 @@ void* ArrayBales::getBalaOwner(unsigned id) {
 }
 
 void ArrayBales::unlinkOwner(void *owner) {
+	// search all bullets with owner owner and give them a NULL owner
 	for (int i = 0; i < bales.size(); ++i) {
 		if (bales[i].owner == owner) {
 			bales[i].owner = NULL;

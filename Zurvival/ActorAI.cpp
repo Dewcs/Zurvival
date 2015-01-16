@@ -22,9 +22,9 @@ void ActorAI::save(const char * fname) {
 }
 
 void ActorAI::think() {
-	ia->setInput(input);
-	ia->evaluate();
-	ia->getResult(output);
+	ia->setInput(input); // insert input 
+	ia->evaluate(); // eval brain
+	ia->getResult(output); // collect output
 }
 
 void ActorAI::addDamageDealt(double damage) {
