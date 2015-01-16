@@ -54,6 +54,7 @@ std::string Trainer::random() {
 		return "random";
 	}
 	else {
+		// each files arent equal check files with higher probabilities if they are good
 		int total = round(sum / unit);
 		int r2 = rand() % total;
 		double tmpsum = 0;

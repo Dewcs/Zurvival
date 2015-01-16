@@ -17,6 +17,7 @@ Radar::~Radar()
 }
 
 void Radar::addPoint(double x, double y, double value, unsigned timestamp) {
+	// if array is not full add a new node
 	if (amount < size) {
 		list[amount] = new RNode();
 		list[amount]->x = x;
@@ -27,6 +28,7 @@ void Radar::addPoint(double x, double y, double value, unsigned timestamp) {
 		++amount;
 	}
 	else {
+		// remove worst node and add the new one
 		RNode *tmp = new RNode();
 		tmp->x = x;
 		tmp->y = y;
@@ -45,6 +47,7 @@ void Radar::addPoint(double x, double y, double value, unsigned timestamp) {
 }
 
 void Radar::getValue(double x, double y, double &ox, double &oy, bool &valid) {
+	// set valid if there is a value 
 	valid = false;
 	for (int i = amount-1; i >= 0; --i) {
 		if (list[i]->value < 1) return;
@@ -67,7 +70,7 @@ void Radar::update(unsigned delta) {
 	bool swapped = true;
 	unsigned j = 0;
 	RNode *tmp;
-	// bubble sort op!
+	// bubble sort op! (should be sorted by default so no need for speed here)
 	while (swapped && amount) {
 		swapped = false;
 		j++;

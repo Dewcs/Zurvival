@@ -9,10 +9,10 @@
 #include "Const.h"
 
 struct Sprite {
-	SDL_Texture* texture;
-	SDL_Rect rect;
-	int w, h;
-	double r;
+	SDL_Texture* texture; // pointer to texture
+	SDL_Rect rect; // rect of the sprice can be unset or unused
+	int w, h; // width and heigh of the sprite
+	double r; // width/height ratio scaling purposes
 	// create a new sprite with information
 	Sprite(SDL_Texture* texture, SDL_Rect rect,int w,int h) {
 		this->texture = texture;
@@ -30,6 +30,10 @@ struct Sprite {
 		r = 0;
 	}
 };
+
+/*
+	Class to handle sprites converting them to a string and using sdl_image allowing png, jpg, gif, bmp and also allowing text with ttf fonts and also drawing numbers with prechached fonts
+*/
 
 class SpriteManager {
 	private:

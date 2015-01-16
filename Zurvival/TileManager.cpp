@@ -63,8 +63,9 @@ SDL_Texture* TileManager::get(int id0, int id1, int id2, int id3, SDL_Renderer *
 
 SDL_Texture* TileManager::getVert(int left, int right, SDL_Renderer *renderer) {
 	if (left < 0 || left >= vert.size() || right < 0 || right >= vert.size()) log(1, "ERROR VERT %d %d",left,right);
-	if (left == right) return tiles[left].tex;
+	if (left == right) return tiles[left].tex; // same texture
 	if (vert[left][right] == NULL) {
+		// merged texture
 		SDL_Surface *tmp;
 		Uint8 *l, *r;
 		l = (Uint8 *)tiles[left].sur->pixels;
@@ -75,6 +76,7 @@ SDL_Texture* TileManager::getVert(int left, int right, SDL_Renderer *renderer) {
 		Uint32 *pixels = (Uint32 *)tmp->pixels;
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
+				// use random with chances equaling the cube of the distance
 				double rnd = randomReal(0, 1);
 				double p1, p2;
 				p1 = 1.0 / ((128 - x)*(128 - x)*(128 - x));
@@ -104,6 +106,7 @@ SDL_Texture* TileManager::getHori(int top, int bot, SDL_Renderer *renderer) {
 		Uint32 *pixels = (Uint32 *)tmp->pixels;
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
+				// use random with chances equaling the cube of the distance
 				double rnd = randomReal(0, 1);
 				double p1, p2;
 				p1 = 1.0 / ((128 - y)*(128 - y)*(128 - y));
@@ -135,6 +138,7 @@ SDL_Texture* TileManager::getAll(int id0, int id1, int id2, int id3, SDL_Rendere
 		Uint32 *pixels = (Uint32 *)tmp->pixels;
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
+				// use random with chances equaling the cube of the distance
 				double rnd = randomReal(0, 1);
 				double p1, p2;
 				p1 = 1.0 / ((128 - y)*(128 - y)*(128 - y));
@@ -159,16 +163,6 @@ SDL_Texture* TileManager::getAll(int id0, int id1, int id2, int id3, SDL_Rendere
 						pixels[(y * tmp->w) + x] = 0xff000000 | b[3 * ((y * tmp->w) + x)] | b[3 * ((y * tmp->w) + x) + 1] << 8 | b[3 * ((y * tmp->w) + x) + 2] << 16;
 					}
 				}
-				/*int rnd = rand() % 508;
-				int ar, br, cr, dr;
-				ar = (127-x) + (127-y);
-				br = x + (127 - y);
-				cr = (x) + (y);
-				dr = (127 - x) + (y);
-				if (rnd <= ar) pixels[(y * tmp->w) + x] = 0xff000000 | t[3 * ((y * tmp->w) + x)] | t[3 * ((y * tmp->w) + x) + 1] << 8 | t[3 * ((y * tmp->w) + x) + 2] << 16;
-				else if (rnd <= ar+br) pixels[(y * tmp->w) + x] = 0xff000000 | r[3 * ((y * tmp->w) + x)] | r[3 * ((y * tmp->w) + x) + 1] << 8 | r[3 * ((y * tmp->w) + x) + 2] << 16;
-				else if (rnd <= ar + br + cr) pixels[(y * tmp->w) + x] = 0xff000000 | b[3 * ((y * tmp->w) + x)] | b[3 * ((y * tmp->w) + x) + 1] << 8 | b[3 * ((y * tmp->w) + x) + 2] << 16;
-				else pixels[(y * tmp->w) + x] = 0xff000000 | l[3 * ((y * tmp->w) + x)] | l[3 * ((y * tmp->w) + x) + 1] << 8 | l[3 * ((y * tmp->w) + x) + 2] << 16;*/
 			}
 		}
 		SDL_Texture *tmptex = SDL_CreateTextureFromSurface(renderer, tmp);
